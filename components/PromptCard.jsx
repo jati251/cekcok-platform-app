@@ -15,11 +15,11 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
   const pathName = usePathname();
   const router = useRouter();
   const [copied, setCopied] = useState("");
-  const [likes, setLikes] = useState(Number(post.likes) || 0); // Assuming `post.likes` exists
-  const [hates, setHates] = useState(Number(post.hates) || 0); // Assuming `post.likes` exists
-
-  const [liked, setLiked] = useState(post.liked || false); // Manage the liked state
-  const [hated, setHated] = useState(post.hated || false); // Manage the liked state
+  
+  const [likes, setLikes] = useState(Number(post.likes) || 0); 
+  const [hates, setHates] = useState(Number(post.hates) || 0); 
+  const [liked, setLiked] = useState(post.liked || false); 
+  const [hated, setHated] = useState(post.hated || false); 
 
   const handleProfileClick = () => {
     if (post.creator._id === session?.user.id) return router.push("/profile");
