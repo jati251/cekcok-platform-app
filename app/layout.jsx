@@ -2,6 +2,7 @@ import "@styles/globals.css";
 
 import Nav from "@components/Nav";
 import Provider from "@components/Provider";
+import Footer from "@components/Footer";
 
 export const metadata = {
   title: "CekCok",
@@ -20,6 +21,7 @@ export default function RootLayout({ children, session }) {
           <main className="app">
             <Nav />
             {children}
+            <Footer />
           </main>
         </Provider>
       </body>

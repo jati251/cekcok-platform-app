@@ -2,7 +2,7 @@ import Feed from "@components/Feed";
 
 export default function Home() {
   return (
-    <section className="w-full flex-center flex-col">
+    <section className="w-full flex-center flex-col mt-20 mb-20">
       <h1 className="head_text text-center">
         Temukan & Berbagi
         <br className="max-md:hidden" />
