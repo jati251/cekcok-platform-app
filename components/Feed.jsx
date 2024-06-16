@@ -1,20 +1,26 @@
 "use client";
 
 import { useState, useEffect } from "react";
-
 import PromptCard from "./PromptCard";
 import { useSession } from "next-auth/react";
+import { PromptSkeleton } from "./Skeletons/PromptCardSkeleton";
 
-const PromptCardList = ({ data, handleTagClick }) => {
+const PromptCardList = ({ data, handleTagClick, status }) => {
   return (
     <div className="mt-16 prompt_layout">
-      {data.map((post) => (
-        <PromptCard
-          key={post._id}
-          post={post}
-          handleTagClick={handleTagClick}
-        />
-      ))}
+      {status ? (
+        [...Array(4)].map((_, index) => <PromptSkeleton />)
+      ) : (
+        <>
+          {data.map((post) => (
+            <PromptCard
+              key={post._id}
+              post={post}
+              handleTagClick={handleTagClick}
+            />
+          ))}
+        </>
+      )}
     </div>
   );
 };
@@ -25,6 +31,8 @@ const Feed = () => {
 
   // Search states
   const [searchText, setSearchText] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const [searchTimeout, setSearchTimeout] = useState(null);
   const [searchedResults, setSearchedResults] = useState([]);
 
@@ -55,9 +63,11 @@ const Feed = () => {
     }
 
     setAllPosts(data);
+    setLoading(false);
   };
 
   useEffect(() => {
+    setLoading(true);
     if (status !== "loading") {
       fetchPosts();
     }
@@ -113,7 +123,11 @@ const Feed = () => {
           handleTagClick={handleTagClick}
         />
       ) : (
-        <PromptCardList data={allPosts} handleTagClick={handleTagClick} />
+        <PromptCardList
+          data={allPosts}
+          status={loading}
+          handleTagClick={handleTagClick}
+        />
       )}
     </section>
   );
