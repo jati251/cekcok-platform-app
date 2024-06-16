@@ -21,6 +21,7 @@ const PromptSchema = new Schema({
     type: Number,
     default: 0,
   },
+  comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
   userInteractions: [
     {
       userId: { type: Schema.Types.ObjectId, ref: "User" },
