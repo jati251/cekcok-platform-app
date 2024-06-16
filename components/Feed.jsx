@@ -3,10 +3,11 @@
 import { useState, useEffect } from "react";
 
 import PromptCard from "./PromptCard";
+import { useSession } from "next-auth/react";
 
 const PromptCardList = ({ data, handleTagClick }) => {
   return (
-    <div className='mt-16 prompt_layout'>
+    <div className="mt-16 prompt_layout">
       {data.map((post) => (
         <PromptCard
           key={post._id}
@@ -20,6 +21,7 @@ const PromptCardList = ({ data, handleTagClick }) => {
 
 const Feed = () => {
   const [allPosts, setAllPosts] = useState([]);
+  const { data: session, status } = useSession();
 
   // Search states
   const [searchText, setSearchText] = useState("");
@@ -30,12 +32,36 @@ const Feed = () => {
     const response = await fetch("/api/prompt");
     const data = await response.json();
 
+    if (session?.user) {
+      const userId = session?.user.id;
+
+      data.forEach((post) => {
+        const userInteraction = post.userInteractions.find(
+          (interaction) => interaction.userId.toString() === userId
+        );
+        if (userInteraction) {
+          post.liked = userInteraction.action === "like";
+          post.hated = userInteraction.action === "hate";
+        } else {
+          post.liked = false;
+          post.hated = false;
+        }
+      });
+    } else {
+      data.forEach((post) => {
+        post.liked = false;
+        post.hated = false;
+      });
+    }
+
     setAllPosts(data);
   };
 
   useEffect(() => {
-    fetchPosts();
-  }, []);
+    if (status !== "loading") {
+      fetchPosts();
+    }
+  }, [status]);
 
   const filterPrompts = (searchtext) => {
     const regex = new RegExp(searchtext, "i"); // 'i' flag for case-insensitive search
@@ -68,15 +94,15 @@ const Feed = () => {
   };
 
   return (
-    <section className='feed'>
-      <form className='relative w-full flex-center'>
+    <section className="feed">
+      <form className="relative w-full flex-center">
         <input
-          type='text'
-          placeholder='Search for a tag or a username'
+          type="text"
+          placeholder="Search for a tag or a username"
           value={searchText}
           onChange={handleSearchChange}
           required
-          className='search_input peer'
+          className="search_input peer"
         />
       </form>
 

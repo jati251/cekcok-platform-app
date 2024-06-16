@@ -56,9 +56,6 @@ const UpdatePrompt = () => {
         body: JSON.stringify({
           prompt: post.prompt,
           tag: post.tag,
-          likes: post.likes,
-          hates: post.hates,
-          comments: post.comments,
         }),
       });
 

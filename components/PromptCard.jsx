@@ -14,13 +14,12 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
   const { data: session } = useSession();
   const pathName = usePathname();
   const router = useRouter();
-
   const [copied, setCopied] = useState("");
   const [likes, setLikes] = useState(Number(post.likes) || 0); // Assuming `post.likes` exists
   const [hates, setHates] = useState(Number(post.hates) || 0); // Assuming `post.likes` exists
 
-  const [liked, setLiked] = useState(false); // Manage the liked state
-  const [hated, setHated] = useState(false); // Manage the liked state
+  const [liked, setLiked] = useState(post.liked || false); // Manage the liked state
+  const [hated, setHated] = useState(post.hated || false); // Manage the liked state
 
   const handleProfileClick = () => {
     if (post.creator._id === session?.user.id) return router.push("/profile");
@@ -38,39 +37,51 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
     if (!post._id) return alert("Missing PromptId!");
 
     try {
-      const response = await fetch(`/api/prompt/${post._id}`, {
+      const response = await fetch(`/api/prompt/hate-like/${post._id}`, {
         method: "PATCH",
         body: JSON.stringify({
-          prompt: post.prompt,
-          tag: post.tag,
-          likes: action === "like" ? String(value) : post.likes ?? "0",
-          hates: action === "hate" ? String(value) : post.hates ?? "0",
-          comments: post.comments ?? "0",
+          userId: session.user.id,
+          action,
         }),
       });
 
-      if (response.ok) {
-        router.push("/");
-      } else {
-        throw new Error("Failed to update prompt");
+      if (!response.ok) {
+        throw new Error("Failed to update likes and hates");
       }
+
+      const updatedPost = await response.json();
+
+      setLikes(updatedPost.likes);
+      setHates(updatedPost.hates);
     } catch (error) {
       console.error("Error updating prompt:", error);
     }
   };
 
   const handleLike = () => {
-    const newLikes = !liked ? likes + 1 : likes - 1;
-    setLiked(!liked);
-    setLikes(newLikes);
-    handleAction("like", newLikes);
+    const newLiked = !liked;
+    const newLikes = newLiked ? likes + 1 : likes - 1;
+    if (newLiked) {
+      setLiked(true);
+      setHated(false);
+      handleAction("like", newLikes);
+    } else {
+      setLiked(false);
+      handleAction("like", newLikes);
+    }
   };
 
   const handleHate = () => {
-    const newHates = !hated ? hates + 1 : hates - 1;
-    setHated(!hated);
-    setHates(newHates);
-    handleAction("hate", newHates);
+    const newHated = !hated;
+    const newHates = newHated ? hates + 1 : hates - 1;
+    if (newHated) {
+      setHated(true);
+      setLiked(false);
+      handleAction("hate", newHates);
+    } else {
+      setHated(false);
+      handleAction("hate", newHates);
+    }
   };
 
   return (
@@ -124,14 +135,20 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
           className="flex items-center gap-1 text-gray-500 hover:text-gray-700 transition-colors duration-200"
           onClick={handleLike}
         >
-          <FontAwesomeIcon icon={solidThumbsUp} />
+          <FontAwesomeIcon
+            color={liked ? "#2499e7" : "gray"}
+            icon={solidThumbsUp}
+          />
           <span>{likes}</span>
         </button>
         <button
           className="flex items-center gap-1 text-gray-500 hover:text-gray-700 transition-colors duration-200"
           onClick={handleHate}
         >
-          <FontAwesomeIcon icon={hated ? solidThumbsDown : solidThumbsDown} />
+          <FontAwesomeIcon
+            color={hated ? "#f4977f" : "gray"}
+            icon={hated ? solidThumbsDown : solidThumbsDown}
+          />
           <span>{hates}</span>
         </button>
       </div>
