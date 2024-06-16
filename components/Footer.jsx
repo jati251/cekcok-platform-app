@@ -15,7 +15,13 @@ import { signOut, useSession } from "next-auth/react";
 const Footer = () => {
   const { data: session } = useSession();
   return (
-    <footer className="fixed bottom-0 left-0 right-0 bg-black text-white py-4 flex justify-around">
+    <footer
+      className={`fixed bottom-0 left-0 right-0 bg-black text-white py-4 flex justify-around transition-all ${
+        session?.user
+          ? ""
+          : "transform translate-y-full opacity-0 duration-500"
+      }`}
+    >
       <Link href="/">
         <div className="text-gray-300 hover:text-white transition-colors duration-300">
           <FontAwesomeIcon icon={faHome} size="lg" />
