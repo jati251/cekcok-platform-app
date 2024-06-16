@@ -3,7 +3,14 @@
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 
-const CommentModal = ({ isOpen, onClose, postId, onCommentAdded }) => {
+const CommentModal = ({
+  isOpen,
+  onClose,
+  postId,
+  isDetail,
+  onCommentAdded,
+  fetchComment,
+}) => {
   const { data: session } = useSession();
   const [commentContent, setCommentContent] = useState("");
 
@@ -23,6 +30,7 @@ const CommentModal = ({ isOpen, onClose, postId, onCommentAdded }) => {
       if (response.ok) {
         onCommentAdded();
         setCommentContent("");
+        if (isDetail) fetchComment();
         onClose();
       } else {
         console.error("Failed to add comment");

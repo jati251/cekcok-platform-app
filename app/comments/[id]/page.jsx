@@ -1,5 +1,6 @@
 "use client";
 
+import Comment from "@components/Comment";
 import PromptCard from "@components/PromptCard";
 import { PromptSkeleton } from "@components/Skeletons/PromptCardSkeleton";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
@@ -111,7 +112,7 @@ const CommentDetail = ({ params }) => {
         </button>
 
         {post._id ? (
-          <PromptCard key={promptId} post={post} />
+          <PromptCard key={promptId} post={post} isDetail fetchComment={fetchComments} />
         ) : (
           <PromptSkeleton />
         )}
@@ -119,36 +120,7 @@ const CommentDetail = ({ params }) => {
           <h4 className="font-satoshi text-gray-900">Comments</h4>
           <div className=" mt-2">
             {comments.map((comment) => (
-              <div
-                key={comment._id}
-                className="my-4 flex justify-start gap-6 border-t-2 border-t-gray-300 pt-2"
-              >
-                <div className=" flex items-center ">
-                  <Image
-                    src={
-                      comment.author.image ?? "/assets/images/default-user.png"
-                    }
-                    alt="comment_author"
-                    width={30}
-                    height={30}
-                    className="rounded-full"
-                  />
-                </div>
-                <div className="gap-2">
-                  <div className="flex gap-2 items-center">
-                    <p className="font-satoshi text-md font-bold text-gray-700">
-                      {comment.author.username}
-                    </p>
-                    <p className="font-satoshi text-sm text-gray-700">
-                      {comment.author.email}
-                    </p>
-                  </div>
-
-                  <p className="font-inter text-sm text-gray-600">
-                    {comment.content}
-                  </p>
-                </div>
-              </div>
+              <Comment key={comment._id} comment={comment} />
             ))}
           </div>
         </div>

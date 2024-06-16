@@ -12,6 +12,12 @@ const commentSchema = new Schema({
     type: Number,
     default: 0,
   },
+  userInteractions: [
+    {
+      userId: { type: Schema.Types.ObjectId, ref: "User" },
+      action: { type: String, enum: ["like", "hate"] },
+    },
+  ],
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });

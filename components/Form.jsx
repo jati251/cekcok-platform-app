@@ -17,12 +17,16 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
         <label>
           <textarea
             value={post.prompt}
-            onChange={(e) => setPost({ ...post, prompt: e.target.value })}
+            onChange={(e) => {
+              if (post.prompt.length < 280)
+                setPost({ ...post, prompt: e.target.value });
+            }}
             placeholder="Tuliskan bacotanmu disini"
             required
             className="form_textarea "
           />
         </label>
+        <span>{post.prompt.length ?? 0}/280</span>
 
         <label>
           <span className="font-satoshi font-semibold text-base text-gray-700">
@@ -51,7 +55,7 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
             disabled={submitting}
             className="px-5 py-1.5 text-sm bg-black rounded-full text-white"
           >
-            {submitting ? `${type}ing...` : type}
+            {submitting ? `${type}in...` : type}
           </button>
         </div>
       </form>

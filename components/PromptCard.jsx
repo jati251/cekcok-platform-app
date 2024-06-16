@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
@@ -12,7 +12,14 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import CommentModal from "./CommentModal";
 
-const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
+const PromptCard = ({
+  post,
+  isDetail,
+  handleEdit,
+  handleDelete,
+  handleTagClick,
+  fetchComment,
+}) => {
   const { data: session } = useSession();
   // console.log(post);
   const pathName = usePathname();
@@ -106,6 +113,8 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
   return (
     <>
       <CommentModal
+        isDetail={isDetail}
+        fetchComment={fetchComment}
         isOpen={isCommentModalOpen}
         onClose={() => setIsCommentModalOpen(false)}
         postId={post._id}
@@ -115,11 +124,9 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
       />
       <div onClick={handleDetail} className="cursor-pointer prompt_card">
         <div className="flex justify-between items-start gap-5">
-          <div
-            onClick={handleProfileClick}
-            className="flex-1 flex justify-start items-center gap-3 cursor-pointer"
-          >
+          <div className="flex-1 flex justify-start items-center gap-3 cursor-pointer">
             <Image
+              onClick={handleProfileClick}
               src={
                 post?.creator?.image ??
                 post?.author?.image ??
@@ -155,7 +162,9 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
           </div>
         </div>
 
-        <p className="my-4 font-satoshi text-sm text-gray-700">{post.prompt}</p>
+        <p className="my-4 font-satoshi break-all text-sm text-gray-700">
+          {post.prompt}
+        </p>
         <p
           className="font-inter text-sm blue_gradient cursor-pointer"
           onClick={() => handleTagClick && handleTagClick(post.tag)}
@@ -188,7 +197,10 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
           <button
             disabled={!session?.user}
             className="flex items-center gap-1 text-gray-500 hover:text-gray-700 transition-colors duration-200"
-            onClick={() => setIsCommentModalOpen(true)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsCommentModalOpen(true);
+            }}
           >
             <FontAwesomeIcon color="gray" icon={faComment} />
             <span>{totalComments}</span>
