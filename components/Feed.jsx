@@ -9,7 +9,9 @@ const PromptCardList = ({ data, handleTagClick, status }) => {
   return (
     <div className="mt-16 prompt_layout">
       {status ? (
-        [...Array(4)].map((_, index) => <PromptSkeleton />)
+        [...Array(4)].map((_, index) => (
+          <PromptSkeleton key={`skeleton_${index + 1}`} />
+        ))
       ) : (
         <>
           {data.map((post) => (
@@ -74,7 +76,7 @@ const Feed = () => {
   }, [status]);
 
   const filterPrompts = (searchtext) => {
-    const regex = new RegExp(searchtext, "i"); // 'i' flag for case-insensitive search
+    const regex = new RegExp(searchtext, "i");
     return allPosts.filter(
       (item) =>
         regex.test(item.creator.username) ||
