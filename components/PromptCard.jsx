@@ -15,11 +15,11 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
   const pathName = usePathname();
   const router = useRouter();
   const [copied, setCopied] = useState("");
-  
-  const [likes, setLikes] = useState(Number(post.likes) || 0); 
-  const [hates, setHates] = useState(Number(post.hates) || 0); 
-  const [liked, setLiked] = useState(post.liked || false); 
-  const [hated, setHated] = useState(post.hated || false); 
+
+  const [likes, setLikes] = useState(Number(post.likes) || 0);
+  const [hates, setHates] = useState(Number(post.hates) || 0);
+  const [liked, setLiked] = useState(post.liked || false);
+  const [hated, setHated] = useState(post.hated || false);
 
   const handleProfileClick = () => {
     if (post.creator._id === session?.user.id) return router.push("/profile");
@@ -132,6 +132,7 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
       </p>
       <div className="flex justify-start gap-6 items-center mt-3">
         <button
+          disabled={!session?.user}
           className="flex items-center gap-1 text-gray-500 hover:text-gray-700 transition-colors duration-200"
           onClick={handleLike}
         >
@@ -142,6 +143,7 @@ const PromptCard = ({ post, handleEdit, handleDelete, handleTagClick }) => {
           <span>{likes}</span>
         </button>
         <button
+          disabled={!session?.user}
           className="flex items-center gap-1 text-gray-500 hover:text-gray-700 transition-colors duration-200"
           onClick={handleHate}
         >
