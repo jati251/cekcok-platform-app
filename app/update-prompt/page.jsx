@@ -7,10 +7,16 @@ import Form from "@components/Form";
 
 const UpdatePrompt = () => {
   const router = useRouter();
-  const [searchParams] = useSearchParams();
+  const searchParams = useSearchParams();
   const promptId = searchParams.get("id");
 
-  const [post, setPost] = useState({ prompt: "", tag: "" });
+  const [post, setPost] = useState({
+    prompt: "",
+    tag: "",
+    hates: "",
+    comments: "",
+    likes: "",
+  });
   const [submitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -26,6 +32,9 @@ const UpdatePrompt = () => {
         setPost({
           prompt: data.prompt,
           tag: data.tag,
+          hates: data.hates,
+          comments: data.comments,
+          likes: data.likes,
         });
       } catch (error) {
         console.error("Error fetching prompt details:", error);
@@ -47,6 +56,9 @@ const UpdatePrompt = () => {
         body: JSON.stringify({
           prompt: post.prompt,
           tag: post.tag,
+          likes: post.likes,
+          hates: post.hates,
+          comments: post.comments,
         }),
       });
 

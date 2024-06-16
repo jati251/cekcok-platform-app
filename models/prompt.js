@@ -12,6 +12,18 @@ const PromptSchema = new Schema({
   tag: {
     type: String,
     required: [true, 'Tag is required.'],
+  },
+  likes: {
+    type: String,
+    required: [true, 'Likes is required.'],
+  },
+  hates: {
+    type: String,
+    required: [true, 'Hates is required.'],
+  },
+  comments: {
+    type: String,
+    required: [true, 'Comments is required.'],
   }
 });
 

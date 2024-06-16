@@ -24,6 +24,9 @@ const CreatePrompt = () => {
           prompt: post.prompt,
           userId: session?.user.id,
           tag: post.tag,
+          likes: '0',
+          hates: '0',
+          comments: '0',
         }),
       });
 
@@ -39,7 +42,7 @@ const CreatePrompt = () => {
 
   return (
     <Form
-      type='Buat'
+      type="Buat"
       post={post}
       setPost={setPost}
       submitting={submitting}
