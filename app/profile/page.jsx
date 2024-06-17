@@ -29,7 +29,7 @@ const MyProfile = () => {
 
   const handleDelete = async (post) => {
     const hasConfirmed = confirm(
-      "Are you sure you want to delete this prompt?"
+      "Apakah kamu yakin mau ngapus bacotan ini?"
     );
 
     if (hasConfirmed) {

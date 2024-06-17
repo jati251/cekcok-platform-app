@@ -87,9 +87,9 @@ const CommentModal = ({
           <button
             type="button"
             onClick={() => setShowGifSelector(true)}
-            className="px-5 py-1.5 bg-gray-200 rounded-full text-sm text-gray-700"
+            className="px-5 font-satoshi font-semibold py-1.5 bg-gray-200 rounded-full text-sm text-gray-700"
           >
-            Select GIF
+            GIF
           </button>
         </div>
 
@@ -145,7 +145,7 @@ const CommentModal = ({
             onClick={handleAddComment}
             className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors"
           >
-            Komentari
+            Komentar
           </button>
         </div>
       </div>

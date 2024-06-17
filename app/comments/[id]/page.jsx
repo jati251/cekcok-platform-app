@@ -122,11 +122,11 @@ const CommentDetail = ({ params }) => {
     <section className="feed mb-14">
       <div className="mt-14">
         <button
-          className="my-6 flex items-center gap-4 text-gray-700 hover:text-gray-800 transition-colors duration-200"
+          className="my-6 flex font-satoshi items-center gap-4 text-gray-700 hover:text-gray-800 transition-colors duration-200"
           onClick={handleBack}
         >
           <FontAwesomeIcon icon={faArrowLeft} />
-          <span>Back</span>
+          <span>Kembali</span>
         </button>
 
         {post._id ? (
@@ -141,7 +141,7 @@ const CommentDetail = ({ params }) => {
         )}
         <div className="mt-6">
           <h4 className="font-satoshi mb-10 font-semibold text-lg text-gray-900">
-            Comments
+            Komentar
           </h4>
           <div className=" mt-2 border-b-2 border-b-gray-300 mb-10">
             {comments.map((comment, i) => (
