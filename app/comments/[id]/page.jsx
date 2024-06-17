@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 const CommentDetail = ({ params }) => {
   const router = useRouter();
   const { data: session, status } = useSession();
+
   const [post, setPost] = useState({
     _id: null,
     prompt: "",
@@ -25,7 +26,6 @@ const CommentDetail = ({ params }) => {
     liked: false,
   });
   const [comments, setComments] = useState([]);
-
   const promptId = params.id;
 
   const handleBack = () => {
@@ -35,7 +35,6 @@ const CommentDetail = ({ params }) => {
   useEffect(() => {
     const getPromptDetails = async () => {
       if (!promptId) return;
-
       try {
         const response = await fetch(`/api/prompt/${promptId}`);
         if (!response.ok) {
@@ -92,6 +91,24 @@ const CommentDetail = ({ params }) => {
         }),
       });
       const data = await response.json();
+
+      if (session?.user) {
+        const userId = session.user.id;
+
+        data.forEach((comment) => {
+          const userInteraction = comment.userInteractions.find(
+            (interaction) => interaction.userId.toString() === userId
+          );
+          comment.liked = userInteraction?.action === "like";
+          comment.hated = userInteraction?.action === "hate";
+        });
+      } else {
+        data.forEach((comment) => {
+          comment.liked = false;
+          comment.hated = false;
+        });
+      }
+
       setComments(data);
     } catch (error) {
       console.error("Error fetching comments:", error);
@@ -99,7 +116,7 @@ const CommentDetail = ({ params }) => {
   };
 
   useEffect(() => {
-    if (promptId) fetchComments();
+    if (promptId && status !== "loading") fetchComments();
   }, [post]);
 
   return (
@@ -128,8 +145,8 @@ const CommentDetail = ({ params }) => {
             Comments
           </h4>
           <div className=" mt-2 border-b-2 border-b-gray-300 mb-10">
-            {comments.map((comment) => (
-              <Comment key={comment._id} comment={comment} />
+            {comments.map((comment, i) => (
+              <Comment key={`${i + 1}_${comment._id}`} comment={comment} />
             ))}
           </div>
         </div>

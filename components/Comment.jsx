@@ -1,3 +1,5 @@
+"use client";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
@@ -6,17 +8,17 @@ import {
   faThumbsDown as solidThumbsDown,
 } from "@fortawesome/free-solid-svg-icons";
 import TimeAgo from "./TimeAgo";
+import { useRouter } from "next/navigation";
 
 const { default: Image } = require("next/image");
 
 const Comment = ({ comment }) => {
   const { data: session } = useSession();
-
-  const [likes, setLikes] = useState(comment?.likes || 0);
-  const [hates, setHates] = useState(comment?.hates || 0);
-
-  const [liked, setLiked] = useState(comment.liked || false);
-  const [hated, setHated] = useState(comment.hated || false);
+  const router = useRouter();
+  const [likes, setLikes] = useState(comment?.likes ?? 0);
+  const [hates, setHates] = useState(comment?.hates ?? 0);
+  const [liked, setLiked] = useState(comment.liked ?? false);
+  const [hated, setHated] = useState(comment.hated ?? false);
 
   const handleProfileClick = (e) => {
     e.stopPropagation();
@@ -38,13 +40,11 @@ const Comment = ({ comment }) => {
           action,
         }),
       });
-
       if (!response.ok) {
         throw new Error("Failed to update likes and hates");
       }
 
       const updatedPost = await response.json();
-
       setLikes(updatedPost.likes);
       setHates(updatedPost.hates);
     } catch (error) {
@@ -54,7 +54,6 @@ const Comment = ({ comment }) => {
 
   const handleLike = (e) => {
     e.stopPropagation();
-
     const newLiked = !liked;
     const newLikes = newLiked ? likes + 1 : likes - 1;
     if (newLiked) {
@@ -69,7 +68,6 @@ const Comment = ({ comment }) => {
 
   const handleHate = (e) => {
     e.stopPropagation();
-
     const newHated = !hated;
     const newHates = newHated ? hates + 1 : hates - 1;
     if (newHated) {
@@ -81,6 +79,7 @@ const Comment = ({ comment }) => {
       handleAction("hate", newHates);
     }
   };
+
   return (
     <div className="my-6 ">
       <div
@@ -94,7 +93,7 @@ const Comment = ({ comment }) => {
             alt="comment_author"
             width={30}
             height={30}
-            className="rounded-full"
+            className="rounded-full cursor-pointer"
           />
         </div>
         <div className="gap-2 w-60">

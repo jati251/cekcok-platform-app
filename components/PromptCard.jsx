@@ -25,15 +25,12 @@ const PromptCard = ({
   const pathName = usePathname();
   const router = useRouter();
   const [copied, setCopied] = useState("");
-
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
-
   const [likes, setLikes] = useState(post?.likes || 0);
   const [hates, setHates] = useState(post?.hates || 0);
   const [totalComments, setTotalComments] = useState(
     Number(post?.comments?.length) || 0
   );
-
   const [liked, setLiked] = useState(post.liked || false);
   const [hated, setHated] = useState(post.hated || false);
 
@@ -85,33 +82,30 @@ const PromptCard = ({
     }
   };
 
-  const handleLike = (e) => {
+  const handleInteract = (e, action) => {
     e.stopPropagation();
-
-    const newLiked = !liked;
-    const newLikes = newLiked ? likes + 1 : likes - 1;
-    if (newLiked) {
-      setLiked(true);
-      setHated(false);
-      handleAction("like", newLikes);
+    if (action === "hate") {
+      const newHated = !hated;
+      const newHates = newHated ? hates + 1 : hates - 1;
+      if (newHated) {
+        setHated(true);
+        setLiked(false);
+        handleAction(action, newHates);
+      } else {
+        setHated(false);
+        handleAction(action, newHates);
+      }
     } else {
-      setLiked(false);
-      handleAction("like", newLikes);
-    }
-  };
-
-  const handleHate = (e) => {
-    e.stopPropagation();
-
-    const newHated = !hated;
-    const newHates = newHated ? hates + 1 : hates - 1;
-    if (newHated) {
-      setHated(true);
-      setLiked(false);
-      handleAction("hate", newHates);
-    } else {
-      setHated(false);
-      handleAction("hate", newHates);
+      const newLiked = !liked;
+      const newLikes = newLiked ? likes + 1 : likes - 1;
+      if (newLiked) {
+        setLiked(true);
+        setHated(false);
+        handleAction(action, newLikes);
+      } else {
+        setLiked(false);
+        handleAction(action, newLikes);
+      }
     }
   };
 
@@ -190,7 +184,7 @@ const PromptCard = ({
           <button
             disabled={!session?.user}
             className="flex items-center gap-1 text-gray-500 hover:text-gray-700 transition-colors duration-200"
-            onClick={handleLike}
+            onClick={(e) => handleInteract(e, "like")}
           >
             <FontAwesomeIcon
               color={liked ? "#2499e7" : "gray"}
@@ -201,7 +195,7 @@ const PromptCard = ({
           <button
             disabled={!session?.user}
             className="flex items-center gap-1 text-gray-500 hover:text-gray-700 transition-colors duration-200"
-            onClick={handleHate}
+            onClick={(e) => handleInteract(e, "hate")}
           >
             <FontAwesomeIcon
               color={hated ? "#f4977f" : "gray"}

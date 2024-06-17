@@ -11,7 +11,6 @@ const PromptCardList = ({ data, handleTagClick, status }) => {
     <div className="my-16 prompt_layout">
       {data.map((post, index) => (
         <PromptCard
-          loading={status}
           key={`${post._id}_${index}`}
           post={post}
           handleTagClick={handleTagClick}
@@ -25,14 +24,11 @@ const PromptCardList = ({ data, handleTagClick, status }) => {
 const Feed = () => {
   const [allPosts, setAllPosts] = useState([]);
   const { data: session, status } = useSession();
-
-  // Search states
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-
   const [searchTimeout, setSearchTimeout] = useState(null);
   const [searchedResults, setSearchedResults] = useState([]);
 
@@ -47,7 +43,6 @@ const Feed = () => {
         }),
       });
       const data = await response.json();
-
       if (session?.user) {
         const userId = session.user.id;
         data.prompts.forEach((post) => {
@@ -65,7 +60,8 @@ const Feed = () => {
       }
 
       if (data?.prompts?.length > 0) {
-        setAllPosts((prevPosts) => [...prevPosts, ...data.prompts]);
+        if (allPosts.length === 0) setAllPosts(data.prompts);
+        else setAllPosts((prevPosts) => [...prevPosts, ...data.prompts]);
         setHasMore(data.prompts.length > 0);
       } else {
         setHasMore(false);
@@ -80,7 +76,10 @@ const Feed = () => {
   };
 
   useEffect(() => {
-    if (!loading && page <= totalPage && status !== "loading") {
+    if (
+      (!loading && page <= totalPage && status !== "loading") ||
+      (allPosts.length === 0 && !loading)
+    ) {
       fetchPosts();
     }
   }, [page]);
@@ -94,13 +93,6 @@ const Feed = () => {
       setPage((prevPage) => prevPage + 1);
     }
   }, [loading, hasMore]);
-
-  useEffect(() => {
-    if (status !== "loading") {
-      setPage(1);
-      fetchPosts();
-    }
-  }, [status]);
 
   useEffect(() => {
     const debounceScroll = debounce(handleScroll, 200);
