@@ -12,6 +12,17 @@ const commentSchema = new Schema({
     type: Number,
     default: 0,
   },
+  media: {
+    type: {
+      type: String,
+      enum: ["image", "gif"],
+      default: null,
+    },
+    src: {
+      type: String,
+      default: null,
+    },
+  },
   userInteractions: [
     {
       userId: { type: Schema.Types.ObjectId, ref: "User" },

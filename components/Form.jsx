@@ -97,9 +97,9 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
             <button
               type="button"
               onClick={handleMediaRemove}
-              className="text-red-500 mt-2"
+              className="p-2 text-red-500 mt-2 text-sm"
             >
-              Remove Media
+              Hapus
             </button>
           </div>
         )}

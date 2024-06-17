@@ -5,9 +5,9 @@ import Prompt from "@models/prompt";
 export const POST = async (req, res) => {
   try {
     await connectToDB();
-    const { content, author, post } = await req.json();
+    const { content, author, post, media } = await req.json();
 
-    const newComment = new Comment({ content, author, post });
+    const newComment = new Comment({ content, author, post, media });
     await newComment.save();
 
     // Update the prompt with the new comment

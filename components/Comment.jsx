@@ -106,9 +106,26 @@ const Comment = ({ comment }) => {
               {comment.author.email}
             </p>
           </div>
-          
+
           {comment.createdAt && <TimeAgo timestamp={comment.createdAt} />}
 
+          {comment?.media?.src && (
+            <div className="mt-4 flex flex-col items-start mb-4">
+              {comment.media.type === "image" ? (
+                <img
+                  src={comment.media.src}
+                  alt="Selected"
+                  className="max-w-full h-auto"
+                />
+              ) : (
+                <img
+                  src={comment.media.src}
+                  alt="GIF"
+                  className="max-w-full h-auto"
+                />
+              )}
+            </div>
+          )}
           <p className="font-inter break-all text-sm text-gray-600">
             {comment.content}
           </p>

@@ -6,7 +6,7 @@ import { PromptSkeleton } from "@components/Skeletons/PromptCardSkeleton";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
+
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -104,9 +104,9 @@ const CommentDetail = ({ params }) => {
 
   return (
     <section className="feed mb-10">
-      <div className="mt-10 prompt_layout">
+      <div className="mt-14">
         <button
-          className="flex items-center gap-4 text-gray-700 hover:text-gray-800 transition-colors duration-200"
+          className="my-6 flex items-center gap-4 text-gray-700 hover:text-gray-800 transition-colors duration-200"
           onClick={handleBack}
         >
           <FontAwesomeIcon icon={faArrowLeft} />
