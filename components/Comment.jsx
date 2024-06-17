@@ -85,7 +85,7 @@ const Comment = ({ comment }) => {
         key={comment._id}
         className="mb-4 pt-5 flex justify-start gap-6 border-t-2 border-t-gray-300 "
       >
-        <div className=" flex items-start">
+        <div className=" flex items-start mt-4">
           <Image
             onClick={handleProfileClick}
             src={comment.author.image ?? "/assets/images/default-user.png"}
@@ -95,17 +95,18 @@ const Comment = ({ comment }) => {
             className="rounded-full cursor-pointer"
           />
         </div>
-        <div className="gap-2 w-60">
-          <div className="flex gap-2 items-center">
-            <p className="font-satoshi text-md font-bold text-gray-700">
-              {comment.author.username}
-            </p>
-            <p className="font-satoshi text-sm text-gray-700">
-              {comment.author.email}
-            </p>
+        <div className="w-60">
+          <div className="mb-2">
+            <div className="flex gap-2 items-center">
+              <p className="font-satoshi text-md font-bold text-gray-700">
+                {comment.author.username}
+              </p>
+              <p className="font-satoshi text-sm text-gray-700">
+                {comment.author.email}
+              </p>
+            </div>
+            {comment.createdAt && <TimeAgo timestamp={comment.createdAt} />}
           </div>
-
-          {comment.createdAt && <TimeAgo timestamp={comment.createdAt} />}
 
           {comment?.media?.src && (
             <div className="mt-4 flex flex-col items-start mb-4">

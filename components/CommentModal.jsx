@@ -75,13 +75,19 @@ const CommentModal = ({
             ✖
           </button>
         </div>
-        <textarea
-          className="w-full mb-4 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-black"
-          rows="4"
-          value={commentContent}
-          onChange={(e) => setCommentContent(e.target.value)}
-          placeholder="Tanggapan Anda..."
-        ></textarea>
+        <div className="mb-4">
+          <textarea
+            className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+            rows="4"
+            value={commentContent}
+            onChange={(e) =>
+              commentContent.length <= 280 && setCommentContent(e.target.value)
+            }
+            placeholder="Tanggapan Anda..."
+          ></textarea>
+          <span className=" text-sm">{commentContent.length ?? 0}/280</span>
+        </div>
+
         <div className="flex items-center gap-4">
           <ImageUploader onChange={handleImageUpload} />
           <button
