@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import PromptCard from "./PromptCard";
 import { useSession } from "next-auth/react";
 import { PromptSkeleton } from "./Skeletons/PromptCardSkeleton";
+import Loading from "@app/profile/loading";
 
 const PromptCardList = ({ data, handleTagClick, status }) => {
   return (
-    <div className="mt-16 prompt_layout">
+    <div className="my-16 prompt_layout">
       {data.map((post, index) => (
         <PromptCard
           loading={status}
@@ -16,6 +17,7 @@ const PromptCardList = ({ data, handleTagClick, status }) => {
           handleTagClick={handleTagClick}
         />
       ))}
+      {status && <Loading />}
     </div>
   );
 };
@@ -29,6 +31,7 @@ const Feed = () => {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
   const [searchTimeout, setSearchTimeout] = useState(null);
   const [searchedResults, setSearchedResults] = useState([]);
@@ -61,7 +64,13 @@ const Feed = () => {
         });
       }
 
-      setAllPosts((prevPosts) => [...prevPosts, ...data.prompts]);
+      if (data?.prompts?.length > 0) {
+        setAllPosts((prevPosts) => [...prevPosts, ...data.prompts]);
+        setHasMore(data.prompts.length > 0);
+      } else {
+        setHasMore(false);
+      }
+
       setTotalPage(data.totalPages);
     } catch (error) {
       console.error("Error fetching posts:", error);
@@ -71,26 +80,46 @@ const Feed = () => {
   };
 
   useEffect(() => {
-    if (status !== "loading" && page <= totalPage) {
+    if (!loading && page <= totalPage && status !== "loading") {
       fetchPosts();
     }
-  }, [page, status]);
+  }, [page]);
 
-  const handleScroll = (e) => {
-    e.preventDefault();
-
+  const handleScroll = useCallback(() => {
     if (
       window.innerHeight + document.documentElement.scrollTop >=
-      document.documentElement.offsetHeight - 100
+        document.documentElement.offsetHeight - 100 &&
+      !loading
     ) {
-      setPage((prevPage) => prevPage + 1); // Load next page when scrolled to near bottom
+      setPage((prevPage) => prevPage + 1);
     }
-  };
+  }, [loading, hasMore]);
 
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    if (status !== "loading") {
+      setPage(1);
+      fetchPosts();
+    }
+  }, [status]);
+
+  useEffect(() => {
+    const debounceScroll = debounce(handleScroll, 200);
+
+    window.addEventListener("scroll", debounceScroll);
+    return () => window.removeEventListener("scroll", debounceScroll);
+  }, [handleScroll]);
+
+  const debounce = (func, wait) => {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  };
 
   const filterPrompts = (searchtext) => {
     const regex = new RegExp(searchtext, "i");
@@ -135,7 +164,7 @@ const Feed = () => {
         />
       </form>
 
-      {loading && (
+      {loading && allPosts.length === 0 && (
         <div className="mt-16 prompt_layout">
           <PromptSkeleton />
           <PromptSkeleton />
@@ -145,7 +174,7 @@ const Feed = () => {
           <PromptSkeleton />
         </div>
       )}
-      
+
       {searchText ? (
         <PromptCardList
           data={searchedResults}
