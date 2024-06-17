@@ -87,7 +87,7 @@ const Comment = ({ comment }) => {
         key={comment._id}
         className="my-4 flex justify-start gap-6 border-t-2 border-t-gray-300 pt-2"
       >
-        <div className=" flex items-center">
+        <div className=" flex items-start">
           <Image
             onClick={handleProfileClick}
             src={comment.author.image ?? "/assets/images/default-user.png"}
