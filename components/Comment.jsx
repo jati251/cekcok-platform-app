@@ -9,8 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import TimeAgo from "./TimeAgo";
 import { useRouter } from "next/navigation";
-
-const { default: Image } = require("next/image");
+import Image from "next/image";
 
 const Comment = ({ comment }) => {
   const { data: session } = useSession();

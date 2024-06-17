@@ -40,6 +40,7 @@ const Nav = () => {
     >
       <Link href="/" className="flex gap-2 flex-center">
         <Image
+          priority={true}
           src="/assets/images/logo.png"
           alt="logo"
           width={80}
@@ -110,14 +111,14 @@ const Nav = () => {
                   className="dropdown_link"
                   onClick={() => setToggleDropdown(false)}
                 >
-                  My Profile
+                  Cek Profil Saya
                 </Link>
                 <Link
                   href="/create-prompt"
                   className="dropdown_link"
                   onClick={() => setToggleDropdown(false)}
                 >
-                  Create Prompt
+                  Buat Bacotan Baru
                 </Link>
                 <button
                   type="button"
@@ -127,7 +128,7 @@ const Nav = () => {
                   }}
                   className="mt-5 w-full black_btn"
                 >
-                  Sign Out
+                  Keluar
                 </button>
               </div>
             )}
@@ -144,7 +145,7 @@ const Nav = () => {
                   }}
                   className="black_btn"
                 >
-                  Sign in
+                  Masuk
                 </button>
               ))
             ) : (

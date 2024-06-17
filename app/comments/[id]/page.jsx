@@ -6,7 +6,6 @@ import { PromptSkeleton } from "@components/Skeletons/PromptCardSkeleton";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSession } from "next-auth/react";
-
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 

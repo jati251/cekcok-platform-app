@@ -1,4 +1,6 @@
 import imageCompression from "browser-image-compression";
+import { faImage } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const ImageUploader = ({ onChange }) => {
   const handleImageChange = async (event) => {
@@ -33,9 +35,9 @@ const ImageUploader = ({ onChange }) => {
         onChange={handleImageChange}
         className="hidden"
       />
-      <span className="px-5 py-1.5 bg-gray-200 rounded-full text-sm text-gray-700">
-        Upload Image
-      </span>
+      <div className="px-5 py-1.5 bg-gray-200 rounded-full">
+        <FontAwesomeIcon icon={faImage} />
+      </div>
     </label>
   );
 };

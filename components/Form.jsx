@@ -2,7 +2,7 @@ import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import GifPicker from "gif-picker-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ImageUploader from "./ImageUploader";
 
 const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
@@ -25,7 +25,7 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
   return (
     <section className="w-full max-w-full flex-start flex-col mt-20 mb-20">
       <h1 className="head_text text-left">
-        <span className="blue_gradient">{type} Bacotanmu</span>
+        <span className="blue_gradient">{type} Bacot</span>
       </h1>
       <p className="desc text-left max-w-md">
         {type} and bagikan bacotanmu dengan dunia.
@@ -73,9 +73,9 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
           <button
             type="button"
             onClick={() => setShowGifSelector(true)}
-            className="px-5 py-1.5 bg-gray-200 rounded-full text-sm text-gray-700"
+            className=" px-5 py-1.5 bg-gray-200 rounded-full font-semibold text-sm text-gray-700"
           >
-            Select GIF
+            GIF
           </button>
         </div>
 
