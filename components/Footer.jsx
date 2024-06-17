@@ -7,8 +7,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHome,
   faComment,
+  faInfo,
   faSignOutAlt,
-  faPlusCircle, // FontAwesome icon for create post
+  faPlusCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { signOut, useSession } from "next-auth/react";
 
@@ -28,6 +29,11 @@ const Footer = () => {
       <Link href="/create-prompt">
         <div className="text-gray-300 hover:text-white transition-colors duration-300">
           <FontAwesomeIcon icon={faPlusCircle} size="xl" />
+        </div>
+      </Link>
+      <Link href="/home">
+        <div className="text-gray-300 hover:text-white transition-colors duration-300">
+          <FontAwesomeIcon icon={faInfo} size="xl" />
         </div>
       </Link>
       <Link href="/chat">
