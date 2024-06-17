@@ -82,10 +82,10 @@ const Comment = ({ comment }) => {
     }
   };
   return (
-    <>
+    <div className="my-6 ">
       <div
         key={comment._id}
-        className="my-4 flex justify-start gap-6 border-t-2 border-t-gray-300 pt-2"
+        className="mb-4 pt-5 flex justify-start gap-6 border-t-2 border-t-gray-300 "
       >
         <div className=" flex items-start">
           <Image
@@ -131,7 +131,7 @@ const Comment = ({ comment }) => {
           </p>
         </div>
       </div>
-      <div className="flex justify-start gap-6 items-center mt-3">
+      <div className="flex justify-start gap-6 items-center mt-3 px-4">
         <button
           disabled={!session?.user}
           className="flex items-center gap-1 text-gray-500 hover:text-gray-700 transition-colors duration-200"
@@ -155,7 +155,7 @@ const Comment = ({ comment }) => {
           <span>{hates}</span>
         </button>
       </div>
-    </>
+    </div>
   );
 };
 

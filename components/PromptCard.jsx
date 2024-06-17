@@ -22,7 +22,6 @@ const PromptCard = ({
   fetchComment,
 }) => {
   const { data: session } = useSession();
-  // console.log(post);
   const pathName = usePathname();
   const router = useRouter();
   const [copied, setCopied] = useState("");

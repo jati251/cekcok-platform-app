@@ -103,7 +103,7 @@ const CommentDetail = ({ params }) => {
   }, [post]);
 
   return (
-    <section className="feed mb-10">
+    <section className="feed mb-14">
       <div className="mt-14">
         <button
           className="my-6 flex items-center gap-4 text-gray-700 hover:text-gray-800 transition-colors duration-200"
@@ -124,8 +124,10 @@ const CommentDetail = ({ params }) => {
           <PromptSkeleton />
         )}
         <div className="mt-6">
-          <h4 className="font-satoshi text-gray-900">Comments</h4>
-          <div className=" mt-2">
+          <h4 className="font-satoshi mb-10 font-semibold text-lg text-gray-900">
+            Comments
+          </h4>
+          <div className=" mt-2 border-b-2 border-b-gray-300 mb-10">
             {comments.map((comment) => (
               <Comment key={comment._id} comment={comment} />
             ))}
