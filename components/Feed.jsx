@@ -8,7 +8,7 @@ import { PromptSkeleton } from "./Skeletons/PromptCardSkeleton";
 const PromptCardList = ({ data, handleTagClick, status }) => {
   return (
     <div className="mt-16 prompt_layout">
-      {!status ? (
+      {status ? (
         [...Array(4)].map((_, index) => (
           <PromptSkeleton key={`skeleton_${index + 1}`} />
         ))
