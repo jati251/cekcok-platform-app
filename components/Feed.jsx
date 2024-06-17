@@ -135,7 +135,17 @@ const Feed = () => {
         />
       </form>
 
-      {/* All Prompts */}
+      {loading && (
+        <div className="mt-16 prompt_layout">
+          <PromptSkeleton />
+          <PromptSkeleton />
+          <PromptSkeleton />
+          <PromptSkeleton />
+          <PromptSkeleton />
+          <PromptSkeleton />
+        </div>
+      )}
+      
       {searchText ? (
         <PromptCardList
           data={searchedResults}
