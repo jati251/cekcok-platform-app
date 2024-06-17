@@ -124,7 +124,7 @@
 
 /* Feed Component */
 .feed {
-  @apply mt-5 mx-auto w-full max-w-xl flex justify-center flex-col;
+  @apply mt-5 mx-auto w-full max-w-xl flex justify-center items-center flex-col;
 }
 
 /* Form Component */
