@@ -55,11 +55,11 @@ const Nav = () => {
         {session?.user ? (
           <div className="flex gap-3 md:gap-5">
             <Link href="/create-prompt" className="black_btn">
-              Create Post
+              Buat Bacotan Baru
             </Link>
 
             <button type="button" onClick={signOut} className="outline_btn">
-              Sign Out
+              Keluar
             </button>
 
             <Link href="/profile">
@@ -84,7 +84,7 @@ const Nav = () => {
                   }}
                   className="black_btn"
                 >
-                  Sign in
+                  Masuk
                 </button>
               ))}
           </>
@@ -150,7 +150,7 @@ const Nav = () => {
               ))
             ) : (
               <div className="animate-pulse flex space-x-4">
-                <div className="rounded-full bg-sky-800 h-10 w-10"></div>
+                <div className="rounded-full bg-gray-500 h-10 w-10"></div>
               </div>
             )}
           </>
