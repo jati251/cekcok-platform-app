@@ -2,9 +2,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import {
-    faThumbsUp as solidThumbsUp,
-    faThumbsDown as solidThumbsDown,
-  } from "@fortawesome/free-solid-svg-icons";
+  faThumbsUp as solidThumbsUp,
+  faThumbsDown as solidThumbsDown,
+} from "@fortawesome/free-solid-svg-icons";
+import TimeAgo from "./TimeAgo";
 
 const { default: Image } = require("next/image");
 
@@ -105,8 +106,12 @@ const Comment = ({ comment }) => {
               {comment.author.email}
             </p>
           </div>
+          
+          {comment.createdAt && <TimeAgo timestamp={comment.createdAt} />}
 
-          <p className="font-inter break-all text-sm text-gray-600">{comment.content}</p>
+          <p className="font-inter break-all text-sm text-gray-600">
+            {comment.content}
+          </p>
         </div>
       </div>
       <div className="flex justify-start gap-6 items-center mt-3">

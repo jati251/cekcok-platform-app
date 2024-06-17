@@ -21,6 +21,17 @@ const PromptSchema = new Schema({
     type: Number,
     default: 0,
   },
+  media: {
+    type: {
+      type: String,
+      enum: ["image", "gif"],
+      default: null,
+    },
+    src: {
+      type: String,
+      default: null,
+    },
+  },
   comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
   userInteractions: [
     {
@@ -28,6 +39,13 @@ const PromptSchema = new Schema({
       action: { type: String, enum: ["like", "hate"] },
     },
   ],
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
+});
+
+PromptSchema.pre("save", function (next) {
+  this.updatedAt = Date.now();
+  next();
 });
 
 const Prompt = models.Prompt || model("Prompt", PromptSchema);

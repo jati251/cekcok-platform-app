@@ -71,6 +71,8 @@ const CommentDetail = ({ params }) => {
           author: data.creator,
           userInteractions: data.userInteractions,
           liked: data.liked,
+          createdAt: data.createdAt,
+          media: data.media,
           hated: data.hated,
         });
       } catch (error) {
@@ -112,7 +114,12 @@ const CommentDetail = ({ params }) => {
         </button>
 
         {post._id ? (
-          <PromptCard key={promptId} post={post} isDetail fetchComment={fetchComments} />
+          <PromptCard
+            key={promptId}
+            post={post}
+            isDetail
+            fetchComment={fetchComments}
+          />
         ) : (
           <PromptSkeleton />
         )}

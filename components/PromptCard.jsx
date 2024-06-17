@@ -11,6 +11,7 @@ import {
   faComment,
 } from "@fortawesome/free-solid-svg-icons";
 import CommentModal from "./CommentModal";
+import TimeAgo from "./TimeAgo";
 
 const PromptCard = ({
   post,
@@ -39,10 +40,15 @@ const PromptCard = ({
 
   const handleProfileClick = (e) => {
     e.stopPropagation();
-    if (post?.creator?._id ?? post?.author?._id === session?.user.id)
+    if (
+      (post?.creator?._id || post?.author?._id) === session?.user.id &&
+      session?.user
+    )
       return router.push("/profile");
-    router.push(`/profile/${post.creator._id}?name=${post.creator.username}`);
+    if (post?.creator?._id)
+      router.push(`/profile/${post.creator._id}?name=${post.creator.username}`);
   };
+
   const handleDetail = () => {
     router.push(`/comments/${post._id}`);
   };
@@ -140,11 +146,12 @@ const PromptCard = ({
 
             <div className="flex flex-col">
               <h3 className="font-satoshi font-semibold text-gray-900">
-                {post?.creator?.username ?? post?.author?.username}
+                {post?.creator?.username ?? post?.author?.username ?? "Anonim"}
               </h3>
               <p className="font-inter text-sm text-gray-500">
                 {post?.creator?.email ?? post?.author?.email}
               </p>
+              {post.createdAt && <TimeAgo timestamp={post.createdAt} />}
             </div>
           </div>
 
@@ -165,6 +172,25 @@ const PromptCard = ({
         <p className="my-4 font-satoshi break-all text-sm text-gray-700">
           {post.prompt}
         </p>
+
+        {post?.media?.src && (
+          <div className="mt-4 flex flex-col items-start mb-4">
+            {post.media.type === "image" ? (
+              <img
+                src={post.media.src}
+                alt="Selected"
+                className="max-w-full h-auto"
+              />
+            ) : (
+              <img
+                src={post.media.src}
+                alt="GIF"
+                className="max-w-full h-auto"
+              />
+            )}
+          </div>
+        )}
+
         <p
           className="font-inter text-sm blue_gradient cursor-pointer"
           onClick={() => handleTagClick && handleTagClick(post.tag)}
