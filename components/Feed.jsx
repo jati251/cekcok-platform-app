@@ -8,7 +8,7 @@ import { PromptSkeleton } from "./Skeletons/PromptCardSkeleton";
 const PromptCardList = ({ data, handleTagClick, status }) => {
   return (
     <div className="mt-16 prompt_layout">
-      {status ? (
+      {!status ? (
         [...Array(4)].map((_, index) => (
           <PromptSkeleton key={`skeleton_${index + 1}`} />
         ))
@@ -79,7 +79,7 @@ const Feed = () => {
     const regex = new RegExp(searchtext, "i");
     return allPosts.filter(
       (item) =>
-        regex.test(item.creator.username) ||
+        regex.test(item?.creator?.username ?? item?.author?.username) ||
         regex.test(item.tag) ||
         regex.test(item.prompt)
     );

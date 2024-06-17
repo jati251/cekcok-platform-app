@@ -16,23 +16,23 @@ const Footer = () => {
   const { data: session } = useSession();
   return (
     <footer
-      className={`sm:hidden fixed bottom-0 left-0 right-0 bg-black text-white py-4 flex justify-around transition-all ${
+      className={`p-2 sm:hidden fixed bottom-0 left-0 right-0 bg-black text-white py-4 flex justify-around transition-all ${
         session?.user ? "" : "transform translate-y-full opacity-0 duration-500"
       }`}
     >
       <Link href="/">
         <div className="text-gray-300 hover:text-white transition-colors duration-300">
-          <FontAwesomeIcon icon={faHome} size="lg" />
+          <FontAwesomeIcon icon={faHome} size="xl" />
         </div>
       </Link>
       <Link href="/create-prompt">
         <div className="text-gray-300 hover:text-white transition-colors duration-300">
-          <FontAwesomeIcon icon={faPlusCircle} size="lg" />
+          <FontAwesomeIcon icon={faPlusCircle} size="xl" />
         </div>
       </Link>
       <Link href="/chat">
         <div className="text-gray-300 hover:text-white transition-colors duration-300">
-          <FontAwesomeIcon icon={faComment} size="lg" />
+          <FontAwesomeIcon icon={faComment} size="xl" />
         </div>
       </Link>
       {session?.user && (

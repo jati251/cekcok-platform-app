@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <section className="w-full flex-center flex-col mt-20 mb-20">
       <h1 className="head_text text-center">
-        Temukan & Berbagi
+        Temu & Bagikan
         <br className="max-md:hidden" />
         <span className="orange_gradient text-center"> Wadah Untuk Bacot</span>
       </h1>
