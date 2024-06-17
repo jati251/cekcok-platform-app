@@ -1,6 +1,6 @@
 export const PromptSkeleton = () => {
   return (
-    <div className="prompt_card">
+    <div className="skeleton_card">
       <div className="animate-pulse flex space-x-4">
         <div className="rounded-full bg-gray-400 h-12 w-12"></div>
         <div className="flex-1 space-y-8 py-1">
