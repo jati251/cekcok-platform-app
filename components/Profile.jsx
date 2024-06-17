@@ -9,7 +9,7 @@ const Profile = ({ name, desc, data, handleEdit, handleDelete }) => {
     router.back();
   };
   return (
-    <section className="w-full mt-20">
+    <section className="w-full my-20">
       <button
         className="my-6 flex font-satoshi items-center gap-4 text-gray-700 hover:text-gray-800 transition-colors duration-200"
         onClick={handleBack}
