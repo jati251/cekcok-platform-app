@@ -8,21 +8,14 @@ import { PromptSkeleton } from "./Skeletons/PromptCardSkeleton";
 const PromptCardList = ({ data, handleTagClick, status }) => {
   return (
     <div className="mt-16 prompt_layout">
-      {status ? (
-        [...Array(4)].map((_, index) => (
-          <PromptSkeleton key={`skeleton_${index + 1}`} />
-        ))
-      ) : (
-        <>
-          {data.map((post, index) => (
-            <PromptCard
-              key={`${post._id}_${index}`}
-              post={post}
-              handleTagClick={handleTagClick}
-            />
-          ))}
-        </>
-      )}
+      {data.map((post, index) => (
+        <PromptCard
+          loading={status}
+          key={`${post._id}_${index}`}
+          post={post}
+          handleTagClick={handleTagClick}
+        />
+      ))}
     </div>
   );
 };
@@ -37,123 +30,67 @@ const Feed = () => {
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
 
-  const [hasMore, setHasMore] = useState(true);
-
   const [searchTimeout, setSearchTimeout] = useState(null);
   const [searchedResults, setSearchedResults] = useState([]);
 
   const fetchPosts = async () => {
-    const response = await fetch("/api/prompt", {
-      method: "POST",
-      body: JSON.stringify({
-        page,
-        limit: 10,
-      }),
-    });
-    const data = await response.json();
+    setLoading(true);
+    try {
+      const response = await fetch("/api/prompt", {
+        method: "POST",
+        body: JSON.stringify({
+          page,
+          limit: 10,
+        }),
+      });
+      const data = await response.json();
 
-    if (session?.user) {
-      const userId = session?.user.id;
-
-      data.prompts.forEach((post) => {
-        const userInteraction = post.userInteractions.find(
-          (interaction) => interaction.userId.toString() === userId
-        );
-        if (userInteraction) {
-          post.liked = userInteraction.action === "like";
-          post.hated = userInteraction.action === "hate";
-        } else {
+      if (session?.user) {
+        const userId = session.user.id;
+        data.prompts.forEach((post) => {
+          const userInteraction = post.userInteractions.find(
+            (interaction) => interaction.userId.toString() === userId
+          );
+          post.liked = userInteraction?.action === "like";
+          post.hated = userInteraction?.action === "hate";
+        });
+      } else {
+        data.prompts.forEach((post) => {
           post.liked = false;
           post.hated = false;
-        }
-      });
-    } else {
-      data.prompts.forEach((post) => {
-        post.liked = false;
-        post.hated = false;
-      });
-    }
+        });
+      }
 
-    setAllPosts(data.prompts);
-    setTotalPage(data.totalPages);
-    setLoading(false);
+      setAllPosts((prevPosts) => [...prevPosts, ...data.prompts]);
+      setTotalPage(data.totalPages);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    const loadPosts = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch("/api/prompt", {
-          method: "POST",
-          body: JSON.stringify({
-            page,
-            limit: 10,
-          }),
-        });
-        const data = await response.json();
-
-        if (session?.user) {
-          const userId = session?.user.id;
-
-          data.prompts.forEach((post) => {
-            const userInteraction = post.userInteractions.find(
-              (interaction) => interaction.userId.toString() === userId
-            );
-            if (userInteraction) {
-              post.liked = userInteraction.action === "like";
-              post.hated = userInteraction.action === "hate";
-            } else {
-              post.liked = false;
-              post.hated = false;
-            }
-          });
-        } else {
-          data.prompts.forEach((post) => {
-            post.liked = false;
-            post.hated = false;
-          });
-        }
-
-        setAllPosts((prevPosts) => [...prevPosts, ...data.prompts]);
-        setHasMore(data.prompts.length > 0);
-      } catch (error) {
-        console.error("Error fetching posts:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (hasMore && page <= totalPage) {
-      loadPosts();
+    if (status !== "loading" && page <= totalPage) {
+      fetchPosts();
     }
-  }, [page]); // Fetch data when page number changes
+  }, [page, status]);
+
+  const handleScroll = (e) => {
+    e.preventDefault();
+
+    if (
+      window.innerHeight + document.documentElement.scrollTop >=
+      document.documentElement.offsetHeight - 100
+    ) {
+      setPage((prevPage) => prevPage + 1); // Load next page when scrolled to near bottom
+    }
+  };
 
   useEffect(() => {
-    if (status !== "loading") {
-      fetchPosts(page);
-    }
-  }, [status]);
-
-  useEffect(() => {
-    const handleScroll = (e) => {
-      e.preventDefault();
-      const scrollHeight = document.documentElement.scrollHeight;
-      const scrollTop =
-        document.documentElement.scrollTop || document.body.scrollTop;
-      const clientHeight = document.documentElement.clientHeight;
-
-      if (
-        scrollHeight - scrollTop - clientHeight < 100 &&
-        !loading &&
-        hasMore
-      ) {
-        setPage((prevPage) => prevPage + 1); // Load next page when scrolled to near bottom
-      }
-    };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []); // Add scroll event listener on component mount
+  }, []);
 
   const filterPrompts = (searchtext) => {
     const regex = new RegExp(searchtext, "i");
