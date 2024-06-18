@@ -125,7 +125,7 @@ const PromptCard = ({
           isDarkMode ? "hover:bg-[#080808]" : "hover:bg-[#dbdbdb]"
         } transition-colors duration-300 ${
           useIsMobile()
-            ? `px-6 border-t ${
+            ? `px-4 border-t ${
                 isDarkMode ? "border-[#2f3336]" : "border-[#e3e3e3]"
               } py-4`
             : "prompt_card"
@@ -235,7 +235,11 @@ const PromptCard = ({
         </div>
 
         {session?.user.id === post?.creator?._id && pathName === "/profile" && (
-          <div className="mt-5 flex justify-around text-md gap-4 border-t border-gray-100 pt-3">
+          <div
+            className={`mt-5 flex justify-around text-md gap-4 border-t ${
+              isDarkMode ? "border-[#2f3336]" : "border-[#e3e3e3]"
+            } pt-3`}
+          >
             <p
               className="font-inter font-semibold green_gradient cursor-pointer"
               onClick={handleEdit}
@@ -250,6 +254,7 @@ const PromptCard = ({
             </p>
           </div>
         )}
+        
       </div>
       <CommentModal
         isDetail={isDetail}

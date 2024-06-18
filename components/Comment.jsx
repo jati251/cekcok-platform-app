@@ -81,7 +81,9 @@ const Comment = ({ comment, isDarkMode }) => {
     <div className="my-6 ">
       <div
         key={comment._id}
-        className="mb-4 pt-5 flex justify-start gap-6 border-t-2 border-t-gray-300 "
+        className={`mb-4 pt-5 flex justify-start gap-6 border-t ${
+          isDarkMode ? "border-[#2f3336]" : "border-[#e3e3e3]"
+        } `}
       >
         <div className=" flex items-start mt-4">
           <Image
