@@ -16,3 +16,25 @@ export function useIsMobile() {
 
   return isMobile;
 }
+
+export function useDarkMode() {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  const toggleDarkMode = () => {
+    setIsDarkMode((prevMode) => !prevMode);
+  };
+
+  useEffect(() => {
+    // Update body class based on dark mode state
+    if (isDarkMode) {
+      document.body.classList.add("dark-mode");
+    } else {
+      document.body.classList.remove("dark-mode");
+    }
+
+    // Optionally, store the current mode in localStorage
+    localStorage.setItem("darkMode", JSON.stringify(isDarkMode));
+  }, [isDarkMode]);
+
+  return [isDarkMode, toggleDarkMode];
+}

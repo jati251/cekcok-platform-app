@@ -79,7 +79,7 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
           <button
             type="button"
             onClick={() => setShowGifSelector(true)}
-            className=" px-5 py-1.5 bg-gray-200 rounded-full font-semibold font-satoshi text-sm text-gray-700"
+            className=" px-5 py-1.5 bg-gray-100 rounded-full font-semibold font-satoshi text-sm text-gray-700"
           >
             GIF
           </button>

@@ -5,22 +5,23 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { signIn, signOut, useSession, getProviders } from "next-auth/react";
 import { usePathname } from "next/navigation";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
+import { useDarkModeContext } from "@app/context/DarkModeProvider";
 
 const Nav = () => {
   const pathname = usePathname();
-  const hideNavAndFooter = ["/login", "/register", "/profile-setup",'/profile'].includes(
-    pathname
-  );
+  const hideNavAndFooter = ["/login", "/register"].includes(pathname);
 
   const { data: session, status } = useSession();
   const [providers, setProviders] = useState(null);
   const [toggleDropdown, setToggleDropdown] = useState(false);
-  const [isNavVisible, setIsNavVisible] = useState(true); // State to track navbar visibility
+  const [isNavVisible, setIsNavVisible] = useState(true);
+  const { isDarkMode, toggleDarkMode } = useDarkModeContext();
 
-  // Function to handle scroll event
   const handleScroll = () => {
     const currentScrollPos = window.pageYOffset;
-    const visible = currentScrollPos < 20; // Adjust as needed based on your design
+    const visible = currentScrollPos < 20;
     if (visible) setToggleDropdown(false);
     setIsNavVisible(visible);
   };
@@ -37,11 +38,22 @@ const Nav = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  if (hideNavAndFooter) return;
+  useEffect(() => {
+    const isDarkMode = JSON.parse(localStorage.getItem("darkMode"));
+    if (isDarkMode) {
+      document.body.classList.add("dark-mode");
+    } else {
+      document.body.classList.remove("dark-mode");
+    }
+  }, []);
+
+  if (hideNavAndFooter || pathname.includes("/profile")) return;
   if (status !== "loading")
     return (
       <nav
-        className={`fixed top-0 left-0 right-0 p-4 z-50 flex-between w-full mb-16 pt-1 bg-gradient-to-b from-gray-500 transition-all  ${
+        className={`fixed top-0 left-0 right-0 p-4 z-50 flex-between w-full mb-16 pt-1 ${
+          isDarkMode ? "" : "bg-gradient-to-b from-gray-500"
+        } transition-all  ${
           isNavVisible
             ? ""
             : "transform -translate-y-full opacity-0 duration-500"
@@ -114,28 +126,41 @@ const Nav = () => {
               />
 
               {toggleDropdown && (
-                <div className="dropdown shadow-xl">
+                <div
+                  className={`absolute right-0 top-full mt-3 w-full p-5 rounded-xl ${
+                    isDarkMode ? "bg-black" : "bg-white"
+                  } min-w-[210px] flex flex-col gap-2 justify-end items-end shadow-xl`}
+                >
                   <Link
                     href="/profile"
-                    className="dropdown_link"
+                    className="dropdown_link mb-1"
                     onClick={() => setToggleDropdown(false)}
                   >
                     Cek Profil Saya
                   </Link>
                   <Link
                     href="/create-prompt"
-                    className="dropdown_link"
+                    className="dropdown_link mb-1"
                     onClick={() => setToggleDropdown(false)}
                   >
                     Buat Bacotan Baru
                   </Link>
+                  <button
+                    className="dropdown_link cursor-pointer mb-1"
+                    onClick={toggleDarkMode}
+                  >
+                    <FontAwesomeIcon icon={!isDarkMode ? faSun : faMoon} />
+                    {isDarkMode ? " Mode Gelap" : " Mode terang"}
+                  </button>
                   <button
                     type="button"
                     onClick={() => {
                       setToggleDropdown(false);
                       signOut();
                     }}
-                    className="mt-5 w-full black_btn"
+                    className={`mt-5 w-full ${
+                      !isDarkMode ? "black_btn" : "white_btn"
+                    }`}
                   >
                     Keluar
                   </button>

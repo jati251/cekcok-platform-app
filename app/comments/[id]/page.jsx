@@ -1,5 +1,7 @@
 "use client";
 
+import { useDarkModeContext } from "@app/context/DarkModeProvider";
+import Loading from "@app/profile/loading";
 import Comment from "@components/Comment";
 import PromptCard from "@components/PromptCard";
 import { PromptSkeleton } from "@components/Skeletons/PromptCardSkeleton";
@@ -12,6 +14,7 @@ import { useEffect, useState } from "react";
 const CommentDetail = ({ params }) => {
   const router = useRouter();
   const { data: session, status } = useSession();
+  const { isDarkMode } = useDarkModeContext();
 
   const [post, setPost] = useState({
     _id: null,
@@ -25,6 +28,8 @@ const CommentDetail = ({ params }) => {
     liked: false,
   });
   const [comments, setComments] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   const promptId = params.id;
 
   const handleBack = () => {
@@ -34,6 +39,7 @@ const CommentDetail = ({ params }) => {
   useEffect(() => {
     const getPromptDetails = async () => {
       if (!promptId) return;
+      setLoading(true);
       try {
         const response = await fetch(`/api/prompt/${promptId}`);
         if (!response.ok) {
@@ -73,6 +79,7 @@ const CommentDetail = ({ params }) => {
           media: data.media,
           hated: data.hated,
         });
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching prompt details:", error);
       }
@@ -82,6 +89,7 @@ const CommentDetail = ({ params }) => {
   }, [promptId, status]);
 
   const fetchComments = async () => {
+    setLoading(true);
     try {
       const response = await fetch(`/api/comments/${promptId}`, {
         method: "POST",
@@ -109,6 +117,7 @@ const CommentDetail = ({ params }) => {
       }
 
       setComments(data);
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching comments:", error);
     }
@@ -120,9 +129,9 @@ const CommentDetail = ({ params }) => {
 
   return (
     <section className="feed mb-14">
-      <div className="mt-14">
+      <div className="mt-14 w-full px-4">
         <button
-          className="my-6 flex font-satoshi items-center gap-4 text-gray-700 hover:text-gray-800 transition-colors duration-200"
+          className="my-6 flex font-satoshi items-center gap-4 hover:text-gray-400 transition-colors duration-200"
           onClick={handleBack}
         >
           <FontAwesomeIcon icon={faArrowLeft} />
@@ -140,14 +149,17 @@ const CommentDetail = ({ params }) => {
           <PromptSkeleton />
         )}
         <div className="mt-6">
-          <h4 className="font-satoshi mb-10 font-semibold text-lg text-gray-900">
-            Komentar
-          </h4>
-          <div className=" mt-2 border-b-2 border-b-gray-300 mb-10">
+          <h4 className="font-satoshi mb-10 font-semibold text-lg">Komentar</h4>
+          <div className=" mt-2 border-b border-[#2f3336] mb-10">
             {comments.map((comment, i) => (
-              <Comment key={`${i + 1}_${comment._id}`} comment={comment} />
+              <Comment
+                isDarkMode={isDarkMode}
+                key={`${i + 1}_${comment._id}`}
+                comment={comment}
+              />
             ))}
           </div>
+          {loading && <Loading isDarkMode={isDarkMode} />}
         </div>
       </div>
     </section>

@@ -35,7 +35,7 @@ const ImageUploader = ({ onChange }) => {
         onChange={handleImageChange}
         className="hidden"
       />
-      <div className="px-5 py-1.5 bg-gray-200 rounded-full">
+      <div className="px-5 py-1.5 bg-gray-100 rounded-full">
         <FontAwesomeIcon icon={faImage} />
       </div>
     </label>

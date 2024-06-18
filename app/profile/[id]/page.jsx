@@ -1,33 +1,82 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
-
 import Profile from "@components/Profile";
+import { useSession } from "next-auth/react";
+import { useDarkModeContext } from "@app/context/DarkModeProvider";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const UserProfile = ({ params }) => {
-  const searchParams = useSearchParams();
-  const userName = searchParams.get("name");
-
   const [userPosts, setUserPosts] = useState([]);
+  const [profile, setProfile] = useState({});
+  const [loading, setLoading] = useState(true);
+  const { isDarkMode } = useDarkModeContext();
+  const router = useRouter();
+  const { status } = useSession();
+
+  const fetchProfile = async () => {
+    const response = await fetch(`/api/users/profile/${params?.id}`);
+    const responsePosts = await fetch(`/api/users/${params?.id}/posts`);
+    const dataPosts = await responsePosts.json();
+    const data = await response.json();
+
+    setUserPosts(dataPosts);
+    setProfile(data);
+    setLoading(false);
+  };
+
+  const handleBack = () => {
+    router.push("/");
+  };
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      const response = await fetch(`/api/users/${params?.id}/posts`);
-      const data = await response.json();
-
-      setUserPosts(data);
-    };
-
-    if (params?.id) fetchPosts();
+    if (params?.id) fetchProfile();
   }, [params.id]);
 
+  useEffect(() => {
+    if (status === "unauthenticated") router.push("/");
+  }, [status]);
+
   return (
-    <Profile
-      name={userName}
-      desc={`Selamat datang ke halaman profile ${userName}. Eksplor bacotannya si${userName} dan jadikan inspirasi dari imaginasinya`}
-      data={userPosts}
-    />
+    <div className="px-4 w-full">
+      
+      <div className=" flex justify-start w-full mt-4 ">
+        <button
+          className={`flex font-satoshi items-center gap-2 ${
+            isDarkMode
+              ? "text-gray-200 hover:text-gray-300 "
+              : "text-gray-700 hover:text-gray-800 "
+          } transition-colors duration-200`}
+          onClick={handleBack}
+        >
+          <FontAwesomeIcon icon={faArrowLeft} />
+          <span>Kembali</span>
+        </button>
+      </div>
+
+      <div className="absolute top-12 left-0 w-full h-[22vh]">
+        {!profile.background || profile.background === "" ? (
+          <div className="w-full h-[22vh] bg-gray-800"></div>
+        ) : (
+          <Image
+            src={profile?.background}
+            fill
+            style={{ objectFit: "cover" }}
+            alt="Background"
+          />
+        )}
+      </div>
+
+      <Profile
+        isDarkMode={isDarkMode}
+        profile={profile}
+        data={userPosts}
+        loading={loading}
+      />
+    </div>
   );
 };
 

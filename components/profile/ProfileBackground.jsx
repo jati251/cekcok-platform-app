@@ -93,14 +93,19 @@ const ProfileBackground = ({ src, loading, onImageChange }) => {
   return (
     <div
       onClick={handleClick}
-      className={`absolute mt-10 top-12 left-0 right-0 w-full h-[22vh]`}
+      className={`absolute mt-[3vh] top-12 left-0 right-0 w-full h-[22vh]`}
     >
       {!loading && (
         <>
           {!src ? (
             <div className=" h-[22vh] bg-gray-500"></div>
           ) : (
-            <Image src={src} layout="fill" objectFit="cover" alt="Background" />
+            <Image
+              src={src}
+              fill
+              style={{ objectFit: "cover" }}
+              alt="Background"
+            />
           )}
 
           {/* Container for icon */}
