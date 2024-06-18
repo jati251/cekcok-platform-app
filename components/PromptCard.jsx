@@ -75,7 +75,6 @@ const PromptCard = ({
       }
 
       const updatedPost = await response.json();
-
       setLikes(updatedPost.likes);
       setHates(updatedPost.hates);
     } catch (error) {
@@ -92,9 +91,12 @@ const PromptCard = ({
         setHated(true);
         setLiked(false);
         handleAction(action, newHates);
+        setLikes((val) => val - 1);
+        setHates(newHates);
       } else {
         setHated(false);
         handleAction(action, newHates);
+        setHates(newHates);
       }
     } else {
       const newLiked = !liked;
@@ -103,9 +105,12 @@ const PromptCard = ({
         setLiked(true);
         setHated(false);
         handleAction(action, newLikes);
+        setLikes(newLikes);
+        setHates((val) => val - 1);
       } else {
         setLiked(false);
         handleAction(action, newLikes);
+        setLikes(newLikes);
       }
     }
   };
@@ -114,7 +119,9 @@ const PromptCard = ({
     <>
       <div
         onClick={handleDetail}
-        className={`cursor-pointer ${useIsMobile() ? "px-2 border-t-2 border-gray-300 py-4" : "prompt_card"}`}
+        className={`cursor-pointer ${
+          useIsMobile() ? "px-2 border-t border-indigo-200 py-4" : "prompt_card"
+        }`}
       >
         <div className="flex justify-between items-start gap-5">
           <div className="flex-1 flex justify-start items-center gap-3 cursor-pointer">

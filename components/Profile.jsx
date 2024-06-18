@@ -55,7 +55,7 @@ const Profile = ({ data, handleEdit, handleDelete, profile, loading }) => {
         <CustomFieldName loading={loading} value={profile?.fullName ?? "-"} />
       </div>
       <div className="flex flex-col mt-2 ">
-        <p className="desc text-left">{profile?.bio}</p>
+        <p className=" break-all desc text-left mb-4">{profile?.bio}</p>
         <div className="flex gap-2 text-sm items-center">
           {profile?.location !== "" && <FontAwesomeIcon icon={faLocation} />}
           <CustomFieldName loading={loading} value={profile?.location ?? "-"} />

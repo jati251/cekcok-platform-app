@@ -1,18 +1,28 @@
 // pages/api/profile-setup.js
 
 import Profile from "@models/profile";
+import User from "@models/user";
 import { connectToDB } from "@utils/database";
 
 export const POST = async (req) => {
   try {
     await connectToDB();
-    const { fullName, bio, location, userId, interests } = await req.json();
+    const { fullName, bio, location, userId, image, background } =
+      await req.json();
+
+    if (image) {
+      await User.findOneAndUpdate(
+        { _id: userId },
+        { image }, // Update image field in User model
+        { new: true }
+      );
+    }
 
     let profile = await Profile.findOne({ userId });
     if (profile) {
       profile = await Profile.findOneAndUpdate(
         { userId },
-        { fullName, bio, location, interests, background },
+        { fullName, bio, location, background },
         { new: true }
       );
     }

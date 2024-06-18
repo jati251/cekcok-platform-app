@@ -1,0 +1,46 @@
+.inputWrapper {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.label {
+  position: absolute;
+  left: 10px;
+  top: 30px;
+  transform: translateY(-50%);
+  transition: all 0.3s ease-out;
+  pointer-events: none;
+  color: #999;
+}
+
+.labelActive {
+  transform: translateY(-125%) scale(0.8); /* Adjust translateY and scale to fit your design */
+  font-size: 0.8rem; /* Adjust font-size as needed */
+  color: #333;
+}
+
+.input {
+  width: 100%;
+  height: 60px;
+  padding: 35px 10px 15px 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: border-color 0.3s ease-out;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #666;
+}
+.counter {
+  position: absolute;
+  right: 10px;
+  top: 30px;
+  transform: translateY(-50%);
+  transition: all 0.3s ease-out;
+  pointer-events: none;
+  transform: translateY(-125%) scale(0.8); /* Adjust translateY and scale to fit your design */
+  font-size: 0.8rem; /* Adjust font-size as needed */
+  color: #333;
+}

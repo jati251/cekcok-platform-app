@@ -9,7 +9,7 @@ import { useSession } from "next-auth/react";
 const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [showGifSelector, setShowGifSelector] = useState(false);
-  const { data: status } = useSession();
+  const { status } = useSession();
 
   const handleMediaRemove = () => {
     setSelectedMedia(null);

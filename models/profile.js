@@ -27,10 +27,6 @@ const UserProfileSchema = new Schema({
     trim: true,
     default: "",
   },
-  interests: {
-    type: [String],
-    default: [],
-  },
   createdAt: {
     type: Date,
     default: Date.now,

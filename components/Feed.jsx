@@ -145,7 +145,7 @@ const Feed = () => {
   };
 
   return (
-    <section className="feed ">
+    <section className="feed px-4">
       <form className="relative w-full px-4 flex-center">
         <input
           type="text"
