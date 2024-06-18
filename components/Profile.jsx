@@ -8,19 +8,30 @@ import { faCalendar, faLocation } from "@fortawesome/free-solid-svg-icons";
 import { CustomFieldName } from "./CustomFieldName";
 import ZoomModal from "./modals/ZoomModal";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 
-const Profile = ({ data, handleEdit, handleDelete, profile, loading }) => {
+const Profile = ({
+  data,
+  handleEdit,
+  handleDelete,
+  profile,
+  loading,
+  isDarkMode,
+}) => {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { data: session } = useSession();
 
   return (
     <section className="relative w-full my-20">
+      
       {isModalOpen && (
         <ZoomModal
           src={profile?.userId?.image}
           onClose={() => setIsModalOpen(false)}
         />
       )}
+
       <div className="flex justify-between items-end relative z-10 mt-[18vh]">
         {loading ? (
           <div className=" flex space-x-4">
@@ -36,13 +47,16 @@ const Profile = ({ data, handleEdit, handleDelete, profile, loading }) => {
             onClick={() => setIsModalOpen(true)}
           />
         )}
-
-        <button
-          onClick={() => router.push("/profile/edit")}
-          className="px-5 py-1.5 text-sm bg-black rounded-full text-white h-fit mb-4"
-        >
-          Ubah Profile
-        </button>
+        {profile?.userId?._id === session?.user.id && session?.user && (
+          <button
+            onClick={() => router.push("/profile/edit")}
+            className={`px-5 py-1.5 text-sm ${
+              !isDarkMode ? "black_btn" : "white_btn"
+            } rounded-full  h-fit mb-4`}
+          >
+            Ubah Profile
+          </button>
+        )}
       </div>
 
       <div className="flex flex-col mt-2">
@@ -54,6 +68,7 @@ const Profile = ({ data, handleEdit, handleDelete, profile, loading }) => {
         </span>
         <CustomFieldName loading={loading} value={profile?.fullName ?? "-"} />
       </div>
+
       <div className="flex flex-col mt-2 ">
         <p className=" break-all desc text-left mb-4">{profile?.bio}</p>
         <div className="flex gap-2 text-sm items-center">
@@ -71,7 +86,7 @@ const Profile = ({ data, handleEdit, handleDelete, profile, loading }) => {
         </div>
       </div>
 
-      <div className="mt-2 prompt_layout">
+      <div className=" mt-2 prompt_layout">
         <p className="desc text-left font-semibold">Postingan</p>
         {data.length > 0 ? (
           data.map((post) => (

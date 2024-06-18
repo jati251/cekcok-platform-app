@@ -1,7 +1,7 @@
 // components/Footer.js
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -23,9 +23,24 @@ const Footer = () => {
 
   if (hideNavAndFooter) return;
 
+  const [isNavVisible, setIsNavVisible] = useState(true);
+
+  const handleScroll = () => {
+    const currentScrollPos = window.pageYOffset;
+    const visible = currentScrollPos < 20;
+    setIsNavVisible(visible);
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <footer
-      className={`p-2 sm:hidden fixed bottom-0 left-0 right-0 bg-black text-white py-4 flex justify-around transition-all ${
+      className={`p-2 sm:hidden fixed ${
+        !isNavVisible ? "opacity-50" : ""
+      } bottom-0 left-0 right-0 bg-black text-white py-4 flex justify-around transition-all ${
         session?.user ? "" : "transform translate-y-full opacity-0 duration-500"
       }`}
     >

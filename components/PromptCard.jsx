@@ -13,6 +13,7 @@ import {
 import CommentModal from "./modals/CommentModal";
 import TimeAgo from "./TimeAgo";
 import { useIsMobile } from "@utils/hooks";
+import { useDarkModeContext } from "@app/context/DarkModeProvider";
 
 const PromptCard = ({
   post,
@@ -34,6 +35,7 @@ const PromptCard = ({
   );
   const [liked, setLiked] = useState(post.liked || false);
   const [hated, setHated] = useState(post.hated || false);
+  const { isDarkMode } = useDarkModeContext();
 
   const handleProfileClick = (e) => {
     e.stopPropagation();
@@ -120,7 +122,13 @@ const PromptCard = ({
       <div
         onClick={handleDetail}
         className={`cursor-pointer ${
-          useIsMobile() ? "px-2 border-t border-indigo-200 py-4" : "prompt_card"
+          isDarkMode ? "hover:bg-[#080808]" : "hover:bg-[#dbdbdb]"
+        } transition-colors duration-300 ${
+          useIsMobile()
+            ? `px-6 border-t ${
+                isDarkMode ? "border-[#2f3336]" : "border-[#e3e3e3]"
+              } py-4`
+            : "prompt_card"
         }`}
       >
         <div className="flex justify-between items-start gap-5">
@@ -139,10 +147,10 @@ const PromptCard = ({
             />
 
             <div className="flex flex-col">
-              <h3 className="font-satoshi font-semibold text-gray-900">
+              <h3 className="font-satoshi font-semibold">
                 {post?.creator?.username ?? post?.author?.username ?? "Anonim"}
               </h3>
-              <p className="font-inter text-sm text-gray-500">
+              <p className="font-inter text-sm text-gray-400">
                 {post?.creator?.email ?? post?.author?.email}
               </p>
               {post.createdAt && <TimeAgo timestamp={post.createdAt} />}
@@ -164,9 +172,7 @@ const PromptCard = ({
           </div>
         </div>
 
-        <p className="my-4 font-satoshi break-all text-sm text-gray-700">
-          {post.prompt}
-        </p>
+        <p className="my-4 font-satoshi break-all text-sm ">{post.prompt}</p>
 
         {post?.media?.src && (
           <div className="mt-4 flex flex-col items-start mb-4">

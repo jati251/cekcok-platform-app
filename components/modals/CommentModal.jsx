@@ -6,6 +6,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import ImageUploader from "../ImageUploader";
 import GifPicker from "gif-picker-react";
+import CustomTextArea from "@components/input/CustomTextArea";
+import { useDarkModeContext } from "@app/context/DarkModeProvider";
 
 const CommentModal = ({
   isOpen,
@@ -19,6 +21,7 @@ const CommentModal = ({
   const [commentContent, setCommentContent] = useState("");
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [showGifSelector, setShowGifSelector] = useState(false);
+  const { isDarkMode, toggleDarkMode } = useDarkModeContext();
 
   const handleMediaRemove = () => {
     setSelectedMedia(null);
@@ -58,11 +61,26 @@ const CommentModal = ({
     }
   };
 
+  const handleClose = (e) => {
+    e.stopPropagation();
+    onClose();
+  };
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 p-2 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+    <div
+      onClick={handleClose}
+      className={`fixed inset-0 z-50 p-2 flex items-center justify-center ${
+        isDarkMode ? "bg-gray-900" : "bg-black"
+      } bg-opacity-50`}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className={`${
+          !isDarkMode ? "bg-white" : "bg-black"
+        } p-6 rounded-lg shadow-lg w-full max-w-md`}
+      >
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Berikan Komentar</h2>
           <button
@@ -75,25 +93,22 @@ const CommentModal = ({
             ✖
           </button>
         </div>
-        <div className="mb-4">
-          <textarea
-            className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-black"
-            rows="4"
-            value={commentContent}
-            onChange={(e) =>
-              commentContent.length <= 280 && setCommentContent(e.target.value)
-            }
-            placeholder="Tanggapan Anda..."
-          ></textarea>
-          <span className=" text-sm">{commentContent.length ?? 0}/280</span>
-        </div>
+        <CustomTextArea
+          isDarkMode={isDarkMode}
+          maxLength={280}
+          onChange={(e) =>
+            commentContent.length <= 280 && setCommentContent(e.target.value)
+          }
+          value={commentContent}
+          label={"Tanggapan Anda"}
+        />
 
         <div className="flex items-center gap-4">
           <ImageUploader onChange={handleImageUpload} />
           <button
             type="button"
             onClick={() => setShowGifSelector(true)}
-            className="px-5 font-satoshi font-semibold py-1.5 bg-gray-200 rounded-full text-sm text-gray-700"
+            className="px-5 font-satoshi font-semibold py-1.5 bg-gray-100 rounded-full text-sm text-gray-700"
           >
             GIF
           </button>
@@ -126,7 +141,7 @@ const CommentModal = ({
 
         {showGifSelector && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-            <div className="relative bg-white p-4 rounded shadow-md w-full max-w-md gap-2">
+            <div className="relative bg-gray-100 p-4 rounded shadow-md w-full max-w-md gap-2">
               <button
                 className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
                 onClick={() => setShowGifSelector(false)}
@@ -149,7 +164,9 @@ const CommentModal = ({
         <div className="mt-4 flex justify-end">
           <button
             onClick={handleAddComment}
-            className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors"
+            className={`${
+              isDarkMode ? "white_btn" : "black_btn"
+            }  px-4 py-2 rounded-md hover:bg-gray-500 transition-colors`}
           >
             Komentar
           </button>

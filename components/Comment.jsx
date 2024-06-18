@@ -11,7 +11,7 @@ import TimeAgo from "./TimeAgo";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
-const Comment = ({ comment }) => {
+const Comment = ({ comment, isDarkMode }) => {
   const { data: session } = useSession();
   const router = useRouter();
   const [likes, setLikes] = useState(comment?.likes ?? 0);
@@ -28,7 +28,7 @@ const Comment = ({ comment }) => {
     );
   };
 
-  const handleAction = async (action, value) => {
+  const handleAction = async (action) => {
     if (!comment._id) return alert("Missing PromptId!");
 
     try {
@@ -54,28 +54,26 @@ const Comment = ({ comment }) => {
   const handleLike = (e) => {
     e.stopPropagation();
     const newLiked = !liked;
-    const newLikes = newLiked ? likes + 1 : likes - 1;
     if (newLiked) {
       setLiked(true);
       setHated(false);
-      handleAction("like", newLikes);
+      handleAction("like");
     } else {
       setLiked(false);
-      handleAction("like", newLikes);
+      handleAction("like");
     }
   };
 
   const handleHate = (e) => {
     e.stopPropagation();
     const newHated = !hated;
-    const newHates = newHated ? hates + 1 : hates - 1;
     if (newHated) {
       setHated(true);
       setLiked(false);
-      handleAction("hate", newHates);
+      handleAction("hate");
     } else {
       setHated(false);
-      handleAction("hate", newHates);
+      handleAction("hate");
     }
   };
 
@@ -98,16 +96,14 @@ const Comment = ({ comment }) => {
         <div className="w-60">
           <div className="mb-2">
             <div className="flex gap-2 items-center">
-              <p className="font-satoshi text-md font-bold text-gray-700">
+              <p className="font-satoshi text-md font-bold ">
                 {comment.author.username}
               </p>
-              <p className="font-satoshi text-sm text-gray-700">
-                {comment.author.email}
-              </p>
+              <p className="font-satoshi text-sm ">{comment.author.email}</p>
             </div>
             {comment.createdAt && <TimeAgo timestamp={comment.createdAt} />}
           </div>
-
+          <p className="font-inter break-all text-sm ">{comment.content}</p>
           {comment?.media?.src && (
             <div className="mt-4 flex flex-col items-start mb-4">
               {comment.media.type === "image" ? (
@@ -125,9 +121,6 @@ const Comment = ({ comment }) => {
               )}
             </div>
           )}
-          <p className="font-inter break-all text-sm text-gray-600">
-            {comment.content}
-          </p>
         </div>
       </div>
       <div className="flex justify-start gap-6 items-center mt-3 px-4">

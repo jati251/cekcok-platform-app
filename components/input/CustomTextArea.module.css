@@ -10,13 +10,11 @@
   transform: translateY(-50%);
   transition: all 0.3s ease-out;
   pointer-events: none;
-  color: #999;
 }
 
 .labelActive {
   transform: translateY(-125%) scale(0.8); /* Adjust translateY and scale to fit your design */
   font-size: 0.8rem; /* Adjust font-size as needed */
-  color: #333;
 }
 
 .textarea {
@@ -44,5 +42,4 @@
   pointer-events: none;
   transform: translateY(-125%) scale(0.8); /* Adjust translateY and scale to fit your design */
   font-size: 0.8rem; /* Adjust font-size as needed */
-  color: #333;
 }

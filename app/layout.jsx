@@ -1,9 +1,8 @@
 import "@styles/globals.css";
-
-import Nav from "@components/Nav";
 import Provider from "@components/Provider";
-import Footer from "@components/Footer";
+import Nav from "@components/Nav";
 import { Suspense } from "react";
+import Footer from "@components/Footer";
 
 export const metadata = {
   title: "CekCok",
@@ -13,19 +12,13 @@ export const metadata = {
 export default function RootLayout({ children, session }) {
   return (
     <html lang="en">
-      <body>
-        <Provider session={session}>
-          <div className="main">
-            <div className="gradient" />
-          </div>
-
-          <main className="app">
-            <Nav />
-            <Suspense>{children}</Suspense>
-            <Footer />
-          </main>
-        </Provider>
-      </body>
+      <Provider session={session}>
+        <main className="app">
+          <Nav />
+          <Suspense>{children}</Suspense>
+          <Footer />
+        </main>
+      </Provider>
     </html>
   );
 }

@@ -6,10 +6,11 @@ import { useSession } from "next-auth/react";
 import { PromptSkeleton } from "./Skeletons/PromptCardSkeleton";
 import Loading from "@app/profile/loading";
 import { useIsMobile } from "@utils/hooks";
+import { useDarkModeContext } from "@app/context/DarkModeProvider";
 
 const PromptCardList = ({ data, handleTagClick, status }) => {
   return (
-    <div className={`my-16 prompt_layout ${useIsMobile() ? "w-full" : ""}`}>
+    <div className={`my-16  ${useIsMobile() ? "w-full" : "prompt_layout"}`}>
       {data.map((post, index) => (
         <PromptCard
           key={`${post._id}_${index}`}
@@ -32,6 +33,7 @@ const Feed = () => {
   const [hasMore, setHasMore] = useState(true);
   const [searchTimeout, setSearchTimeout] = useState(null);
   const [searchedResults, setSearchedResults] = useState([]);
+  const { isDarkMode, toggleDarkMode } = useDarkModeContext();
 
   const fetchPosts = async () => {
     setLoading(true);
@@ -145,15 +147,15 @@ const Feed = () => {
   };
 
   return (
-    <section className="feed px-4">
-      <form className="relative w-full px-4 flex-center">
+    <section className="feed ">
+      <form className="relative w-full px-8 flex-center">
         <input
           type="text"
           placeholder="Cari berdasarkan tag atau username"
           value={searchText}
           onChange={handleSearchChange}
           required
-          className="search_input peer"
+          className={`search_input peer ${isDarkMode ? "bg-[#0b0b0b]" : ""}`}
         />
       </form>
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styles from "./CustomTextArea.module.css";
 
-const CustomTextArea = ({ label, value, onChange }) => {
+const CustomTextArea = ({ label, value, onChange, maxLength, isDarkMode }) => {
   const [focused, setFocused] = useState(false);
 
   const handleFocus = () => {
@@ -14,7 +14,7 @@ const CustomTextArea = ({ label, value, onChange }) => {
 
   const handleChange = (event) => {
     const inputValue = event.target.value;
-    if (inputValue.length <= 160) {
+    if (inputValue.length <= maxLength) {
       onChange(event);
     }
   };
@@ -28,10 +28,10 @@ const CustomTextArea = ({ label, value, onChange }) => {
       >
         {label}
       </label>
-      <div className={styles.counter}>{`${value.length}/160`}</div>
+      <div className={styles.counter}>{`${value.length}/${maxLength}`}</div>
       <textarea
-        className={styles.textarea}
         value={value}
+        className={styles.textarea + ` theme-${isDarkMode ? "dark" : "white"}`}
         onChange={handleChange}
         onFocus={handleFocus}
         onBlur={handleBlur}

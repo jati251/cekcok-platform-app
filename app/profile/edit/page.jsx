@@ -15,9 +15,11 @@ import ProfileImage from "@components/profile/ProfileImage";
 import CustomInput from "@components/input/CustomInput";
 import CustomTextArea from "@components/input/CustomTextArea";
 import ProfileBackground from "@components/profile/ProfileBackground";
+import { useDarkModeContext } from "@app/context/DarkModeProvider";
 
 const EditProfile = () => {
   const { data: session, status } = useSession();
+  const { isDarkMode } = useDarkModeContext();
   const [profile, setProfile] = useState({
     userId: {
       image: "",
@@ -79,21 +81,27 @@ const EditProfile = () => {
 
   if (status !== "loading")
     return (
-      <section className="w-full max-w-fullflex-start flex-col mt-12 mb-20">
+      <section className="w-full max-w-fullflex-start flex-col mb-20 px-3">
         <form
           onSubmit={handleSubmit}
           className=" w-full max-w-2xl flex flex-col gap-7 glassmorphism"
         >
           <div className=" flex justify-between w-full mt-4 px-4">
             <button
-              className="flex font-satoshi items-center gap-2 text-gray-700 hover:text-gray-800 transition-colors duration-200"
+              className={`flex font-satoshi items-center gap-2 ${
+                isDarkMode
+                  ? "text-gray-200 hover:text-gray-300 "
+                  : "text-gray-700 hover:text-gray-800 "
+              } transition-colors duration-200`}
               onClick={handleBack}
             >
               <FontAwesomeIcon icon={faArrowLeft} />
               <span>Kembali</span>
             </button>
             <button
-              className="cursor-pointer px-5 py-1.5 bg-black rounded-full text-white"
+              className={`cursor-pointer px-5 py-1.5 rounded-full ${
+                !isDarkMode ? "black_btn" : "white_btn"
+              }`}
               type="submit"
             >
               Simpan
@@ -123,6 +131,7 @@ const EditProfile = () => {
           )}
           <div className="my-6 space-y-8">
             <CustomInput
+              isDarkMode={isDarkMode}
               label="Nama"
               value={profile?.fullName}
               onChange={(e) =>
@@ -130,11 +139,14 @@ const EditProfile = () => {
               }
             />
             <CustomTextArea
+              isDarkMode={isDarkMode}
+              maxLength={160}
               label="Bio"
               value={profile?.bio}
               onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
             />
             <CustomInput
+              isDarkMode={isDarkMode}
               label="Lokasi"
               value={profile?.location}
               onChange={(e) =>
