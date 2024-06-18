@@ -61,21 +61,24 @@ const Profile = ({
 
       <div className="flex flex-col mt-2">
         <span className="font-satoshi font-semibold text-xl">
+          <CustomFieldName loading={loading} value={profile?.fullName ?? "-"} />
+        </span>
+        <div className="text-gray-400">
+          {" "}
           <CustomFieldName
             loading={loading}
-            value={profile?.userId?.username ?? "-"}
+            value={"@" + profile?.userId?.username ?? "-"}
           />
-        </span>
-        <CustomFieldName loading={loading} value={profile?.fullName ?? "-"} />
+        </div>
       </div>
 
       <div className="flex flex-col mt-2 ">
         <p className=" break-all desc text-left mb-4">{profile?.bio}</p>
-        <div className="flex gap-2 text-sm items-center">
+        <div className="text-gray-400 flex gap-2 text-sm items-center">
           {profile?.location !== "" && <FontAwesomeIcon icon={faLocation} />}
           <CustomFieldName loading={loading} value={profile?.location ?? "-"} />
         </div>
-        <div className="flex gap-2 text-sm items-center">
+        <div className="flex gap-2 text-sm items-center text-gray-400">
           <FontAwesomeIcon icon={faCalendar} />
           <CustomFieldName
             loading={loading}
