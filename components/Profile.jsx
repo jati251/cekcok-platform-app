@@ -35,7 +35,7 @@ const Profile = ({
       <div className="flex justify-between items-end relative z-10 mt-[18vh]">
         {loading ? (
           <div className=" flex space-x-4">
-            <div className=" animate-pulse rounded-full bg-gray-500 h-[9vh] w-[9vh]"></div>
+            <div className=" rounded-full bg-gray-500 h-[9vh] w-[9vh]"></div>
           </div>
         ) : (
           <Image

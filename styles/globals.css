@@ -125,7 +125,7 @@ body {
 }
 
 .skeleton_card {
-  @apply flex-1 break-inside-avoid shadow-lg rounded-lg border border-gray-300 bg-white/20 bg-clip-padding p-6 pb-4 backdrop-blur-lg backdrop-filter md:w-[360px] w-[320px] h-fit;
+  @apply flex-1 break-inside-avoid shadow-lg rounded-lg border border-gray-300 bg-white/20 bg-clip-padding p-6 pb-4 backdrop-blur-lg backdrop-filter md:w-[360px] w-full px-4 h-fit;
 }
 
 .flex-center {

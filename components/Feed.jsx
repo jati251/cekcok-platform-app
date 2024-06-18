@@ -160,7 +160,7 @@ const Feed = () => {
       </form>
 
       {loading && allPosts.length === 0 && (
-        <div className="mt-16 prompt_layout">
+        <div className="mt-16 prompt_layout w-full px-6">
           <PromptSkeleton />
           <PromptSkeleton />
           <PromptSkeleton />
