@@ -8,7 +8,7 @@ import Loading from "@app/profile/loading";
 import { useIsMobile } from "@utils/hooks";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
 
-const PromptCardList = ({ data, handleTagClick, status }) => {
+const PromptCardList = ({ data, handleTagClick, status, isDarkMode }) => {
   return (
     <div className={`my-16  ${useIsMobile() ? "w-full" : "prompt_layout"}`}>
       {data.map((post, index) => (
@@ -18,7 +18,7 @@ const PromptCardList = ({ data, handleTagClick, status }) => {
           handleTagClick={handleTagClick}
         />
       ))}
-      {status && <Loading />}
+      {status && <Loading isDarkMode={isDarkMode} />}
     </div>
   );
 };
@@ -33,7 +33,7 @@ const Feed = () => {
   const [hasMore, setHasMore] = useState(true);
   const [searchTimeout, setSearchTimeout] = useState(null);
   const [searchedResults, setSearchedResults] = useState([]);
-  const { isDarkMode, toggleDarkMode } = useDarkModeContext();
+  const { isDarkMode } = useDarkModeContext();
 
   const fetchPosts = async () => {
     setLoading(true);
@@ -166,7 +166,6 @@ const Feed = () => {
           <PromptSkeleton />
           <PromptSkeleton />
           <PromptSkeleton />
-          <PromptSkeleton />
         </div>
       )}
 
@@ -177,6 +176,7 @@ const Feed = () => {
         />
       ) : (
         <PromptCardList
+          isDarkMode={isDarkMode}
           data={allPosts}
           status={loading}
           handleTagClick={handleTagClick}

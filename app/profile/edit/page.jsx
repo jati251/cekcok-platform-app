@@ -116,19 +116,15 @@ const EditProfile = () => {
               src={profile?.background}
             />
           </div>
-          {loading ? (
-            <div className=" flex space-x-4 mx-4 mt-[15vh]">
-              <div className="rounded-full bg-gray-500 h-[10vh] w-[10vh]"></div>
-            </div>
-          ) : (
-            <div className=" mt-[15vh]">
-              <ProfileImage
-                onImageChange={handleImage}
-                loading={loading}
-                src={profile?.userId.image}
-              />
-            </div>
-          )}
+
+          <div className=" mt-[15vh]">
+            <ProfileImage
+              onImageChange={handleImage}
+              loading={loading}
+              src={profile?.userId.image}
+            />
+          </div>
+
           <div className="my-6 space-y-8">
             <CustomInput
               isDarkMode={isDarkMode}

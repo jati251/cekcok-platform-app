@@ -73,12 +73,14 @@ const ProfileImage = ({ src, loading, onImageChange }) => {
   return (
     <div
       onClick={handleClick}
-      className={`relative group ${
-        loading ? "animate-pulse bg-gray-300 rounded-full" : ""
-      } `}
+      className="relative group"
       style={{ width: "80px", height: "80px" }} // Ensure the div maintains the same size as the Image
     >
-      {!loading && (
+      {loading ? (
+        <div className=" flex space-x-4">
+          <div className="animate-pulse rounded-full bg-gray-500 h-[10vh] w-[10vh]"></div>
+        </div>
+      ) : (
         <>
           <Image
             src={src} // Provide a default image path
