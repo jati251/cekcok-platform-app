@@ -29,7 +29,7 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
   }, [status]);
 
   return (
-    <section className="w-full max-w-full flex-start flex-col mt-20 mb-20">
+    <section className="w-full px-4 max-w-full flex-start flex-col mt-20 mb-20">
       <h1 className="head_text text-left">
         <span className="blue_gradient">{type} Bacot</span>
       </h1>
