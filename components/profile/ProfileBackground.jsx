@@ -95,7 +95,9 @@ const ProfileBackground = ({ src, loading, onImageChange }) => {
       onClick={handleClick}
       className={`absolute mt-[3vh] top-12 left-0 right-0 w-full h-[22vh]`}
     >
-      {!loading && (
+      {loading ? (
+        <div className=" h-[22vh] bg-gray-500"></div>
+      ) : (
         <>
           {!src ? (
             <div className=" h-[22vh] bg-gray-500"></div>

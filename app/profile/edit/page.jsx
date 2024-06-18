@@ -118,7 +118,7 @@ const EditProfile = () => {
           </div>
           {loading ? (
             <div className=" flex space-x-4 mx-4 mt-[15vh]">
-              <div className="rounded-full bg-gray-500 h-[9vh] w-[9vh]"></div>
+              <div className="rounded-full bg-gray-500 h-[10vh] w-[10vh]"></div>
             </div>
           ) : (
             <div className=" mt-[15vh]">
