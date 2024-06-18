@@ -127,43 +127,61 @@ const Nav = () => {
 
               {toggleDropdown && (
                 <div
-                  className={`absolute right-0 top-full mt-3 w-full p-5 rounded-xl ${
-                    isDarkMode ? "bg-black" : "bg-white"
-                  } min-w-[210px] flex flex-col gap-2 justify-end items-end shadow-xl`}
+                  onClick={() => setToggleDropdown(!toggleDropdown)}
+                  className={`fixed inset-0 z-50 p-2 flex justify-end ${
+                    isDarkMode ? "bg-gray-900" : "bg-black"
+                  } bg-opacity-50`}
                 >
-                  <Link
-                    href="/profile"
-                    className="dropdown_link mb-1"
-                    onClick={() => setToggleDropdown(false)}
+                  <div
+                    onClick={(e) => e.stopPropagation()}
+                    className={`top-full mt-[8vh] w-full p-5 rounded-xl ${
+                      isDarkMode ? "bg-black" : "bg-white"
+                    } min-w-[210px] max-w-[240px] max-h-[200px] flex flex-col gap-3 justify-end items-end shadow-xl`}
                   >
-                    Cek Profil Saya
-                  </Link>
-                  <Link
-                    href="/create-prompt"
-                    className="dropdown_link mb-1"
-                    onClick={() => setToggleDropdown(false)}
-                  >
-                    Buat Bacotan Baru
-                  </Link>
-                  <button
-                    className="dropdown_link cursor-pointer mb-1"
-                    onClick={toggleDarkMode}
-                  >
-                    <FontAwesomeIcon icon={!isDarkMode ? faSun : faMoon} />
-                    {isDarkMode ? " Mode Gelap" : " Mode terang"}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setToggleDropdown(false);
-                      signOut();
-                    }}
-                    className={`mt-5 w-full ${
-                      !isDarkMode ? "black_btn" : "white_btn"
-                    }`}
-                  >
-                    Keluar
-                  </button>
+                    <Link
+                      href="/profile"
+                      className="dropdown_link mb-1"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setToggleDropdown(false);
+                      }}
+                    >
+                      Cek Profil Saya
+                    </Link>
+                    <Link
+                      href="/create-prompt"
+                      className="dropdown_link mb-1"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setToggleDropdown(false);
+                      }}
+                    >
+                      Buat Bacotan Baru
+                    </Link>
+                    <button
+                      className="dropdown_link cursor-pointer mb-1"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleDarkMode(!isDarkMode);
+                      }}
+                    >
+                      <FontAwesomeIcon icon={!isDarkMode ? faSun : faMoon} />
+                      {isDarkMode ? " Mode Gelap" : " Mode terang"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setToggleDropdown(false);
+                        signOut();
+                      }}
+                      className={`mt-5 w-full ${
+                        !isDarkMode ? "black_btn" : "white_btn"
+                      }`}
+                    >
+                      Keluar
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
