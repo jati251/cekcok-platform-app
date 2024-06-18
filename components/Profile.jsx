@@ -9,6 +9,7 @@ import { CustomFieldName } from "./CustomFieldName";
 import ZoomModal from "./modals/ZoomModal";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
+import Loading from "@app/profile/loading";
 
 const Profile = ({
   data,
@@ -24,7 +25,6 @@ const Profile = ({
 
   return (
     <section className="relative w-full my-20">
-      
       {isModalOpen && (
         <ZoomModal
           src={profile?.userId?.image}
@@ -88,19 +88,25 @@ const Profile = ({
 
       <div className=" mt-2 prompt_layout">
         <p className="desc text-left font-semibold">Postingan</p>
-        {data.length > 0 ? (
-          data.map((post) => (
-            <PromptCard
-              key={post._id}
-              post={post}
-              handleEdit={() => handleEdit && handleEdit(post)}
-              handleDelete={() => handleDelete && handleDelete(post)}
-            />
-          ))
+        {loading ? (
+          <Loading isDarkMode={isDarkMode} />
         ) : (
-          <p className="text-center text-sm my-10 py-10">
-            Postingan masih kosong
-          </p>
+          <>
+            {data.length > 0 ? (
+              data.map((post) => (
+                <PromptCard
+                  key={post._id}
+                  post={post}
+                  handleEdit={() => handleEdit && handleEdit(post)}
+                  handleDelete={() => handleDelete && handleDelete(post)}
+                />
+              ))
+            ) : (
+              <p className="text-center text-sm my-10 py-10">
+                Postingan masih kosong
+              </p>
+            )}
+          </>
         )}
       </div>
     </section>

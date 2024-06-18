@@ -93,7 +93,7 @@ const PromptCard = ({
         setHated(true);
         setLiked(false);
         handleAction(action, newHates);
-        setLikes((val) => val - 1);
+        if (likes > 0) setLikes((val) => val - 1);
         setHates(newHates);
       } else {
         setHated(false);
@@ -108,7 +108,7 @@ const PromptCard = ({
         setHated(false);
         handleAction(action, newLikes);
         setLikes(newLikes);
-        setHates((val) => val - 1);
+        if (hates > 0) setHates((val) => val - 1);
       } else {
         setLiked(false);
         handleAction(action, newLikes);
