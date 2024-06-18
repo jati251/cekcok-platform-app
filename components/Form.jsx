@@ -56,8 +56,6 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
                 setPost({ ...post, prompt: e.target.value });
             }}
           />
-
-          <span className=" text-sm">{post.prompt.length ?? 0}/280</span>
         </div>
 
         <span className="font-satoshi font-semibold text-base text-gray-700">
