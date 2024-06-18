@@ -21,7 +21,23 @@ const MyProfile = () => {
   const fetchProfile = async () => {
     const response = await fetch(`/api/users/profile/${session?.user.id}`);
     const responsePosts = await fetch(`/api/users/${session?.user.id}/posts`);
+
     const dataPosts = await responsePosts.json();
+    if (session?.user) {
+      const userId = session.user.id;
+      dataPosts.forEach((post) => {
+        const userInteraction = post.userInteractions.find(
+          (interaction) => interaction.userId.toString() === userId
+        );
+        post.liked = userInteraction?.action === "like";
+        post.hated = userInteraction?.action === "hate";
+      });
+    } else {
+      dataPosts.forEach((post) => {
+        post.liked = false;
+        post.hated = false;
+      });
+    }
     const data = await response.json();
     setMyPosts(dataPosts);
     setProfile(data);
