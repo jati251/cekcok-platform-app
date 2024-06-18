@@ -28,7 +28,7 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
         <span className="blue_gradient">{type} Bacot</span>
       </h1>
       <p className="desc text-left max-w-md">
-        {type} and bagikan bacotanmu dengan dunia.
+        {type} dan bagikan bacotanmu dengan dunia.
       </p>
 
       <form
