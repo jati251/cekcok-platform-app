@@ -5,10 +5,11 @@ import PromptCard from "./PromptCard";
 import { useSession } from "next-auth/react";
 import { PromptSkeleton } from "./Skeletons/PromptCardSkeleton";
 import Loading from "@app/profile/loading";
+import { useIsMobile } from "@utils/hooks";
 
 const PromptCardList = ({ data, handleTagClick, status }) => {
   return (
-    <div className="my-16 prompt_layout">
+    <div className={`my-16 prompt_layout ${useIsMobile() ? "w-full" : ""}`}>
       {data.map((post, index) => (
         <PromptCard
           key={`${post._id}_${index}`}
@@ -144,8 +145,8 @@ const Feed = () => {
   };
 
   return (
-    <section className="feed">
-      <form className="relative w-full flex-center">
+    <section className="feed ">
+      <form className="relative w-full px-4 flex-center">
         <input
           type="text"
           placeholder="Cari berdasarkan tag atau username"

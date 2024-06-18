@@ -5,22 +5,33 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import Profile from "@components/Profile";
+import Image from "next/image";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const MyProfile = () => {
   const router = useRouter();
   const { data: session } = useSession();
 
   const [myPosts, setMyPosts] = useState([]);
+  const [profile, setProfile] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  const fetchProfile = async () => {
+    const response = await fetch(`/api/users/profile/${session?.user.id}`);
+    const responsePosts = await fetch(`/api/users/${session?.user.id}/posts`);
+    const dataPosts = await responsePosts.json();
+    const data = await response.json();
+    setMyPosts(dataPosts);
+    setProfile(data);
+    setLoading(false);
+  };
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      const response = await fetch(`/api/users/${session?.user.id}/posts`);
-      const data = await response.json();
-
-      setMyPosts(data);
-    };
-
-    if (session?.user.id) fetchPosts();
+    if (session?.user.id) {
+      setLoading(true);
+      fetchProfile();
+    }
   }, [session?.user.id]);
 
   const handleEdit = (post) => {
@@ -28,9 +39,7 @@ const MyProfile = () => {
   };
 
   const handleDelete = async (post) => {
-    const hasConfirmed = confirm(
-      "Apakah kamu yakin mau ngapus bacotan ini?"
-    );
+    const hasConfirmed = confirm("Apakah kamu yakin mau ngapus bacotan ini?");
 
     if (hasConfirmed) {
       try {
@@ -47,14 +56,46 @@ const MyProfile = () => {
     }
   };
 
+  const handleBack = () => {
+    router.push("/");
+  };
+
+  const { data: status } = useSession();
+  useEffect(() => {
+    if (status === "unauthenticated") router.push("/");
+  }, [status]);
+
   return (
-    <Profile
-      name="Saya"
-      desc={`Selamat datang ke halaman profilemu. Eksplor bacotanmu dan jadikan inspirasi dari kekuatan imaginasimu`}
-      data={myPosts}
-      handleEdit={handleEdit}
-      handleDelete={handleDelete}
-    />
+    <div className="px-6 w-full">
+      <div className=" flex justify-start w-full mt-4 ">
+        <button
+          className="flex font-satoshi items-center gap-2 text-gray-700 hover:text-gray-800 transition-colors duration-200"
+          onClick={handleBack}
+        >
+          <FontAwesomeIcon icon={faArrowLeft} />
+          <span>Kembali</span>
+        </button>
+      </div>
+      <div className="absolute top-12 left-0 w-full h-[22vh]">
+        {!profile.background || profile.background === "" ? (
+          <div className="w-full h-[22vh] bg-gray-500"></div>
+        ) : (
+          <Image
+            src={profile?.background}
+            layout="fill"
+            objectFit="cover"
+            alt="Background"
+          />
+        )}
+      </div>
+      <Profile
+        data={myPosts}
+        profile={profile}
+        handleEdit={handleEdit}
+        handleDelete={handleDelete}
+        loading={loading}
+      />
+    </div>
   );
 };
 

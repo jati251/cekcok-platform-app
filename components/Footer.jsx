@@ -12,9 +12,17 @@ import {
   faPlusCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { signOut, useSession } from "next-auth/react";
+import { usePathname } from "next/navigation";
 
 const Footer = () => {
   const { data: session } = useSession();
+  const pathname = usePathname();
+  const hideNavAndFooter = ["/login", "/register", "/profile-setup"].includes(
+    pathname
+  );
+
+  if (hideNavAndFooter) return;
+
   return (
     <footer
       className={`p-2 sm:hidden fixed bottom-0 left-0 right-0 bg-black text-white py-4 flex justify-around transition-all ${
