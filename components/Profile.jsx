@@ -67,7 +67,6 @@ const Profile = ({
           />
         </span>
         <div className="text-gray-400">
-          {" "}
           <CustomFieldName
             loading={loading}
             value={"@" + profile?.userId?.username ?? "-"}
@@ -94,26 +93,21 @@ const Profile = ({
 
       <div className=" mt-2 prompt_layout">
         <p className="desc text-left font-semibold">Postingan</p>
-        {loading ? (
-          <Loading isDarkMode={isDarkMode} />
-        ) : (
-          <>
-            {data.length > 0 ? (
-              data.map((post) => (
-                <PromptCard
-                  key={post._id}
-                  post={post}
-                  handleEdit={() => handleEdit && handleEdit(post)}
-                  handleDelete={() => handleDelete && handleDelete(post)}
-                />
-              ))
-            ) : (
-              <p className="text-center text-sm my-10 py-10">
-                Postingan masih kosong
-              </p>
-            )}
-          </>
+        {data.length > 0 &&
+          data.map((post) => (
+            <PromptCard
+              key={post._id}
+              post={post}
+              handleEdit={() => handleEdit && handleEdit(post)}
+              handleDelete={() => handleDelete && handleDelete(post)}
+            />
+          ))}
+        {data.length === 0 && !loading && (
+          <p className="text-center text-sm my-10 py-10">
+            Postingan masih kosong
+          </p>
         )}
+        {loading && <Loading isDarkMode={isDarkMode} />}
       </div>
     </section>
   );

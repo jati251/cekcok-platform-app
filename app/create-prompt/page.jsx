@@ -16,6 +16,14 @@ const CreatePrompt = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    if (post.prompt === "") {
+      alert("postingan masih kosong");
+    }
+
+    if (post.tag === "") {
+      alert("tag masih kosong");
+    }
+
     try {
       const response = await fetch("/api/prompt/new", {
         method: "POST",

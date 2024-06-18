@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import Profile from "@components/Profile";
@@ -16,40 +16,65 @@ const MyProfile = () => {
   const { isDarkMode } = useDarkModeContext();
   const [myPosts, setMyPosts] = useState([]);
   const [profile, setProfile] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const { status } = useSession();
 
   const fetchProfile = async () => {
-    const response = await fetch(`/api/users/profile/${session?.user.id}`);
-    const responsePosts = await fetch(`/api/users/${session?.user.id}/posts`);
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/users/profile/${session?.user.id}`);
+      const responsePosts = await fetch(
+        `/api/users/${session?.user.id}/posts`,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            page,
+            limit: 10,
+            userId: session?.user.id,
+          }),
+        }
+      );
 
-    const dataPosts = await responsePosts.json();
-    if (session?.user) {
-      const userId = session.user.id;
-      dataPosts.forEach((post) => {
-        const userInteraction = post.userInteractions.find(
-          (interaction) => interaction.userId.toString() === userId
-        );
-        post.liked = userInteraction?.action === "like";
-        post.hated = userInteraction?.action === "hate";
-      });
-    } else {
-      dataPosts.forEach((post) => {
-        post.liked = false;
-        post.hated = false;
-      });
+      const data = await response.json();
+      const dataPosts = await responsePosts.json();
+
+      if (session?.user) {
+        const userId = session.user.id;
+        dataPosts.prompts.forEach((post) => {
+          const userInteraction = post.userInteractions.find(
+            (interaction) => interaction.userId.toString() === userId
+          );
+          post.liked = userInteraction?.action === "like";
+          post.hated = userInteraction?.action === "hate";
+        });
+      } else {
+        dataPosts.prompts.forEach((post) => {
+          post.liked = false;
+          post.hated = false;
+        });
+      }
+
+      if (dataPosts.prompts.length > 0) {
+        if (myPosts.length === 0) setMyPosts(dataPosts.prompts);
+        else setMyPosts((prevPosts) => [...prevPosts, ...dataPosts.prompts]);
+        setHasMore(dataPosts.prompts.length > 0);
+      } else {
+        setHasMore(false);
+      }
+
+      setMyPosts(dataPosts.prompts);
+      setProfile(data);
+
+      setTotalPage(dataPosts.totalPages);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    } finally {
+      setLoading(false);
     }
-    const data = await response.json();
-    setMyPosts(dataPosts);
-    setProfile(data);
-    setLoading(false);
   };
-
-  useEffect(() => {
-    if (session?.user.id) {
-      setLoading(true);
-      fetchProfile();
-    }
-  }, [session?.user.id]);
 
   const handleEdit = (post) => {
     router.push(`/update-prompt?id=${post._id}`);
@@ -77,10 +102,48 @@ const MyProfile = () => {
     router.push("/");
   };
 
-  const { status } = useSession();
+  const handleScroll = useCallback(() => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop >=
+        document.documentElement.offsetHeight - 100 &&
+      !loading
+    ) {
+      setPage((prevPage) => prevPage + 1);
+    }
+  }, [loading, hasMore]);
+
   useEffect(() => {
     if (status === "unauthenticated") router.push("/");
   }, [status]);
+
+  useEffect(() => {
+    if (session?.user.id) {
+      if (
+        (!loading && page <= totalPage && status !== "loading") ||
+        (myPosts.length === 0 && !loading)
+      )
+        fetchProfile();
+    }
+  }, [session?.user.id, page]);
+
+  useEffect(() => {
+    const debounceScroll = debounce(handleScroll, 200);
+
+    window.addEventListener("scroll", debounceScroll);
+    return () => window.removeEventListener("scroll", debounceScroll);
+  }, [handleScroll]);
+
+  const debounce = (func, wait) => {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  };
 
   return (
     <div className="px-4 w-full">
