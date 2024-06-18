@@ -65,7 +65,6 @@ const MyProfile = () => {
         setHasMore(false);
       }
 
-      setMyPosts(dataPosts.prompts);
       setProfile(data);
 
       setTotalPage(dataPosts.totalPages);

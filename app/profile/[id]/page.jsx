@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Profile from "@components/Profile";
 import { useSession } from "next-auth/react";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
@@ -12,44 +12,105 @@ import { useRouter } from "next/navigation";
 const UserProfile = ({ params }) => {
   const [userPosts, setUserPosts] = useState([]);
   const [profile, setProfile] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const { isDarkMode } = useDarkModeContext();
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
   const router = useRouter();
   const { data: session, status } = useSession();
 
   const fetchProfile = async () => {
-    const response = await fetch(`/api/users/profile/${params?.id}`);
-    const responsePosts = await fetch(`/api/users/${params?.id}/posts`);
-    const dataPosts = await responsePosts.json();
-    if (session?.user) {
-      const userId = session.user.id;
-      dataPosts.forEach((post) => {
-        const userInteraction = post.userInteractions.find(
-          (interaction) => interaction.userId.toString() === userId
-        );
-        post.liked = userInteraction?.action === "like";
-        post.hated = userInteraction?.action === "hate";
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/users/profile/${params?.id}`);
+      const responsePosts = await fetch(`/api/users/${params?.id}/posts`, {
+        method: "POST",
+        body: JSON.stringify({
+          page,
+          limit: 10,
+          userId: params.id,
+        }),
       });
-    } else {
-      dataPosts.forEach((post) => {
-        post.liked = false;
-        post.hated = false;
-      });
-    }
-    const data = await response.json();
 
-    setUserPosts(dataPosts);
-    setProfile(data);
-    setLoading(false);
+      const data = await response.json();
+      const dataPosts = await responsePosts.json();
+
+      if (session?.user) {
+        const userId = session.user.id;
+        dataPosts.prompts.forEach((post) => {
+          const userInteraction = post.userInteractions.find(
+            (interaction) => interaction.userId.toString() === userId
+          );
+          post.liked = userInteraction?.action === "like";
+          post.hated = userInteraction?.action === "hate";
+        });
+      } else {
+        dataPosts.prompts.forEach((post) => {
+          post.liked = false;
+          post.hated = false;
+        });
+      }
+
+      if (dataPosts.prompts.length > 0) {
+        if (userPosts.length === 0) setUserPosts(dataPosts.prompts);
+        else setUserPosts((prevPosts) => [...prevPosts, ...dataPosts.prompts]);
+        setHasMore(dataPosts.prompts.length > 0);
+      } else {
+        setHasMore(false);
+      }
+
+      setProfile(data);
+
+      setTotalPage(dataPosts.totalPages);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleBack = () => {
     router.push("/");
   };
+  const handleScroll = useCallback(() => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop >=
+        document.documentElement.offsetHeight - 100 &&
+      !loading
+    ) {
+      setPage((prevPage) => prevPage + 1);
+    }
+  }, [loading, hasMore]);
 
   useEffect(() => {
-    if (params?.id) fetchProfile();
-  }, [params.id]);
+    if (session?.user.id) {
+      if (
+        (!loading && page <= totalPage && status !== "loading") ||
+        (userPosts.length === 0 && !loading)
+      )
+        fetchProfile();
+    }
+  }, [session?.user.id, page]);
+
+  useEffect(() => {
+    const debounceScroll = debounce(handleScroll, 200);
+
+    window.addEventListener("scroll", debounceScroll);
+    return () => window.removeEventListener("scroll", debounceScroll);
+  }, [handleScroll]);
+
+  const debounce = (func, wait) => {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  };
 
   return (
     <div className="px-4 w-full">
