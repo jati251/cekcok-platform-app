@@ -5,11 +5,15 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import ImageUploader from "./ImageUploader";
 import { useSession } from "next-auth/react";
+import CustomInput from "./input/CustomInput";
+import { useDarkModeContext } from "@app/context/DarkModeProvider";
+import CustomTextArea from "./input/CustomTextArea";
 
 const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [showGifSelector, setShowGifSelector] = useState(false);
   const { status } = useSession();
+  const { isDarkMode } = useDarkModeContext();
 
   const handleMediaRemove = () => {
     setSelectedMedia(null);
@@ -42,37 +46,32 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
         className="mt-4 w-full max-w-2xl flex flex-col gap-7 glassmorphism"
       >
         <div>
-          <label>
-            <textarea
-              value={post.prompt}
-              onChange={(e) => {
-                if (post.prompt.length < 280)
-                  setPost({ ...post, prompt: e.target.value });
-              }}
-              placeholder="Tuliskan bacotanmu disini"
-              required
-              className="form_textarea"
-            />
-          </label>
+          <CustomTextArea
+            isDarkMode={isDarkMode}
+            maxLength={280}
+            label="Tuliskan bacotanmu disini"
+            value={post.prompt}
+            onChange={(e) => {
+              if (post.prompt.length < 280)
+                setPost({ ...post, prompt: e.target.value });
+            }}
+          />
+
           <span className=" text-sm">{post.prompt.length ?? 0}/280</span>
         </div>
 
-        <label>
-          <span className="font-satoshi font-semibold text-base text-gray-700">
-            Hastag{" "}
-            <span className="font-normal">
-              (#product, #webdevelopment, #idea, etc.)
-            </span>
+        <span className="font-satoshi font-semibold text-base text-gray-700">
+          Hastag{" "}
+          <span className="font-normal mb-4">
+            (#product, #webdevelopment, #idea, etc.)
           </span>
-          <input
-            value={post.tag}
-            onChange={(e) => setPost({ ...post, tag: e.target.value })}
-            type="text"
-            placeholder="#Tag"
-            required
-            className="form_input"
-          />
-        </label>
+        </span>
+        <CustomInput
+          value={post.tag}
+          label={"Hashtag"}
+          isDarkMode={isDarkMode}
+          onChange={(e) => setPost({ ...post, tag: e.target.value })}
+        />
 
         <div className="flex items-center gap-4">
           <ImageUploader onChange={handleImageUpload} />
@@ -141,7 +140,9 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
           <button
             type="submit"
             disabled={submitting}
-            className="px-5 py-1.5 text-sm bg-black rounded-full text-white"
+            className={`px-5 py-1.5 text-sm rounded-full ${
+              !isDarkMode ? "black_btn" : "white_btn"
+            }`}
           >
             {submitting ? `${type}in...` : type}
           </button>
