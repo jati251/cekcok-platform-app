@@ -13,7 +13,7 @@ export const POST = async (req) => {
     if (image) {
       await User.findOneAndUpdate(
         { _id: userId },
-        { image }, // Update image field in User model
+        { image, fullName }, // Update image field in User model
         { new: true }
       );
     }
@@ -22,7 +22,7 @@ export const POST = async (req) => {
     if (profile) {
       profile = await Profile.findOneAndUpdate(
         { userId },
-        { fullName, bio, location, background },
+        { bio, location, background },
         { new: true }
       );
     }

@@ -147,9 +147,18 @@ const PromptCard = ({
             />
 
             <div className="flex flex-col">
-              <h3 className="font-satoshi font-semibold">
-                {post?.creator?.username ?? post?.author?.username ?? "Anonim"}
-              </h3>
+              <div className="flex gap-2 items-center">
+                <h3 className="font-satoshi font-semibold">
+                  {post?.creator?.fullName ??
+                    post?.author?.fullName ??
+                    "Anonim"}
+                </h3>
+                <span className="font-satoshi text-gray-400 text-sm">
+                  {"@" + post?.creator?.username ??
+                    post?.author?.username ??
+                    "Anonim"}
+                </span>
+              </div>
               {post.createdAt && <TimeAgo timestamp={post.createdAt} />}
             </div>
           </div>
@@ -251,7 +260,6 @@ const PromptCard = ({
             </p>
           </div>
         )}
-        
       </div>
       <CommentModal
         isDetail={isDetail}

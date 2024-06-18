@@ -7,11 +7,6 @@ const UserProfileSchema = new Schema({
     required: true,
     unique: true,
   },
-  fullName: {
-    type: String,
-    trim: true,
-    default: "",
-  },
   background: {
     type: String,
     default: "",

@@ -99,9 +99,11 @@ const Comment = ({ comment, isDarkMode }) => {
           <div className="mb-2">
             <div className="flex gap-2 items-center">
               <p className="font-satoshi text-md font-bold ">
-                {comment.author.username}
+                {comment.author.fullName}
               </p>
-              <p className="font-satoshi text-sm ">{comment.author.email}</p>
+              <p className="font-satoshi text-sm ">
+                {"@" + comment.author.username}
+              </p>
             </div>
             {comment.createdAt && <TimeAgo timestamp={comment.createdAt} />}
           </div>

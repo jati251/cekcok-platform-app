@@ -61,7 +61,10 @@ const Profile = ({
 
       <div className="flex flex-col mt-2">
         <span className="font-satoshi font-semibold text-xl">
-          <CustomFieldName loading={loading} value={profile?.fullName ?? "-"} />
+          <CustomFieldName
+            loading={loading}
+            value={profile?.userId?.fullName ?? "-"}
+          />
         </span>
         <div className="text-gray-400">
           {" "}

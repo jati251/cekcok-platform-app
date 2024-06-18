@@ -23,8 +23,8 @@ const EditProfile = () => {
   const [profile, setProfile] = useState({
     userId: {
       image: "",
+      fullName: "",
     },
-    fullName: "",
     background: "",
     bio: "",
     location: "",
@@ -129,9 +129,12 @@ const EditProfile = () => {
             <CustomInput
               isDarkMode={isDarkMode}
               label="Nama"
-              value={profile?.fullName}
+              value={profile?.userId.fullName}
               onChange={(e) =>
-                setProfile({ ...profile, fullName: e.target.value })
+                setProfile({
+                  ...profile,
+                  userId: { ...profile.userId, fullName: e.target.value },
+                })
               }
             />
             <CustomTextArea
