@@ -60,7 +60,7 @@ const PromptCard = ({
     setTimeout(() => setCopied(false), 3000);
   };
 
-  const handleAction = async (action, value) => {
+  const handleAction = async (action) => {
     if (!post._id) return alert("Missing PromptId!");
 
     try {
@@ -92,13 +92,13 @@ const PromptCard = ({
       if (newHated) {
         setHated(true);
         setLiked(false);
-        handleAction(action, newHates);
-        if (likes > 0) setLikes((val) => val - 1);
+        handleAction(action);
         setHates(newHates);
       } else {
         setHated(false);
-        handleAction(action, newHates);
+        handleAction(action);
         setHates(newHates);
+        if (likes > 0) setLikes((val) => val - 1);
       }
     } else {
       const newLiked = !liked;
@@ -106,13 +106,13 @@ const PromptCard = ({
       if (newLiked) {
         setLiked(true);
         setHated(false);
-        handleAction(action, newLikes);
         setLikes(newLikes);
-        if (hates > 0) setHates((val) => val - 1);
+        handleAction(action);
       } else {
         setLiked(false);
-        handleAction(action, newLikes);
         setLikes(newLikes);
+        handleAction(action);
+        if (hates > 0) setHates((val) => val - 1);
       }
     }
   };
