@@ -1,98 +1,146 @@
 // pages/profile-setup.js
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import {
+  faArrowLeft,
+  faCalendar,
+  faPen,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ProfileImage from "@components/profile/ProfileImage";
+import CustomInput from "@components/input/CustomInput";
+import CustomTextArea from "@components/input/CustomTextArea";
+import ProfileBackground from "@components/profile/ProfileBackground";
 
 const EditProfile = () => {
   const { data: session, status } = useSession();
+  const [profile, setProfile] = useState({
+    userId: {
+      image: "",
+    },
+    fullName: "",
+    background: "",
+    bio: "",
+    location: "",
+    interests: [],
+  });
+  const [loading, setLoading] = useState(true);
 
-  const [fullName, setFullName] = useState("");
-  const [bio, setBio] = useState("");
-  const [location, setLocation] = useState("");
-  const router = useRouter();
-
-  const handleSignOut = () => {
-    signOut();
-    router.push("/");
+  const fetchProfile = async () => {
+    const response = await fetch(`/api/users/profile/${session?.user.id}`);
+    const data = await response.json();
+    setProfile(data);
+    setLoading(false);
   };
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const res = await fetch("/api/user-profile", {
+    const { bio, fullName, location, background } = profile;
+    const res = await fetch("/api/users/profile/edit", {
       method: "POST",
       body: JSON.stringify({
         userId: session.user.id,
-
         bio,
         fullName,
         location,
+        background,
+        image: profile.userId.image,
       }),
     });
 
     if (res.ok) {
-      router.push("/");
+      router.push("/profile");
     }
   };
+
+  const handleImage = (val) => {
+    setProfile({ ...profile, userId: { ...profile.userId, image: val } });
+  };
+
+  const handleBack = () => {
+    router.back();
+  };
+
+  useEffect(() => {
+    if (session?.user.id) {
+      setLoading(true);
+      fetchProfile();
+    }
+  }, [session?.user.id]);
+
+  useEffect(() => {
+    if (status === "unauthenticated") router.push("/");
+  }, [status]);
+
   if (status !== "loading")
     return (
-      <section className="w-full max-w-full flex-start flex-col mt-20 mb-20">
-        <h1 className="head_text text-left">
-          <span className="blue_gradient">Lengkapi Profilemu</span>
-        </h1>
-        <p className="desc text-left max-w-md">
-          bagikan bacotanmu dengan dunia.
-        </p>
-
+      <section className="w-full max-w-fullflex-start flex-col mt-12 mb-20">
         <form
           onSubmit={handleSubmit}
           className=" w-full max-w-2xl flex flex-col gap-7 glassmorphism"
         >
-          <div className="my-10 space-y-8">
-            <div className="flex flex-col">
-              <label>Nama</label>
-              <input
-                className="form_input"
-                type="text"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                required
-              />
-            </div>
-            <div className="flex flex-col">
-              <label>Lokasi</label>
-              <input
-                className="form_input"
-                type="text"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                required
-              />
-            </div>
-            <div className="flex flex-col">
-              <label>Bio</label>
-              <textarea
-                className="form_textarea"
-                value={bio}
-                onChange={(e) => setBio(e.target.value)}
-              ></textarea>
-            </div>
-          </div>
-          <div className="flex justify-around">
+          <div className=" flex justify-between w-full mt-4 px-4">
             <button
-              className="px-5 py-1.5 bg-black rounded-full text-white"
+              className="flex font-satoshi items-center gap-2 text-gray-700 hover:text-gray-800 transition-colors duration-200"
+              onClick={handleBack}
+            >
+              <FontAwesomeIcon icon={faArrowLeft} />
+              <span>Kembali</span>
+            </button>
+            <button
+              className="cursor-pointer px-5 py-1.5 bg-black rounded-full text-white"
               type="submit"
             >
-              Buat
+              Simpan
             </button>
-            <button
-              className="px-5 py-1.5 bg-black rounded-full text-white"
-              onClick={handleSignOut}
-            >
-              keluar
-            </button>
+          </div>
+          <div className="w-full">
+            <ProfileBackground
+              onImageChange={(val) =>
+                setProfile({ ...profile, background: val })
+              }
+              loading={loading}
+              src={profile?.background}
+            />
+          </div>
+          {loading ? (
+            <div className=" flex space-x-4 mx-4 mt-[15vh]">
+              <div className="rounded-full bg-gray-500 h-[9vh] w-[9vh]"></div>
+            </div>
+          ) : (
+            <div className=" mt-[15vh]">
+              <ProfileImage
+                onImageChange={handleImage}
+                loading={loading}
+                src={profile?.userId.image}
+              />
+            </div>
+          )}
+          <div className="my-6 space-y-8">
+            <CustomInput
+              label="Nama"
+              value={profile?.fullName}
+              onChange={(e) =>
+                setProfile({ ...profile, fullName: e.target.value })
+              }
+            />
+            <CustomTextArea
+              label="Bio"
+              value={profile?.bio}
+              onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
+            />
+            <CustomInput
+              label="Lokasi"
+              value={profile?.location}
+              onChange={(e) =>
+                setProfile({ ...profile, location: e.target.value })
+              }
+            />
           </div>
         </form>
       </section>

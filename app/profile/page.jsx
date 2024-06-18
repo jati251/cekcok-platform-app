@@ -60,7 +60,7 @@ const MyProfile = () => {
     router.push("/");
   };
 
-  const { data: status } = useSession();
+  const { status } = useSession();
   useEffect(() => {
     if (status === "unauthenticated") router.push("/");
   }, [status]);
