@@ -195,7 +195,7 @@ const Nav = () => {
                     onClick={() => {
                       signIn(provider.id);
                     }}
-                    className="black_btn"
+                    className={isDarkMode ? "white_btn" : "black_btn"}
                   >
                     Masuk
                   </button>
