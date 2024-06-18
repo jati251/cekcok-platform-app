@@ -78,7 +78,7 @@ const ProfileImage = ({ src, loading, onImageChange }) => {
     >
       {loading ? (
         <div className=" flex space-x-4">
-          <div className="animate-pulse rounded-full bg-gray-500 h-[10vh] w-[10vh]"></div>
+          <div className="rounded-full bg-gray-500 h-[80px] w-[80px]"></div>
         </div>
       ) : (
         <>

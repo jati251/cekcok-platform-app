@@ -116,7 +116,7 @@ body {
 }
 
 .dropdown_link {
-  @apply text-sm font-inter hover:text-gray-500 font-medium;
+  @apply font-inter hover:text-gray-500 font-medium;
 }
 
 /* PromptCard Component */

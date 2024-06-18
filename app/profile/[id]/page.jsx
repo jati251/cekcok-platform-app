@@ -15,7 +15,7 @@ const UserProfile = ({ params }) => {
   const [loading, setLoading] = useState(true);
   const { isDarkMode } = useDarkModeContext();
   const router = useRouter();
-  const { status } = useSession();
+  const { data: session, status } = useSession();
 
   const fetchProfile = async () => {
     const response = await fetch(`/api/users/profile/${params?.id}`);
@@ -50,10 +50,6 @@ const UserProfile = ({ params }) => {
   useEffect(() => {
     if (params?.id) fetchProfile();
   }, [params.id]);
-
-  useEffect(() => {
-    if (status === "unauthenticated") router.push("/");
-  }, [status]);
 
   return (
     <div className="px-4 w-full">

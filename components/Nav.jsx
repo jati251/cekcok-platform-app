@@ -136,7 +136,7 @@ const Nav = () => {
                     onClick={(e) => e.stopPropagation()}
                     className={`top-full mt-[8vh] w-full p-5 rounded-xl ${
                       isDarkMode ? "bg-black" : "bg-white"
-                    } min-w-[210px] max-w-[240px] max-h-[200px] flex flex-col gap-3 justify-end items-end shadow-xl`}
+                    } min-w-[210px] max-w-[240px] max-h-[220px] flex flex-col gap-3 justify-end items-end shadow-xl`}
                   >
                     <Link
                       href="/profile"

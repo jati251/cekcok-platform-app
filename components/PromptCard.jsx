@@ -150,9 +150,6 @@ const PromptCard = ({
               <h3 className="font-satoshi font-semibold">
                 {post?.creator?.username ?? post?.author?.username ?? "Anonim"}
               </h3>
-              <p className="font-inter text-sm text-gray-400">
-                {post?.creator?.email ?? post?.author?.email}
-              </p>
               {post.createdAt && <TimeAgo timestamp={post.createdAt} />}
             </div>
           </div>
