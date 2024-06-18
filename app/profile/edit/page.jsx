@@ -6,7 +6,7 @@ import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 const EditProfile = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   const [fullName, setFullName] = useState("");
   const [bio, setBio] = useState("");
@@ -36,65 +36,67 @@ const EditProfile = () => {
       router.push("/");
     }
   };
+  if (status !== "loading")
+    return (
+      <section className="w-full max-w-full flex-start flex-col mt-20 mb-20">
+        <h1 className="head_text text-left">
+          <span className="blue_gradient">Lengkapi Profilemu</span>
+        </h1>
+        <p className="desc text-left max-w-md">
+          bagikan bacotanmu dengan dunia.
+        </p>
 
-  return (
-    <section className="w-full max-w-full flex-start flex-col mt-20 mb-20">
-      <h1 className="head_text text-left">
-        <span className="blue_gradient">Lengkapi Profilemu</span>
-      </h1>
-      <p className="desc text-left max-w-md">bagikan bacotanmu dengan dunia.</p>
-
-      <form
-        onSubmit={handleSubmit}
-        className=" w-full max-w-2xl flex flex-col gap-7 glassmorphism"
-      >
-        <div className="my-10 space-y-8">
-          <div className="flex flex-col">
-            <label>Nama</label>
-            <input
-              className="form_input"
-              type="text"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              required
-            />
+        <form
+          onSubmit={handleSubmit}
+          className=" w-full max-w-2xl flex flex-col gap-7 glassmorphism"
+        >
+          <div className="my-10 space-y-8">
+            <div className="flex flex-col">
+              <label>Nama</label>
+              <input
+                className="form_input"
+                type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                required
+              />
+            </div>
+            <div className="flex flex-col">
+              <label>Lokasi</label>
+              <input
+                className="form_input"
+                type="text"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                required
+              />
+            </div>
+            <div className="flex flex-col">
+              <label>Bio</label>
+              <textarea
+                className="form_textarea"
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+              ></textarea>
+            </div>
           </div>
-          <div className="flex flex-col">
-            <label>Lokasi</label>
-            <input
-              className="form_input"
-              type="text"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              required
-            />
+          <div className="flex justify-around">
+            <button
+              className="px-5 py-1.5 bg-black rounded-full text-white"
+              type="submit"
+            >
+              Buat
+            </button>
+            <button
+              className="px-5 py-1.5 bg-black rounded-full text-white"
+              onClick={handleSignOut}
+            >
+              keluar
+            </button>
           </div>
-          <div className="flex flex-col">
-            <label>Bio</label>
-            <textarea
-              className="form_textarea"
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-            ></textarea>
-          </div>
-        </div>
-        <div className="flex justify-around">
-          <button
-            className="px-5 py-1.5 bg-black rounded-full text-white"
-            type="submit"
-          >
-            Buat
-          </button>
-          <button
-            className="px-5 py-1.5 bg-black rounded-full text-white"
-            onClick={handleSignOut}
-          >
-            keluar
-          </button>
-        </div>
-      </form>
-    </section>
-  );
+        </form>
+      </section>
+    );
 };
 
 export default EditProfile;

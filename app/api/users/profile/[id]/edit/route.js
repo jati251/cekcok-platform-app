@@ -23,19 +23,3 @@ export const POST = async (req) => {
     return new Response("Internal server error", { status: 500 });
   }
 };
-
-export const GET = async (request, { params }) => {
-  try {
-    await connectToDB();
-
-    const profile = await Profile.find({ userId: params.id }).populate(
-      "userId"
-    );
-
-    return new Response(JSON.stringify(profile), { status: 200 });
-  } catch (error) {
-    return new Response("Failed to fetch profile created by user", {
-      status: 500,
-    });
-  }
-};

@@ -9,13 +9,11 @@ const UserProfileSchema = new Schema({
   },
   fullName: {
     type: String,
-    required: true,
     trim: true,
-    minlength: 3,
-    maxlength: 30,
+    default: "",
   },
   background: {
-    type: String, // URL to the user's avatar
+    type: String,
     default: "",
   },
   bio: {

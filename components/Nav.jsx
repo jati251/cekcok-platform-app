@@ -8,7 +8,7 @@ import { usePathname } from "next/navigation";
 
 const Nav = () => {
   const pathname = usePathname();
-  const hideNavAndFooter = ["/login", "/register", "/profile-setup"].includes(
+  const hideNavAndFooter = ["/login", "/register", "/profile-setup",'/profile'].includes(
     pathname
   );
 

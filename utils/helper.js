@@ -36,3 +36,10 @@ export const blobToBase64 = (blob) => {
     reader.readAsDataURL(blob);
   });
 };
+
+export const convertToIndonesianMonthYear = (dateString) => {
+  const date = new Date(dateString);
+  const options = { month: "long", year: "numeric" };
+  const formattedDate = date.toLocaleDateString("id-ID", options);
+  return formattedDate;
+};

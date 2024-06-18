@@ -2,12 +2,14 @@ import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import GifPicker from "gif-picker-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ImageUploader from "./ImageUploader";
+import { useSession } from "next-auth/react";
 
 const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [showGifSelector, setShowGifSelector] = useState(false);
+  const { data: status } = useSession();
 
   const handleMediaRemove = () => {
     setSelectedMedia(null);
@@ -21,6 +23,10 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
   const handleImageUpload = (image) => {
     setSelectedMedia({ type: "image", src: image });
   };
+
+  useEffect(() => {
+    if (status === "unauthenticated") router.push("/");
+  }, [status]);
 
   return (
     <section className="w-full max-w-full flex-start flex-col mt-20 mb-20">

@@ -1,36 +1,92 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PromptCard from "./PromptCard";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { convertToIndonesianMonthYear } from "@utils/helper";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCalendar, faLocation } from "@fortawesome/free-solid-svg-icons";
+import { CustomFieldName } from "./CustomFieldName";
+import ZoomModal from "./modals/ZoomModal";
+import { useState } from "react";
 
-const Profile = ({ name, desc, data, handleEdit, handleDelete }) => {
+const Profile = ({ data, handleEdit, handleDelete, profile, loading }) => {
   const router = useRouter();
-  const handleBack = () => {
-    router.back();
-  };
-  return (
-    <section className="w-full my-20">
-      <button
-        className="my-6 flex font-satoshi items-center gap-4 text-gray-700 hover:text-gray-800 transition-colors duration-200"
-        onClick={handleBack}
-      >
-        <FontAwesomeIcon icon={faArrowLeft} />
-        <span>Kembali</span>
-      </button>
-      <h1 className="head_text text-left">
-        <span className="blue_gradient">Profil {name} </span>
-      </h1>
-      <p className="desc text-left">{desc}</p>
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-      <div className="mt-10 prompt_layout">
-        {data.map((post) => (
-          <PromptCard
-            key={post._id}
-            post={post}
-            handleEdit={() => handleEdit && handleEdit(post)}
-            handleDelete={() => handleDelete && handleDelete(post)}
+  return (
+    <section className="relative w-full my-20">
+      {isModalOpen && (
+        <ZoomModal
+          src={profile?.userId?.image}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
+      <div className="flex justify-between items-end relative z-10 mt-[18vh]">
+        {loading ? (
+          <div className=" flex space-x-4">
+            <div className="rounded-full bg-gray-500 h-[9vh] w-[9vh]"></div>
+          </div>
+        ) : (
+          <Image
+            src={profile?.userId?.image}
+            width={80}
+            height={80}
+            className="rounded-full cursor-pointer my-4"
+            alt="profile"
+            onClick={() => setIsModalOpen(true)}
           />
-        ))}
+        )}
+
+        <button
+          onClick={() => router.push("/profile/edit")}
+          className="px-5 py-1.5 text-sm bg-black rounded-full text-white h-fit mb-4"
+        >
+          Ubah Profile
+        </button>
+      </div>
+
+      <div className="flex flex-col mt-2">
+        <span className="font-satoshi font-semibold text-xl">
+          <CustomFieldName
+            loading={loading}
+            value={profile?.userId?.username ?? "-"}
+          />
+        </span>
+        <CustomFieldName loading={loading} value={profile?.fullName ?? "-"} />
+      </div>
+      <div className="flex flex-col mt-2 ">
+        <p className="desc text-left">{profile?.bio}</p>
+        <div className="flex gap-2 text-sm items-center">
+          {profile?.location !== "" && <FontAwesomeIcon icon={faLocation} />}
+          <CustomFieldName loading={loading} value={profile?.location ?? "-"} />
+        </div>
+        <div className="flex gap-2 text-sm items-center">
+          <FontAwesomeIcon icon={faCalendar} />
+          <CustomFieldName
+            loading={loading}
+            value={`bergabung ${convertToIndonesianMonthYear(
+              profile?.userId?.createdAt
+            )}`}
+          />
+        </div>
+      </div>
+
+      <div className="mt-2 prompt_layout">
+        <p className="desc text-left font-semibold">Postingan</p>
+        {data.length > 0 ? (
+          data.map((post) => (
+            <PromptCard
+              key={post._id}
+              post={post}
+              handleEdit={() => handleEdit && handleEdit(post)}
+              handleDelete={() => handleDelete && handleDelete(post)}
+            />
+          ))
+        ) : (
+          <p className="text-center text-sm my-10 py-10">
+            Postingan masih kosong
+          </p>
+        )}
       </div>
     </section>
   );

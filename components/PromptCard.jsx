@@ -10,8 +10,9 @@ import {
   faThumbsDown as solidThumbsDown,
   faComment,
 } from "@fortawesome/free-solid-svg-icons";
-import CommentModal from "./CommentModal";
+import CommentModal from "./modals/CommentModal";
 import TimeAgo from "./TimeAgo";
+import { useIsMobile } from "@utils/hooks";
 
 const PromptCard = ({
   post,
@@ -111,7 +112,10 @@ const PromptCard = ({
 
   return (
     <>
-      <div onClick={handleDetail} className="cursor-pointer prompt_card">
+      <div
+        onClick={handleDetail}
+        className={`cursor-pointer ${useIsMobile() ? "px-2 border-t-2 border-gray-300 py-4" : "prompt_card"}`}
+      >
         <div className="flex justify-between items-start gap-5">
           <div className="flex-1 flex justify-start items-center gap-3 cursor-pointer">
             <Image
