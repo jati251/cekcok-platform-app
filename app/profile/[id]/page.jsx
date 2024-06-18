@@ -73,7 +73,7 @@ const UserProfile = ({ params }) => {
 
       <div className="absolute top-12 left-0 w-full h-[22vh]">
         {!profile.background || profile.background === "" ? (
-          <div className="w-full h-[22vh] bg-gray-800"></div>
+          <div className="animate-pulse w-full h-[22vh] bg-gray-800"></div>
         ) : (
           <Image
             src={profile?.background}
