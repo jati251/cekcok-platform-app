@@ -8,10 +8,19 @@ export const POST = async (request) => {
   try {
     await connectToDB();
 
-    const comments = await Comment.find({ post: postId }).populate(
-      "author",
-      "username email image fullName"
-    );
+    let comments = await Comment.find({ post: postId })
+      .sort({ createdAt: -1 })
+      .populate("author", "username email image fullName status");
+
+    comments = comments.map((comment) => {
+      if (comment.author.status === "private") {
+        comment.author.fullName = "Anonim";
+        comment.author.email = "Anonim";
+        comment.author.username = "Anonim";
+        comment.author.image = null;
+      }
+      return comment;
+    });
 
     return new Response(JSON.stringify(comments), { status: 200 });
   } catch (error) {

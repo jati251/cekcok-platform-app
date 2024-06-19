@@ -87,7 +87,9 @@ const Comment = ({ comment, isDarkMode }) => {
       >
         <div className=" flex items-start mt-2">
           <Image
-            onClick={handleProfileClick}
+            onClick={(e) => {
+              comment.author.status !== "private" && handleProfileClick(e);
+            }}
             src={comment.author.image ?? "/assets/images/default-user.png"}
             alt="comment_author"
             width={35}

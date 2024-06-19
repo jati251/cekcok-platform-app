@@ -7,13 +7,13 @@ import { connectToDB } from "@utils/database";
 export const POST = async (req) => {
   try {
     await connectToDB();
-    const { fullName, bio, location, userId, image, background } =
+    const { fullName, bio, location, userId, image, background, status } =
       await req.json();
 
     if (image) {
       await User.findOneAndUpdate(
         { _id: userId },
-        { image, fullName },
+        { image, fullName, status },
         { new: true }
       );
     }

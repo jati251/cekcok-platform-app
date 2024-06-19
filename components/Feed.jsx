@@ -38,14 +38,6 @@ const Feed = () => {
   const fetchPosts = async () => {
     setLoading(true);
     try {
-      await fetch("/api/database/userstatus", {
-        method: "POST",
-        body: JSON.stringify({
-          page,
-          limit: 10,
-        }),
-      });
-      
       const response = await fetch("/api/prompt", {
         method: "POST",
         body: JSON.stringify({

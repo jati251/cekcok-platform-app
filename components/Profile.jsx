@@ -39,7 +39,7 @@ const Profile = ({
           </div>
         ) : (
           <Image
-            src={profile?.userId?.image}
+            src={profile?.userId?.image || "/assets/images/default-user.png"}
             width={80}
             height={80}
             className="rounded-full cursor-pointer my-4"
@@ -69,7 +69,9 @@ const Profile = ({
         <div className="text-gray-400">
           <CustomFieldName
             loading={loading}
-            value={"@" + profile?.userId?.username ?? "-"}
+            value={
+              profile?.userId?.username ? "@" + profile?.userId?.username : "-"
+            }
           />
         </div>
       </div>

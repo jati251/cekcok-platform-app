@@ -5,8 +5,15 @@ export const GET = async (request, { params }) => {
   try {
     await connectToDB();
 
-    const prompt = await Prompt.findById(params.id).populate("creator");
+    let prompt = await Prompt.findById(params.id).populate("creator");
     if (!prompt) return new Response("Prompt Not Found", { status: 404 });
+
+    if (prompt.creator.status === "private") {
+      prompt.creator.fullName = "Anonim";
+      prompt.creator.email = "Anonim";
+      prompt.creator.username = "Anonim";
+      prompt.creator.image = null;
+    }
 
     return new Response(JSON.stringify(prompt), { status: 200 });
   } catch (error) {

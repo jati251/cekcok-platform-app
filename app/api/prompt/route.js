@@ -8,11 +8,21 @@ export const POST = async (request) => {
     const { page = 1, limit = 10 } = await request.json();
 
     const count = await Prompt.countDocuments();
-    const prompts = await Prompt.find({})
+    let prompts = await Prompt.find({})
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(parseInt(limit))
       .populate("creator");
+
+    prompts = prompts.map((prompt) => {
+      if (prompt.creator.status === "private") {
+        prompt.creator.fullName = "Anonim";
+        prompt.creator.email = "Anonim";
+        prompt.creator.username = "Anonim";
+        prompt.creator.image = null;
+      }
+      return prompt;
+    });
 
     return new Response(
       JSON.stringify({ prompts, totalPages: Math.ceil(count / limit) }),

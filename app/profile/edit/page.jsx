@@ -16,14 +16,17 @@ import CustomInput from "@components/input/CustomInput";
 import CustomTextArea from "@components/input/CustomTextArea";
 import ProfileBackground from "@components/profile/ProfileBackground";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
+import CustomCheckbox from "@components/CustomCheckbox";
 
 const EditProfile = () => {
   const { data: session, status } = useSession();
   const { isDarkMode } = useDarkModeContext();
+  const [isChecked, setIsChecked] = useState(false);
   const [profile, setProfile] = useState({
     userId: {
       image: "",
       fullName: "",
+      status: "",
     },
     background: "",
     bio: "",
@@ -36,13 +39,15 @@ const EditProfile = () => {
     const response = await fetch(`/api/users/profile/${session?.user.id}`);
     const data = await response.json();
     setProfile(data);
+    if (data.userId.status === "private") setIsChecked(true);
     setLoading(false);
   };
+
   const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { bio, fullName, location, background, userId } = profile;
+    const { bio, location, background, userId } = profile;
     const res = await fetch("/api/users/profile/edit", {
       method: "POST",
       body: JSON.stringify({
@@ -51,6 +56,7 @@ const EditProfile = () => {
         fullName: userId.fullName,
         location,
         background,
+        status: isChecked ? "private" : "public",
         image: profile.userId.image,
       }),
     });
@@ -152,6 +158,10 @@ const EditProfile = () => {
                 setProfile({ ...profile, location: e.target.value })
               }
             />
+            <CustomCheckbox isChecked={isChecked} setIsChecked={setIsChecked} />
+            <span className="text-sm font-satoshi text-gray-500 italic">
+              contoh : Anonim
+            </span>
           </div>
         </form>
       </section>

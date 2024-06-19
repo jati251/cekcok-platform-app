@@ -39,16 +39,11 @@ const PromptCard = ({
 
   const handleProfileClick = (e) => {
     e.stopPropagation();
-    if (
-      (post?.creator?._id || post?.author?._id) === session?.user.id &&
-      session?.user
-    )
+    if (post?.creator?._id === session?.user.id && session?.user)
       return router.push("/profile");
-    if (post?.creator?._id || post?.author?._id)
+    if (post?.creator?._id)
       router.push(
-        `/profile/${post?.creator?._id ?? post?.author?._id}?name=${
-          post?.creator?.username ?? post?.author?.username
-        }`
+        `/profile/${post?.creator?._id}?name=${post?.creator?.username}`
       );
   };
 
@@ -120,7 +115,6 @@ const PromptCard = ({
       }
     }
   };
-
   return (
     <>
       <div
@@ -137,15 +131,13 @@ const PromptCard = ({
         <div className="flex justify-between items-start gap-5">
           <div className="flex-1 flex justify-start gap-2 cursor-pointer">
             <div
-              onClick={handleProfileClick}
+              onClick={(e) => {
+                post?.creator?.status !== "private" && handleProfileClick(e);
+              }}
               className="flex justify-start flex-col mt-1 w-[40px]"
             >
               <Image
-                src={
-                  post?.creator?.image ??
-                  post?.author?.image ??
-                  "/assets/images/default-user.png"
-                }
+                src={post?.creator?.image ?? "/assets/images/default-user.png"}
                 alt="user_image"
                 width={40}
                 height={40}
@@ -160,9 +152,7 @@ const PromptCard = ({
                     useIsMobile() ? "max-w-[150px]" : ""
                   }`}
                 >
-                  {post?.creator?.fullName ??
-                    post?.author?.fullName ??
-                    "Anonim"}
+                  {post?.creator?.fullName ?? "Anonim"}
                 </p>
                 <span
                   className={`font-satoshi text-gray-400 text-sm whitespace-nowrap overflow-hidden text-ellipsis `}
@@ -219,8 +209,7 @@ const PromptCard = ({
             </div>
           </div>
         </div>
-
-        <div className="flex justify-start gap-6 items-center mt-3">
+        <div className="flex justify-start gap-6 items-center mt-3 ml-5">
           <button
             disabled={!session?.user}
             className="flex items-center gap-1 text-gray-500 hover:text-gray-700 transition-colors duration-200"

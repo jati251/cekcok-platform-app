@@ -84,14 +84,9 @@ const UserProfile = ({ params }) => {
   }, [loading, hasMore]);
 
   useEffect(() => {
-    if (session?.user.id) {
-      if (
-        (!loading && page <= totalPage && status !== "loading") ||
-        (userPosts.length === 0 && !loading)
-      )
-        fetchProfile();
-    }
-  }, [session?.user.id, page]);
+    if ((!loading && page <= totalPage) || (userPosts.length === 0 && !loading))
+      fetchProfile();
+  }, [session, page]);
 
   useEffect(() => {
     const debounceScroll = debounce(handleScroll, 200);
@@ -133,7 +128,7 @@ const UserProfile = ({ params }) => {
           <div className=" w-full h-[22vh] bg-gray-800"></div>
         ) : (
           <Image
-            src={profile?.background}
+            src={profile?.background ?? ""}
             fill
             style={{ objectFit: "cover" }}
             alt="Background"

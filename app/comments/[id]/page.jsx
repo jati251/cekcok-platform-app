@@ -23,7 +23,7 @@ const CommentDetail = ({ params }) => {
     hates: "",
     comments: "",
     likes: "",
-    author: {},
+    creator: {},
     hated: false,
     liked: false,
   });
@@ -72,7 +72,7 @@ const CommentDetail = ({ params }) => {
           hates: data.hates,
           comments: data.comments,
           likes: data.likes,
-          author: data.creator,
+          creator: data.creator,
           userInteractions: data.userInteractions,
           liked: data.liked,
           createdAt: data.createdAt,
