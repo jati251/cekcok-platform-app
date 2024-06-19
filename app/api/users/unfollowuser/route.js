@@ -1,5 +1,6 @@
 // unfollowUser.js
 import Follower from "@models/follower";
+import UserProfile from "@models/profile";
 import { connectToDB } from "@utils/database";
 
 export const POST = async (request) => {
@@ -7,10 +8,10 @@ export const POST = async (request) => {
 
   try {
     await connectToDB();
+    const followerProfile = await UserProfile.findOne({ userId: followerId });
 
-    // Remove the follow relationship
     const result = await Follower.findOneAndDelete({
-      follower: followerId,
+      follower: followerProfile._id,
       following: followingId,
     });
 

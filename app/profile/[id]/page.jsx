@@ -23,7 +23,12 @@ const UserProfile = ({ params }) => {
   const fetchProfile = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/users/profile/${params?.id}`);
+      const response = await fetch(`/api/users/profile/${params?.id}`, {
+        method: "POST",
+        body: JSON.stringify({
+          currentUser: session?.user.id,
+        }),
+      });
       const responsePosts = await fetch(`/api/users/${params?.id}/posts`, {
         method: "POST",
         body: JSON.stringify({
@@ -84,9 +89,13 @@ const UserProfile = ({ params }) => {
   }, [loading, hasMore]);
 
   useEffect(() => {
-    if ((!loading && page <= totalPage) || (userPosts.length === 0 && !loading))
+    if (
+      ((!loading && page <= totalPage) ||
+        (userPosts.length === 0 && !loading)) &&
+      status !== "loading"
+    )
       fetchProfile();
-  }, [session, page]);
+  }, [session, page, status]);
 
   useEffect(() => {
     const debounceScroll = debounce(handleScroll, 200);
@@ -137,6 +146,7 @@ const UserProfile = ({ params }) => {
       </div>
 
       <Profile
+        fetchProfile={fetchProfile}
         isDarkMode={isDarkMode}
         profile={profile}
         data={userPosts}

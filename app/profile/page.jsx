@@ -25,7 +25,10 @@ const MyProfile = () => {
   const fetchProfile = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/users/profile/${session?.user.id}`);
+      const response = await fetch(`/api/users/profile/${session?.user.id}`, {
+        method: "POST",
+      });
+      
       const responsePosts = await fetch(
         `/api/users/${session?.user.id}/posts`,
         {

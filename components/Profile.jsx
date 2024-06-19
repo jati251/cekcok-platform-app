@@ -18,10 +18,59 @@ const Profile = ({
   profile,
   loading,
   isDarkMode,
+  fetchProfile,
 }) => {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { data: session } = useSession();
+
+  const followUser = async () => {
+    try {
+      const response = await fetch("/api/users/followuser", {
+        method: "POST",
+        body: JSON.stringify({
+          followerId: session.user.id,
+          followingId: profile._id,
+        }),
+      });
+
+      if (response.ok) {
+        fetchProfile();
+      } else {
+        throw new Error("Failed to update profile");
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
+  };
+
+  const unfollowUser = async () => {
+    try {
+      const response = await fetch("/api/users/unfollowuser", {
+        method: "POST",
+        body: JSON.stringify({
+          followerId: session.user.id,
+          followingId: profile._id,
+        }),
+      });
+
+      if (response.ok) {
+        fetchProfile();
+      } else {
+        throw new Error("Failed to update profile");
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
+  };
+
+  const handleFollow = () => {
+    if (profile.isFollowing) {
+      unfollowUser();
+    } else {
+      followUser();
+    }
+  };
 
   return (
     <section className="relative w-full my-20">
@@ -47,7 +96,7 @@ const Profile = ({
             onClick={() => setIsModalOpen(true)}
           />
         )}
-        {profile?.userId?._id === session?.user.id && session?.user && (
+        {profile?.userId?._id === session?.user.id && session?.user ? (
           <button
             onClick={() => router.push("/profile/edit")}
             className={`px-5 py-1.5 text-sm ${
@@ -55,6 +104,15 @@ const Profile = ({
             } rounded-full  h-fit mb-4`}
           >
             Ubah Profile
+          </button>
+        ) : (
+          <button
+            onClick={handleFollow}
+            className={`px-5 py-1.5 text-sm ${
+              !isDarkMode ? "black_btn" : "white_btn"
+            } rounded-full  h-fit mb-4`}
+          >
+            {profile?.isFollowing ? "Unfollow" : "Follow"}
           </button>
         )}
       </div>

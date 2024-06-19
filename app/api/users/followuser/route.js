@@ -1,25 +1,21 @@
 // followUser.js
 import Follower from "@models/follower";
-import UserProfile from "@models/userProfile";
+import UserProfile from "@models/profile";
 import { connectToDB } from "@utils/database";
 
 export const POST = async (request) => {
   const { followerId, followingId } = await request.json();
-
   try {
     await connectToDB();
 
-    // Ensure both profiles exist
-    const followerProfile = await UserProfile.findById(followerId);
-    const followingProfile = await UserProfile.findById(followingId);
+    const followerProfile = await UserProfile.findOne({ userId: followerId });
 
-    if (!followerProfile || !followingProfile) {
+    if (!followerProfile || !followingId) {
       return new Response("Profiles not found", { status: 404 });
     }
 
-    // Check if the follow relationship already exists
     const existingFollow = await Follower.findOne({
-      follower: followerId,
+      follower: followerProfile._id,
       following: followingId,
     });
 
@@ -27,9 +23,8 @@ export const POST = async (request) => {
       return new Response("Already following", { status: 400 });
     }
 
-    // Create new follower relationship
     const newFollower = new Follower({
-      follower: followerId,
+      follower: followerProfile._id,
       following: followingId,
     });
     await newFollower.save();
