@@ -59,7 +59,7 @@ const PromptCard = ({
     setTimeout(() => setCopied(false), 3000);
   };
 
-  const handleAction = async (action) => {
+  const handleAction = async (action, flag) => {
     if (!post._id) return alert("Missing PromptId!");
 
     try {
@@ -74,6 +74,16 @@ const PromptCard = ({
       if (!response.ok) {
         throw new Error("Failed to update likes and hates");
       }
+      if (post.creator._id !== session?.user.id && flag)
+        await fetch(`/api/notif`, {
+          method: "POST",
+          body: JSON.stringify({
+            recipientId: post.creator._id,
+            senderId: session.user.id,
+            type: action,
+            data: { postId: post._id, message: post.prompt },
+          }),
+        });
 
       const updatedPost = await response.json();
       setLikes(updatedPost.likes);
@@ -91,7 +101,7 @@ const PromptCard = ({
       if (newHated) {
         setHated(true);
         setLiked(false);
-        handleAction(action);
+        handleAction(action, true);
         setHates(newHates);
       } else {
         setHated(false);
@@ -106,7 +116,7 @@ const PromptCard = ({
         setLiked(true);
         setHated(false);
         setLikes(newLikes);
-        handleAction(action);
+        handleAction(action, true);
       } else {
         setLiked(false);
         setLikes(newLikes);

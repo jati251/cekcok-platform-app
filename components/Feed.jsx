@@ -156,10 +156,7 @@ const Feed = () => {
   };
 
   useEffect(() => {
-    if (
-      (!loading && page <= totalPage && status !== "loading") ||
-      (allPosts.length === 0 && !loading)
-    ) {
+    if (!loading && page <= totalPage && page > 1 && status !== "loading") {
       if (tab === "beranda") {
         fetchPosts();
       } else {
