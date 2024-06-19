@@ -1,5 +1,6 @@
 import TimeAgo from "@components/TimeAgo";
 import {
+  faComment,
   faFistRaised,
   faHeart,
   faUserPlus,
@@ -57,6 +58,8 @@ export const NotifLike = ({ isDarkMode, notif }) => {
                 ? "text-rose-600"
                 : notif?.type === "follow"
                 ? ""
+                : notif?.type === "comment"
+                ? "text-blue-500"
                 : "text-orange-600"
             }`}
           >
@@ -66,6 +69,8 @@ export const NotifLike = ({ isDarkMode, notif }) => {
                   ? faHeart
                   : notif?.type === "follow"
                   ? faUserPlus
+                  : notif?.type === "comment"
+                  ? faComment
                   : faFistRaised
               }
               size="2x"
@@ -97,6 +102,8 @@ export const NotifLike = ({ isDarkMode, notif }) => {
                   ? "🤩 menyukai postingan anda"
                   : notif?.type === "follow"
                   ? "mengikuti anda"
+                  : notif?.type === "comment"
+                  ? "🧐 mengomentari anda"
                   : "🤬 benci postingan anda"}
               </span>
             </div>

@@ -16,12 +16,13 @@ const CommentModal = ({
   isDetail,
   onCommentAdded,
   fetchComment,
+  handleNotif,
 }) => {
   const { data: session } = useSession();
   const [commentContent, setCommentContent] = useState("");
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [showGifSelector, setShowGifSelector] = useState(false);
-  const { isDarkMode, toggleDarkMode } = useDarkModeContext();
+  const { isDarkMode } = useDarkModeContext();
 
   const handleMediaRemove = () => {
     setSelectedMedia(null);
@@ -46,6 +47,7 @@ const CommentModal = ({
       });
 
       if (response.ok) {
+        handleNotif(commentContent);
         onCommentAdded();
         setCommentContent("");
         if (isDetail) fetchComment();

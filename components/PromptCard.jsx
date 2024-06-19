@@ -75,14 +75,9 @@ const PromptCard = ({
         throw new Error("Failed to update likes and hates");
       }
       if (post.creator._id !== session?.user.id && flag)
-        await fetch(`/api/notif`, {
-          method: "POST",
-          body: JSON.stringify({
-            recipientId: post.creator._id,
-            senderId: session.user.id,
-            type: action,
-            data: { postId: post._id, message: post.prompt },
-          }),
+        handleNotif(post.creator._id, session.user.id, action, {
+          postId: post._id,
+          message: post.prompt,
         });
 
       const updatedPost = await response.json();
@@ -124,6 +119,18 @@ const PromptCard = ({
         if (hates > 0) setHates((val) => val - 1);
       }
     }
+  };
+
+  const handleNotif = async (recipientId, senderId, type, data) => {
+    await fetch(`/api/notif`, {
+      method: "POST",
+      body: JSON.stringify({
+        recipientId,
+        senderId,
+        type,
+        data,
+      }),
+    });
   };
   return (
     <>
@@ -282,6 +289,13 @@ const PromptCard = ({
         )}
       </div>
       <CommentModal
+        handleNotif={(comment) => {
+          if (post.creator._id !== session?.user.id)
+            handleNotif(post.creator._id, session.user.id, "comment", {
+              postId: post._id,
+              message: comment,
+            });
+        }}
         isDetail={isDetail}
         fetchComment={fetchComment}
         isOpen={isCommentModalOpen}
