@@ -2,14 +2,12 @@
 import Follower from "@models/follower";
 import { connectToDB } from "@utils/database";
 
-export const GET = async (request) => {
-  const { userId } = request.query;
-
+export const GET = async (request, { params }) => {
   try {
     await connectToDB();
 
     // Find all followers
-    const followers = await Follower.find({ following: userId }).populate(
+    const followers = await Follower.find({ following: params.id }).populate(
       "follower"
     );
 
