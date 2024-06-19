@@ -97,13 +97,9 @@ const UserProfile = ({ params }) => {
   }, [loading, hasMore]);
 
   useEffect(() => {
-    if (
-      ((!loading && page <= totalPage) ||
-        (userPosts.length === 0 && !loading)) &&
-      status !== "loading"
-    )
+    if ((!loading && page <= totalPage) || (userPosts.length === 0 && !loading))
       fetchPosts();
-  }, [page, status]);
+  }, [page]);
 
   useEffect(() => {
     setLoading(true);

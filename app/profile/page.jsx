@@ -22,16 +22,9 @@ const MyProfile = () => {
   const [hasMore, setHasMore] = useState(true);
   const { status } = useSession();
 
-  const fetchProfile = async () => {
+  const fetchPosts = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/users/profile/${session?.user.id}`, {
-        method: "POST",
-        body: JSON.stringify({
-          currentUser: null,
-        }),
-      });
-
       const responsePosts = await fetch(
         `/api/users/${session?.user.id}/posts`,
         {
@@ -43,10 +36,7 @@ const MyProfile = () => {
           }),
         }
       );
-
-      const data = await response.json();
       const dataPosts = await responsePosts.json();
-
       if (session?.user) {
         const userId = session.user.id;
         dataPosts.prompts.forEach((post) => {
@@ -71,9 +61,27 @@ const MyProfile = () => {
         setHasMore(false);
       }
 
-      setProfile(data);
-
       setTotalPage(dataPosts.totalPages);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchProfile = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/users/profile/${session?.user.id}`, {
+        method: "POST",
+        body: JSON.stringify({
+          currentUser: null,
+        }),
+      });
+
+      const data = await response.json();
+
+      setProfile(data);
     } catch (error) {
       console.error("Error fetching posts:", error);
     } finally {
@@ -118,18 +126,16 @@ const MyProfile = () => {
   }, [loading, hasMore]);
 
   useEffect(() => {
-    if (status === "unauthenticated") router.push("/");
-  }, [status]);
+    if (session?.user.id) {
+      if ((!loading && page <= totalPage) || (myPosts.length === 0 && !loading))
+        fetchPosts();
+    }
+  }, [session?.user.id, page]);
 
   useEffect(() => {
-    if (session?.user.id) {
-      if (
-        (!loading && page <= totalPage && status !== "loading") ||
-        (myPosts.length === 0 && !loading)
-      )
-        fetchProfile();
-    }
-  }, [session, page]);
+    if (status !== "loading") fetchProfile();
+    if (status === "unauthenticated") handleBack();
+  }, [status]);
 
   useEffect(() => {
     const debounceScroll = debounce(handleScroll, 200);
