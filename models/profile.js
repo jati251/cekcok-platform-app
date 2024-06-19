@@ -30,18 +30,8 @@ const UserProfileSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-  followers: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "UserProfile",
-    },
-  ],
-  following: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "UserProfile",
-    },
-  ],
+  followers: [{ type: Schema.Types.ObjectId, ref: 'Follower' }],
+  following: [{ type: Schema.Types.ObjectId, ref: 'Follower' }],
 });
 
 // Create a pre-save hook to update the updatedAt field

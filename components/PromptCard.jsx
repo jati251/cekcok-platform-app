@@ -146,7 +146,12 @@ const PromptCard = ({
             </div>
 
             <div onClick={handleDetail} className="flex flex-col w-full">
-              <div className="flex gap-1 items-center justify-between ">
+              <div
+                onClick={(e) => {
+                  post?.creator?.status !== "private" && handleProfileClick(e);
+                }}
+                className="flex gap-1 items-center justify-between "
+              >
                 <p
                   className={`font-satoshi font-semibold whitespace-nowrap overflow-hidden text-ellipsis ${
                     useIsMobile() ? "max-w-[150px]" : ""

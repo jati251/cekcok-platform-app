@@ -91,6 +91,29 @@ const Profile = ({
             )}`}
           />
         </div>
+
+        <div className=" font-satoshi flex gap-2 mt-3">
+          <div className="flex gap-2 text-sm items-center">
+            <span className="font-semibold ">
+              <CustomFieldName
+                width={"w-10"}
+                loading={loading}
+                value={profile.followerCount}
+              />
+            </span>
+            <span className="text-gray-400">Followers</span>
+          </div>
+          <div className="flex gap-2 text-sm items-center ">
+            <span className="font-semibold ">
+              <CustomFieldName
+                width={"w-10"}
+                loading={loading}
+                value={profile.followingCount}
+              />
+            </span>
+            <span className="text-gray-400">Following</span>
+          </div>
+        </div>
       </div>
 
       <div className=" mt-2 prompt_layout">

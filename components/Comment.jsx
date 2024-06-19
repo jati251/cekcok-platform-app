@@ -54,6 +54,7 @@ const Comment = ({ comment, isDarkMode }) => {
   const handleLike = (e) => {
     e.stopPropagation();
     const newLiked = !liked;
+    const newLikes = newLiked ? likes + 1 : likes - 1;
     if (newLiked) {
       setLiked(true);
       setHated(false);
@@ -61,12 +62,15 @@ const Comment = ({ comment, isDarkMode }) => {
     } else {
       setLiked(false);
       handleAction("like");
+      setLikes(newLikes);
+      if (hates > 0) setHates((val) => val - 1);
     }
   };
 
   const handleHate = (e) => {
     e.stopPropagation();
     const newHated = !hated;
+    const newHates = newHated ? hates + 1 : hates - 1;
     if (newHated) {
       setHated(true);
       setLiked(false);
@@ -74,6 +78,8 @@ const Comment = ({ comment, isDarkMode }) => {
     } else {
       setHated(false);
       handleAction("hate");
+      setHates(newHates);
+      if (likes > 0) setLikes((val) => val - 1);
     }
   };
 

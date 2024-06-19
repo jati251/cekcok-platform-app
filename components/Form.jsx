@@ -8,12 +8,14 @@ import { useSession } from "next-auth/react";
 import CustomInput from "./input/CustomInput";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
 import CustomTextArea from "./input/CustomTextArea";
+import { useRouter } from "next/navigation";
 
 const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [showGifSelector, setShowGifSelector] = useState(false);
   const { status } = useSession();
   const { isDarkMode } = useDarkModeContext();
+  const router = useRouter();
 
   const handleMediaRemove = () => {
     setSelectedMedia(null);
@@ -131,9 +133,9 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
         )}
 
         <div className="flex-end mx-3 mb-5 gap-4">
-          <Link href="/" className="text-gray-500 text-sm">
+          <div onClick={() => router.back()} className="cursor-pointer text-gray-400 text-sm">
             Batalkan
-          </Link>
+          </div>
 
           <button
             type="submit"

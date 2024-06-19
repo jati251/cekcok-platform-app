@@ -1,10 +1,10 @@
 const { FieldNameSkeleton } = require("./Skeletons/FieldNameSkeleton");
 
-export const CustomFieldName = ({ value, loading }) => {
+export const CustomFieldName = ({ value, loading, width }) => {
   return (
     <>
       {loading ? (
-        <div className="w-40">
+        <div className={width ? width : "w-40"}>
           <FieldNameSkeleton />
         </div>
       ) : (
