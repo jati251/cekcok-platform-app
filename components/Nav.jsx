@@ -6,7 +6,12 @@ import { useEffect, useState } from "react";
 import { signIn, signOut, useSession, getProviders } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
+import {
+  faFaceSmile,
+  faMoon,
+  faSun,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
 
 const Nav = () => {
@@ -134,39 +139,54 @@ const Nav = () => {
                 >
                   <div
                     onClick={(e) => e.stopPropagation()}
-                    className={`top-full mt-[8vh] w-full p-5 rounded-xl ${
+                    className={`top-full mt-[7vh] w-full p-5 rounded-xl ${
                       isDarkMode ? "bg-black" : "bg-white"
-                    } min-w-[210px] max-w-[240px] max-h-[220px] flex flex-col gap-3 justify-end items-end shadow-xl`}
+                    } min-w-[210px] max-w-[240px] max-h-[280px] flex flex-col gap-3 justify-end items-end shadow-xl`}
                   >
-                    <Link
-                      href="/profile"
-                      className="dropdown_link mb-1"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setToggleDropdown(false);
-                      }}
-                    >
-                      Cek Profil Saya
-                    </Link>
-                    <Link
-                      href="/create-prompt"
-                      className="dropdown_link mb-1"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setToggleDropdown(false);
-                      }}
-                    >
-                      Buat Bacotan Baru
-                    </Link>
+                    <div className="flex flex-col items-end">
+                      <span className="dropdown_link mb-1">
+                        {session?.user?.fullName}
+                      </span>
+                      <span className="dropdown_link mb-1 text-sm text-gray-500">
+                        @{session?.user?.username}
+                      </span>
+                    </div>
+                    <div className="gap-2 flex items-center">
+                      <Link
+                        href="/profile"
+                        className="dropdown_link "
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setToggleDropdown(false);
+                        }}
+                      >
+                        Profil Saya
+                      </Link>
+                      <FontAwesomeIcon icon={faUser} />
+                    </div>
+
+                    <div className="gap-2 flex items-center">
+                      <Link
+                        href="/create-prompt"
+                        className="dropdown_link"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setToggleDropdown(false);
+                        }}
+                      >
+                        Buat Bacotan Baru
+                      </Link>
+                      <FontAwesomeIcon icon={faFaceSmile} />
+                    </div>
                     <button
-                      className="dropdown_link cursor-pointer mb-1"
+                      className="dropdown_link cursor-pointer "
                       onClick={(e) => {
                         e.stopPropagation();
                         toggleDarkMode(!isDarkMode);
                       }}
                     >
+                      {isDarkMode ? " Mode Gelap" : " Mode terang"}{" "}
                       <FontAwesomeIcon icon={!isDarkMode ? faSun : faMoon} />
-                      {isDarkMode ? " Mode Gelap" : " Mode terang"}
                     </button>
                     <button
                       type="button"
