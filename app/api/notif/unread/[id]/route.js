@@ -5,6 +5,7 @@ import { connectToDB } from "@utils/database";
 
 export const dynamic = "force-dynamic"; // Optional, depending on your setup
 
+// ini buat get count
 export const GET = async (request, { params }) => {
   try {
     await connectToDB();

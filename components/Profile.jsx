@@ -34,7 +34,19 @@ const Profile = ({
             followingId: profile._id,
           }),
         });
+
         if (response.ok) {
+          if (profile?.userId?._id !== session?.user.id)
+            await fetch(`/api/notif`, {
+              method: "POST",
+              body: JSON.stringify({
+                recipientId: profile?.userId?._id,
+                senderId: session.user.id,
+                type: "follow",
+                data: { username: profile?.userId?.username },
+              }),
+            });
+
           fetchProfile();
         } else {
           throw new Error("Failed to update profile");
@@ -111,7 +123,11 @@ const Profile = ({
                     !isDarkMode ? "black_btn" : "white_btn"
                   } rounded-full  h-fit mb-4 `}
                 >
-                  {profile?.isFollowing ? "Unfollow" : "Follow"}
+                  {profile?.isFollowing
+                    ? "Unfollow"
+                    : profile?.followBack
+                    ? "Follow Back"
+                    : "Follow"}
                 </button>
               )}
           </>

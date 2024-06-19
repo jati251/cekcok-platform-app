@@ -32,11 +32,19 @@ export const POST = async (request, { params }) => {
         })
       : false;
 
+    const followBack = currentUser
+      ? await Follower.exists({
+          follower: profile._id,
+          following: currentProfile._id,
+        })
+      : false;
+
     const profileWithCounts = {
       ...profile.toObject(),
       followerCount,
       followingCount,
       isFollowing,
+      followBack,
     };
 
     return new Response(JSON.stringify(profileWithCounts), { status: 200 });

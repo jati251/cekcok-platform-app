@@ -1,5 +1,9 @@
 import TimeAgo from "@components/TimeAgo";
-import { faFistRaised, faHeart } from "@fortawesome/free-solid-svg-icons";
+import {
+  faFistRaised,
+  faHeart,
+  faUserPlus,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useIsMobile } from "@utils/hooks";
 import Image from "next/image";
@@ -9,7 +13,27 @@ export const NotifLike = ({ isDarkMode, notif }) => {
   const router = useRouter();
 
   const handleClick = () => {
+    switch (notif.type) {
+      case "like":
+        handleLike();
+        break;
+      case "hate":
+        handleLike();
+        break;
+      case "follow":
+        handleProfileClick();
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleLike = () => {
     router.push(`/comments/${notif.data.postId}`);
+  };
+
+  const handleProfileClick = () => {
+    router.push(`/profile/${notif?.sender._id}?name=${notif?.sender.username}`);
   };
 
   return (
@@ -29,11 +53,21 @@ export const NotifLike = ({ isDarkMode, notif }) => {
         <div className="flex-1 flex justify-start gap-4 cursor-pointer">
           <div
             className={`flex justify-start flex-col mt-4 w-[40px] ${
-              notif?.type === "like" ? "text-rose-600" : "text-orange-600"
+              notif?.type === "like"
+                ? "text-rose-600"
+                : notif?.type === "follow"
+                ? ""
+                : "text-orange-600"
             }`}
           >
             <FontAwesomeIcon
-              icon={notif?.type === "like" ? faHeart : faFistRaised}
+              icon={
+                notif?.type === "like"
+                  ? faHeart
+                  : notif?.type === "follow"
+                  ? faUserPlus
+                  : faFistRaised
+              }
               size="2x"
             />
           </div>
@@ -57,11 +91,13 @@ export const NotifLike = ({ isDarkMode, notif }) => {
                 {notif?.sender?.fullName ?? "Anonim"}
               </p>
               <span
-                className={`font-satoshi  text-sm whitespace-nowrap overflow-hidden text-ellipsis `}
+                className={`font-satoshi text-sm whitespace-nowrap overflow-hidden text-ellipsis `}
               >
                 {notif?.type === "like"
-                  ? "menyukai postingan anda"
-                  : "benci postingan anda"}
+                  ? "🤩 menyukai postingan anda"
+                  : notif?.type === "follow"
+                  ? "mengikuti anda"
+                  : "🤬 benci postingan anda"}
               </span>
             </div>
 
