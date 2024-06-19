@@ -20,15 +20,9 @@ const UserProfile = ({ params }) => {
   const router = useRouter();
   const { data: session, status } = useSession();
 
-  const fetchProfile = async () => {
+  const fetchPosts = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/users/profile/${params?.id}`, {
-        method: "POST",
-        body: JSON.stringify({
-          currentUser: session?.user.id,
-        }),
-      });
       const responsePosts = await fetch(`/api/users/${params?.id}/posts`, {
         method: "POST",
         body: JSON.stringify({
@@ -37,10 +31,7 @@ const UserProfile = ({ params }) => {
           userId: params.id,
         }),
       });
-
-      const data = await response.json();
       const dataPosts = await responsePosts.json();
-
       if (session?.user) {
         const userId = session.user.id;
         dataPosts.prompts.forEach((post) => {
@@ -64,12 +55,29 @@ const UserProfile = ({ params }) => {
       } else {
         setHasMore(false);
       }
-
-      setProfile(data);
-
       setTotalPage(dataPosts.totalPages);
     } catch (error) {
       console.error("Error fetching posts:", error);
+    } finally {
+      if (profile._id) setLoading(false);
+    }
+  };
+
+  const fetchProfile = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/users/profile/${params?.id}`, {
+        method: "POST",
+        body: JSON.stringify({
+          currentUser: session?.user.id,
+        }),
+      });
+
+      const data = await response.json();
+
+      setProfile(data);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
     } finally {
       setLoading(false);
     }
@@ -94,8 +102,13 @@ const UserProfile = ({ params }) => {
         (userPosts.length === 0 && !loading)) &&
       status !== "loading"
     )
-      fetchProfile();
-  }, [session, page, status]);
+      fetchPosts();
+  }, [page, status]);
+
+  useEffect(() => {
+    setLoading(true);
+    if (status !== "loading") fetchProfile();
+  }, [status]);
 
   useEffect(() => {
     const debounceScroll = debounce(handleScroll, 200);

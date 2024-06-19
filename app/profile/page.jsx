@@ -27,8 +27,11 @@ const MyProfile = () => {
     try {
       const response = await fetch(`/api/users/profile/${session?.user.id}`, {
         method: "POST",
+        body: JSON.stringify({
+          currentUser: null,
+        }),
       });
-      
+
       const responsePosts = await fetch(
         `/api/users/${session?.user.id}/posts`,
         {
@@ -126,7 +129,7 @@ const MyProfile = () => {
       )
         fetchProfile();
     }
-  }, [session?.user.id, page]);
+  }, [session, page]);
 
   useEffect(() => {
     const debounceScroll = debounce(handleScroll, 200);

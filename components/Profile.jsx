@@ -22,53 +22,47 @@ const Profile = ({
 }) => {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
-  const followUser = async () => {
+  const handleFollow = async (val) => {
     try {
-      const response = await fetch("/api/users/followuser", {
-        method: "POST",
-        body: JSON.stringify({
-          followerId: session.user.id,
-          followingId: profile._id,
-        }),
-      });
-
-      if (response.ok) {
-        fetchProfile();
+      if (val === "follow") {
+        const response = await fetch("/api/users/followuser", {
+          method: "POST",
+          body: JSON.stringify({
+            followerId: session.user.id,
+            followingId: profile._id,
+          }),
+        });
+        if (response.ok) {
+          fetchProfile();
+        } else {
+          throw new Error("Failed to update profile");
+        }
       } else {
-        throw new Error("Failed to update profile");
+        const response = await fetch("/api/users/unfollowuser", {
+          method: "POST",
+          body: JSON.stringify({
+            followerId: session.user.id,
+            followingId: profile._id,
+          }),
+        });
+        if (response.ok) {
+          fetchProfile();
+        } else {
+          throw new Error("Failed to update profile");
+        }
       }
     } catch (error) {
       console.error("Error updating profile:", error);
     }
   };
 
-  const unfollowUser = async () => {
-    try {
-      const response = await fetch("/api/users/unfollowuser", {
-        method: "POST",
-        body: JSON.stringify({
-          followerId: session.user.id,
-          followingId: profile._id,
-        }),
-      });
-
-      if (response.ok) {
-        fetchProfile();
-      } else {
-        throw new Error("Failed to update profile");
-      }
-    } catch (error) {
-      console.error("Error updating profile:", error);
-    }
-  };
-
-  const handleFollow = () => {
+  const handleAction = () => {
     if (profile.isFollowing) {
-      unfollowUser();
+      handleFollow("unfollow");
     } else {
-      followUser();
+      handleFollow("follow");
     }
   };
 
@@ -106,14 +100,21 @@ const Profile = ({
             Ubah Profile
           </button>
         ) : (
-          <button
-            onClick={handleFollow}
-            className={`px-5 py-1.5 text-sm ${
-              !isDarkMode ? "black_btn" : "white_btn"
-            } rounded-full  h-fit mb-4`}
-          >
-            {profile?.isFollowing ? "Unfollow" : "Follow"}
-          </button>
+          <>
+            {!loading &&
+              status !== "loading" &&
+              session?.user &&
+              profile._id && (
+                <button
+                  onClick={handleAction}
+                  className={`px-5 py-1.5 text-sm ${
+                    !isDarkMode ? "black_btn" : "white_btn"
+                  } rounded-full  h-fit mb-4 `}
+                >
+                  {profile?.isFollowing ? "Unfollow" : "Follow"}
+                </button>
+              )}
+          </>
         )}
       </div>
 
