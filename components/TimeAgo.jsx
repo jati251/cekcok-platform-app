@@ -2,7 +2,7 @@ const { formatTimestamp } = require("@utils/helper");
 
 const TimeAgo = ({ timestamp }) => {
   return (
-    <span className="font-satoshi text-sm text-gray-400">
+    <span className="font-satoshi text-xs text-gray-400 px-1 ">
       {formatTimestamp(timestamp)}
     </span>
   );

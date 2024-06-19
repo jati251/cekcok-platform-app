@@ -44,8 +44,12 @@ const PromptCard = ({
       session?.user
     )
       return router.push("/profile");
-    if (post?.creator?._id)
-      router.push(`/profile/${post.creator._id}?name=${post.creator.username}`);
+    if (post?.creator?._id || post?.author?._id)
+      router.push(
+        `/profile/${post?.creator?._id ?? post?.author?._id}?name=${
+          post?.creator?.username ?? post?.author?.username
+        }`
+      );
   };
 
   const handleDetail = () => {
@@ -120,90 +124,102 @@ const PromptCard = ({
   return (
     <>
       <div
-        onClick={handleDetail}
         className={`cursor-pointer ${
           isDarkMode ? "hover:bg-[#080808]" : "hover:bg-[#dbdbdb]"
         } transition-colors duration-300 ${
           useIsMobile()
-            ? `px-4 border-t ${
+            ? `px-2 border-t ${
                 isDarkMode ? "border-[#2f3336]" : "border-[#e3e3e3]"
               } py-4`
             : "prompt_card"
         }`}
       >
         <div className="flex justify-between items-start gap-5">
-          <div className="flex-1 flex justify-start items-center gap-3 cursor-pointer">
-            <Image
+          <div className="flex-1 flex justify-start gap-2 cursor-pointer">
+            <div
               onClick={handleProfileClick}
-              src={
-                post?.creator?.image ??
-                post?.author?.image ??
-                "/assets/images/default-user.png"
-              }
-              alt="user_image"
-              width={40}
-              height={40}
-              className="rounded-full object-contain"
-            />
+              className="flex justify-start flex-col mt-1 w-[40px]"
+            >
+              <Image
+                src={
+                  post?.creator?.image ??
+                  post?.author?.image ??
+                  "/assets/images/default-user.png"
+                }
+                alt="user_image"
+                width={40}
+                height={40}
+                className="rounded-full object-contain"
+              />
+            </div>
 
-            <div className="flex flex-col">
-              <div className="flex gap-2 items-center">
-                <h3 className="font-satoshi font-semibold">
+            <div onClick={handleDetail} className="flex flex-col w-full">
+              <div className="flex gap-1 items-center justify-between ">
+                <p
+                  className={`font-satoshi font-semibold whitespace-nowrap overflow-hidden text-ellipsis ${
+                    useIsMobile() ? "max-w-[150px]" : ""
+                  }`}
+                >
                   {post?.creator?.fullName ??
                     post?.author?.fullName ??
                     "Anonim"}
-                </h3>
-                <span className="font-satoshi text-gray-400 text-sm">
-                  {"@" + post?.creator?.username ??
+                </p>
+                <span
+                  className={`font-satoshi text-gray-400 text-sm whitespace-nowrap overflow-hidden text-ellipsis `}
+                >
+                  @{""}
+                  {post?.creator?.username ??
                     post?.author?.username ??
                     "Anonim"}
                 </span>
+
+                <div className="copy_btn " onClick={handleCopy}>
+                  <Image
+                    loading="lazy"
+                    src={
+                      copied === post.prompt
+                        ? "/assets/icons/tick.svg"
+                        : "/assets/icons/copy.svg"
+                    }
+                    alt={copied === post.prompt ? "tick_icon" : "copy_icon"}
+                    width={15}
+                    height={15}
+                  />
+                </div>
               </div>
               {post.createdAt && <TimeAgo timestamp={post.createdAt} />}
-            </div>
-          </div>
 
-          <div className="copy_btn" onClick={handleCopy}>
-            <Image
-              loading="lazy"
-              src={
-                copied === post.prompt
-                  ? "/assets/icons/tick.svg"
-                  : "/assets/icons/copy.svg"
-              }
-              alt={copied === post.prompt ? "tick_icon" : "copy_icon"}
-              width={20}
-              height={20}
-            />
+              <p className="my-4 font-satoshi break-all text-sm ">
+                {post.prompt}
+              </p>
+
+              {post?.media?.src && (
+                <div className="mt-4 flex flex-col items-start mb-4">
+                  {post.media.type === "image" ? (
+                    <img
+                      src={post.media.src}
+                      alt="Selected"
+                      className="max-w-full h-auto"
+                    />
+                  ) : (
+                    <img
+                      src={post.media.src}
+                      alt="GIF"
+                      className="max-w-full h-auto"
+                    />
+                  )}
+                </div>
+              )}
+              <p
+                className="font-inter text-sm blue_gradient cursor-pointer"
+                onClick={() => handleTagClick && handleTagClick(post.tag)}
+              >
+                #{post.tag}
+              </p>
+            </div>
           </div>
         </div>
 
-        <p className="my-4 font-satoshi break-all text-sm ">{post.prompt}</p>
-
-        {post?.media?.src && (
-          <div className="mt-4 flex flex-col items-start mb-4">
-            {post.media.type === "image" ? (
-              <img
-                src={post.media.src}
-                alt="Selected"
-                className="max-w-full h-auto"
-              />
-            ) : (
-              <img
-                src={post.media.src}
-                alt="GIF"
-                className="max-w-full h-auto"
-              />
-            )}
-          </div>
-        )}
-
-        <p
-          className="font-inter text-sm blue_gradient cursor-pointer"
-          onClick={() => handleTagClick && handleTagClick(post.tag)}
-        >
-          #{post.tag}
-        </p>
         <div className="flex justify-start gap-6 items-center mt-3">
           <button
             disabled={!session?.user}

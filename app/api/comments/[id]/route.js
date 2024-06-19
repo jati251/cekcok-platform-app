@@ -10,7 +10,7 @@ export const POST = async (request) => {
 
     const comments = await Comment.find({ post: postId }).populate(
       "author",
-      "username email image"
+      "username email image fullName"
     );
 
     return new Response(JSON.stringify(comments), { status: 200 });

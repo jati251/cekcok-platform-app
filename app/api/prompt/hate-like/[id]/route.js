@@ -7,7 +7,6 @@ export const PATCH = async (request, { params }) => {
   try {
     await connectToDB();
 
-    // Find the existing prompt by ID
     const existingPrompt = await Prompt.findById(params.id);
 
     if (!existingPrompt) {
@@ -20,7 +19,6 @@ export const PATCH = async (request, { params }) => {
 
     if (userInteraction) {
       if (userInteraction.action === action) {
-        // If the action is the same, undo the action
         if (action === "like") existingPrompt.likes--;
         if (action === "hate") existingPrompt.hates--;
         existingPrompt.userInteractions =
@@ -28,7 +26,6 @@ export const PATCH = async (request, { params }) => {
             (interaction) => interaction.userId.toString() !== userId
           );
       } else {
-        // If the action is different, switch the action
         if (action === "like") {
           existingPrompt.likes++;
           existingPrompt.hates--;
@@ -40,7 +37,6 @@ export const PATCH = async (request, { params }) => {
         userInteraction.action = action;
       }
     } else {
-      // If no previous interaction, add new interaction
       if (action === "like") existingPrompt.likes++;
       if (action === "hate") existingPrompt.hates++;
       existingPrompt.userInteractions.push({ userId, action });

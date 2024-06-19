@@ -81,29 +81,29 @@ const Comment = ({ comment, isDarkMode }) => {
     <div className="my-6 ">
       <div
         key={comment._id}
-        className={`mb-4 pt-5 flex justify-start gap-6 border-t ${
+        className={`mb-4 pt-5 flex justify-start gap-4 border-t ${
           isDarkMode ? "border-[#2f3336]" : "border-[#e3e3e3]"
         } `}
       >
-        <div className=" flex items-start mt-4">
+        <div className=" flex items-start mt-2">
           <Image
             onClick={handleProfileClick}
             src={comment.author.image ?? "/assets/images/default-user.png"}
             alt="comment_author"
-            width={30}
-            height={30}
+            width={35}
+            height={35}
             className="rounded-full cursor-pointer"
           />
         </div>
         <div className="w-60">
           <div className="mb-2">
             <div className="flex gap-2 items-center">
-              <p className="font-satoshi text-md font-bold ">
+              <p className="font-satoshi font-bold ">
                 {comment.author.fullName}
               </p>
-              <p className="font-satoshi text-sm ">
+              <span className="font-satoshi text-sm text-gray-400">
                 {"@" + comment.author.username}
-              </p>
+              </span>
             </div>
             {comment.createdAt && <TimeAgo timestamp={comment.createdAt} />}
           </div>

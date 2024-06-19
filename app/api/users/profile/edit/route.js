@@ -13,7 +13,7 @@ export const POST = async (req) => {
     if (image) {
       await User.findOneAndUpdate(
         { _id: userId },
-        { image, fullName }, // Update image field in User model
+        { image, fullName },
         { new: true }
       );
     }

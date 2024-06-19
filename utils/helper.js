@@ -37,6 +37,13 @@ export const blobToBase64 = (blob) => {
   });
 };
 
+export const formatEmail = (email) => {
+  const localPart = email.split("@")[0];
+  const formatted = localPart.replace(/[\W\d]/g, "");
+
+  return formatted;
+};
+
 export const convertToIndonesianMonthYear = (dateString) => {
   const date = new Date(dateString);
   const options = { month: "long", year: "numeric" };

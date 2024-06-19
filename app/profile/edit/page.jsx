@@ -42,13 +42,13 @@ const EditProfile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { bio, fullName, location, background } = profile;
+    const { bio, fullName, location, background, userId } = profile;
     const res = await fetch("/api/users/profile/edit", {
       method: "POST",
       body: JSON.stringify({
         userId: session.user.id,
         bio,
-        fullName,
+        fullName: userId.fullName,
         location,
         background,
         image: profile.userId.image,

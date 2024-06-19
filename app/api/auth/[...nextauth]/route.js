@@ -4,6 +4,7 @@ import GoogleProvider from "next-auth/providers/google";
 import User from "@models/user";
 import { connectToDB } from "@utils/database";
 import UserProfile from "@models/profile";
+import { formatEmail } from "@utils/helper";
 
 const handler = NextAuth({
   providers: [
@@ -23,20 +24,19 @@ const handler = NextAuth({
     async signIn({ account, profile, user, credentials }) {
       try {
         await connectToDB();
-        // check if user already exists
+
         const userExists = await User.findOne({ email: profile.email });
 
-        // if not, create a new document and save user in MongoDB
         if (!userExists) {
           let user = await User.create({
             email: profile.email,
             fullName: profile.name,
-            username: profile.name.replace(" ", "").toLowerCase(),
+            username: formatEmail(profile.email.toLowerCase()),
             image: profile.picture,
           });
 
           await UserProfile.create({
-            userId: user._id, // Assuming Profile schema has a userId field
+            userId: user._id,
           });
         }
 
