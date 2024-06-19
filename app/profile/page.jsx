@@ -65,7 +65,7 @@ const MyProfile = () => {
     } catch (error) {
       console.error("Error fetching posts:", error);
     } finally {
-      setLoading(false);
+      if (profile._id) setLoading(false);
     }
   };
 

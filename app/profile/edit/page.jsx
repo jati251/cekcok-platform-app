@@ -36,7 +36,12 @@ const EditProfile = () => {
   const [loading, setLoading] = useState(true);
 
   const fetchProfile = async () => {
-    const response = await fetch(`/api/users/profile/${session?.user.id}`);
+    const response = await fetch(`/api/users/profile/${session?.user.id}`, {
+      method: "POST",
+      body: JSON.stringify({
+        currentUser: null,
+      }),
+    });
     const data = await response.json();
     setProfile(data);
     if (data.userId.status === "private") setIsChecked(true);
