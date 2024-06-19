@@ -1,5 +1,5 @@
 import TimeAgo from "@components/TimeAgo";
-import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import { faFistRaised, faHeart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useIsMobile } from "@utils/hooks";
 import Image from "next/image";
@@ -27,8 +27,15 @@ export const NotifLike = ({ isDarkMode, notif }) => {
     >
       <div className="flex justify-between items-start gap-5">
         <div className="flex-1 flex justify-start gap-4 cursor-pointer">
-          <div className="flex justify-start flex-col mt-4 w-[40px] text-rose-600">
-            <FontAwesomeIcon icon={faHeart} size="2x" />
+          <div
+            className={`flex justify-start flex-col mt-4 w-[40px] ${
+              notif?.type === "like" ? "text-rose-600" : "text-orange-600"
+            }`}
+          >
+            <FontAwesomeIcon
+              icon={notif?.type === "like" ? faHeart : faFistRaised}
+              size="2x"
+            />
           </div>
 
           <div className="flex flex-col w-full">
@@ -52,7 +59,9 @@ export const NotifLike = ({ isDarkMode, notif }) => {
               <span
                 className={`font-satoshi  text-sm whitespace-nowrap overflow-hidden text-ellipsis `}
               >
-                Menyukai postingan anda
+                {notif?.type === "like"
+                  ? "menyukai postingan anda"
+                  : "benci postingan anda"}
               </span>
             </div>
 
