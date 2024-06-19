@@ -2,9 +2,12 @@
 
 import Feed from "@components/Feed";
 import { useSession } from "next-auth/react";
+import Loading from "./profile/loading";
+import { useDarkModeContext } from "./context/DarkModeProvider";
 
 export default function Home() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
+  const { isDarkMode } = useDarkModeContext();
 
   if (status !== "loading")
     return (
@@ -17,4 +20,10 @@ export default function Home() {
         <Feed />
       </section>
     );
+
+  return (
+    <div className="min-w-screen min-h-screen flex items-center justify-center">
+      <Loading isDarkMode={isDarkMode} />
+    </div>
+  );
 }
