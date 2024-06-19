@@ -219,28 +219,34 @@ const Feed = () => {
         />
       </form>
 
-      <div
-        className={`font-satoshi flex justify-around w-full text-center border-t  ${
-          isDarkMode ? "border-[#2f3336]" : "border-[#e3e3e3]"
-        }`}
-      >
+      {session?.user && (
         <div
-          onClick={() => setTab("beranda")}
-          className={` cursor-pointer flex justify-center  ${
-            tab === "beranda" ? "border-blue-500 border-b-4 " : "text-gray-500"
-          } items-center py-4  w-full`}
+          className={`font-satoshi flex justify-around w-full text-center border-t  ${
+            isDarkMode ? "border-[#2f3336]" : "border-[#e3e3e3]"
+          }`}
         >
-          <span className="  ">Beranda</span>
+          <div
+            onClick={() => setTab("beranda")}
+            className={` cursor-pointer flex justify-center  ${
+              tab === "beranda"
+                ? "border-blue-500 border-b-4 "
+                : "text-gray-500"
+            } items-center py-4  w-full`}
+          >
+            <span className="  ">Beranda</span>
+          </div>
+          <div
+            onClick={() => setTab("following")}
+            className={`cursor-pointer flex justify-center   ${
+              tab === "following"
+                ? "border-blue-500 border-b-4"
+                : "text-gray-500"
+            } items-center py-4  w-full`}
+          >
+            <span className="  ">Following</span>
+          </div>
         </div>
-        <div
-          onClick={() => setTab("following")}
-          className={`cursor-pointer flex justify-center   ${
-            tab === "following" ? "border-blue-500 border-b-4" : "text-gray-500"
-          } items-center py-4  w-full`}
-        >
-          <span className="  ">Following</span>
-        </div>
-      </div>
+      )}
 
       {loading && allPosts.length === 0 && (
         <div className="mb-16 prompt_layout w-full px-6">
