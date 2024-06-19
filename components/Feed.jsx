@@ -36,13 +36,13 @@ const Feed = () => {
   const [searchedResults, setSearchedResults] = useState([]);
   const { isDarkMode } = useDarkModeContext();
 
-  const fetchPosts = async () => {
+  const fetchPosts = async (val) => {
     setLoading(true);
     try {
       const response = await fetch("/api/prompt", {
         method: "POST",
         body: JSON.stringify({
-          page,
+          page: val ? 1 : page,
           limit: 10,
         }),
       });
@@ -80,13 +80,13 @@ const Feed = () => {
     }
   };
 
-  const fetchPostsFollow = async () => {
+  const fetchPostsFollow = async (val) => {
     setLoading(true);
     try {
       const response = await fetch("/api/prompt/follow", {
         method: "POST",
         body: JSON.stringify({
-          page,
+          page: val ? 1 : page,
           limit: 10,
           userId: session?.user.id,
         }),
@@ -199,10 +199,12 @@ const Feed = () => {
 
   useEffect(() => {
     setAllPosts([]);
+    setPage(1);
+    setTotalPage(1);
     if (tab === "beranda") {
-      fetchPosts();
+      fetchPosts(true);
     } else {
-      fetchPostsFollow();
+      fetchPostsFollow(true);
     }
   }, [tab]);
 
@@ -226,7 +228,9 @@ const Feed = () => {
           }`}
         >
           <div
-            onClick={() => setTab("beranda")}
+            onClick={() => {
+              setTab("beranda");
+            }}
             className={` cursor-pointer flex justify-center  ${
               tab === "beranda"
                 ? "border-blue-500 border-b-4 "
@@ -236,7 +240,9 @@ const Feed = () => {
             <span className="  ">Beranda</span>
           </div>
           <div
-            onClick={() => setTab("following")}
+            onClick={() => {
+              setTab("following");
+            }}
             className={`cursor-pointer flex justify-center   ${
               tab === "following"
                 ? "border-blue-500 border-b-4"
