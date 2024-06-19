@@ -96,7 +96,7 @@ export const NotifLike = ({ isDarkMode, notif }) => {
                 {notif?.sender?.fullName ?? "Anonim"}
               </p>
               <span
-                className={`font-satoshi text-sm whitespace-nowrap overflow-hidden text-ellipsis `}
+                className={`font-satoshi text-sm `}
               >
                 {notif?.type === "like"
                   ? "🤩 menyukai postingan anda"
