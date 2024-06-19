@@ -67,7 +67,7 @@ const Footer = () => {
       <div
         className={`p-2 sm:hidden fixed ${
           !isNavVisible ? "opacity-50" : ""
-        } bottom-14 left-0 right-3  text-white py-4 flex justify-end transition-all ${
+        } bottom-14  right-3  text-white py-4 flex justify-end transition-all w-fit ${
           session?.user
             ? ""
             : "transform translate-y-full opacity-0 duration-500"
