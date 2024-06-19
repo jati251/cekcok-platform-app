@@ -10,7 +10,7 @@ import { useDarkModeContext } from "@app/context/DarkModeProvider";
 
 const PromptCardList = ({ data, handleTagClick, status, isDarkMode }) => {
   return (
-    <div className={`my-16  ${useIsMobile() ? "w-full" : "prompt_layout"}`}>
+    <div className={`mb-16 ${useIsMobile() ? "w-full" : "prompt_layout"}`}>
       {data.map((post, index) => (
         <PromptCard
           key={`${post._id}_${index}`}
@@ -25,6 +25,7 @@ const PromptCardList = ({ data, handleTagClick, status, isDarkMode }) => {
 
 const Feed = () => {
   const [allPosts, setAllPosts] = useState([]);
+  const [tab, setTab] = useState("beranda");
   const { data: session, status } = useSession();
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = useState(false);
@@ -45,6 +46,7 @@ const Feed = () => {
           limit: 10,
         }),
       });
+
       const data = await response.json();
       if (session?.user) {
         const userId = session.user.id;
@@ -78,42 +80,49 @@ const Feed = () => {
     }
   };
 
-  useEffect(() => {
-    if (
-      (!loading && page <= totalPage && status !== "loading") ||
-      (allPosts.length === 0 && !loading)
-    ) {
-      fetchPosts();
+  const fetchPostsFollow = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("/api/prompt/follow", {
+        method: "POST",
+        body: JSON.stringify({
+          page,
+          limit: 10,
+          userId: session?.user.id,
+        }),
+      });
+
+      const data = await response.json();
+      if (session?.user) {
+        const userId = session.user.id;
+        data.prompts.forEach((post) => {
+          const userInteraction = post.userInteractions.find(
+            (interaction) => interaction.userId.toString() === userId
+          );
+          post.liked = userInteraction?.action === "like";
+          post.hated = userInteraction?.action === "hate";
+        });
+      } else {
+        data.prompts.forEach((post) => {
+          post.liked = false;
+          post.hated = false;
+        });
+      }
+
+      if (data?.prompts?.length > 0) {
+        if (allPosts.length === 0) setAllPosts(data.prompts);
+        else setAllPosts((prevPosts) => [...prevPosts, ...data.prompts]);
+        setHasMore(data.prompts.length > 0);
+      } else {
+        setHasMore(false);
+      }
+
+      setTotalPage(data.totalPages);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    } finally {
+      setLoading(false);
     }
-  }, [page]);
-
-  const handleScroll = useCallback(() => {
-    if (
-      window.innerHeight + document.documentElement.scrollTop >=
-        document.documentElement.offsetHeight - 100 &&
-      !loading
-    ) {
-      setPage((prevPage) => prevPage + 1);
-    }
-  }, [loading, hasMore]);
-
-  useEffect(() => {
-    const debounceScroll = debounce(handleScroll, 200);
-
-    window.addEventListener("scroll", debounceScroll);
-    return () => window.removeEventListener("scroll", debounceScroll);
-  }, [handleScroll]);
-
-  const debounce = (func, wait) => {
-    let timeout;
-    return function executedFunction(...args) {
-      const later = () => {
-        clearTimeout(timeout);
-        func(...args);
-      };
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-    };
   };
 
   const filterPrompts = (searchtext) => {
@@ -146,9 +155,60 @@ const Feed = () => {
     setSearchedResults(searchResult);
   };
 
+  useEffect(() => {
+    if (
+      (!loading && page <= totalPage && status !== "loading") ||
+      (allPosts.length === 0 && !loading)
+    ) {
+      if (tab === "beranda") {
+        fetchPosts();
+      } else {
+        fetchPostsFollow();
+      }
+    }
+  }, [page]);
+
+  const handleScroll = useCallback(() => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop >=
+        document.documentElement.offsetHeight - 100 &&
+      !loading
+    ) {
+      setPage((prevPage) => prevPage + 1);
+    }
+  }, [loading, hasMore]);
+
+  useEffect(() => {
+    const debounceScroll = debounce(handleScroll, 200);
+
+    window.addEventListener("scroll", debounceScroll);
+    return () => window.removeEventListener("scroll", debounceScroll);
+  }, [handleScroll]);
+
+  const debounce = (func, wait) => {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  };
+
+  useEffect(() => {
+    setAllPosts([]);
+    if (tab === "beranda") {
+      fetchPosts();
+    } else {
+      fetchPostsFollow();
+    }
+  }, [tab]);
+
   return (
     <section className="feed ">
-      <form className="relative w-full px-8 flex-center">
+      <form className="relative w-full px-8 flex-center mb-6">
         <input
           type="text"
           placeholder="Cari berdasarkan tag atau username"
@@ -159,8 +219,31 @@ const Feed = () => {
         />
       </form>
 
+      <div
+        className={`font-satoshi flex justify-around w-full text-center border-t  ${
+          isDarkMode ? "border-[#2f3336]" : "border-[#e3e3e3]"
+        }`}
+      >
+        <div
+          onClick={() => setTab("beranda")}
+          className={` cursor-pointer flex justify-center  ${
+            tab === "beranda" ? "border-blue-500 border-b-4 " : "text-gray-500"
+          } items-center py-4  w-full`}
+        >
+          <span className="  ">Beranda</span>
+        </div>
+        <div
+          onClick={() => setTab("following")}
+          className={`cursor-pointer flex justify-center   ${
+            tab === "following" ? "border-blue-500 border-b-4" : "text-gray-500"
+          } items-center py-4  w-full`}
+        >
+          <span className="  ">Following</span>
+        </div>
+      </div>
+
       {loading && allPosts.length === 0 && (
-        <div className="mt-16 prompt_layout w-full px-6">
+        <div className="mb-16 prompt_layout w-full px-6">
           <PromptSkeleton />
           <PromptSkeleton />
           <PromptSkeleton />
