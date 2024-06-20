@@ -200,7 +200,7 @@ const PromptCard = ({
               </div>
               {post.createdAt && <TimeAgo timestamp={post.createdAt} />}
 
-              <p className="my-4 font-satoshi break-all text-sm ">
+              <p className="my-4 font-satoshi break-words text-sm ">
                 {post.prompt}
               </p>
 
