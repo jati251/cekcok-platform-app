@@ -8,6 +8,7 @@ import { useIsMobile } from "@utils/hooks";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
 import NotifCard from "./NotifCard";
 import { useRouter } from "next/navigation";
+import { debounce } from "@utils/helper";
 
 const NotifCardList = ({ data, status, isDarkMode, setNotif }) => {
   return (
@@ -126,18 +127,6 @@ const FeedNotif = () => {
     window.addEventListener("scroll", debounceScroll);
     return () => window.removeEventListener("scroll", debounceScroll);
   }, [handleScroll]);
-
-  const debounce = (func, wait) => {
-    let timeout;
-    return function executedFunction(...args) {
-      const later = () => {
-        clearTimeout(timeout);
-        func(...args);
-      };
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-    };
-  };
 
   useEffect(() => {
     setAllNotif([]);

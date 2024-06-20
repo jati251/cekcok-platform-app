@@ -9,6 +9,7 @@ import Image from "next/image";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
+import { debounce } from "@utils/helper";
 
 const MyProfile = () => {
   const router = useRouter();
@@ -143,18 +144,6 @@ const MyProfile = () => {
     window.addEventListener("scroll", debounceScroll);
     return () => window.removeEventListener("scroll", debounceScroll);
   }, [handleScroll]);
-
-  const debounce = (func, wait) => {
-    let timeout;
-    return function executedFunction(...args) {
-      const later = () => {
-        clearTimeout(timeout);
-        func(...args);
-      };
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-    };
-  };
 
   return (
     <div className="px-4 w-full">

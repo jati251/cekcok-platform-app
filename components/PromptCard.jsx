@@ -20,7 +20,6 @@ const PromptCard = ({
   isDetail,
   handleEdit,
   handleDelete,
-  handleTagClick,
   fetchComment,
 }) => {
   const { data: session } = useSession();
@@ -222,10 +221,7 @@ const PromptCard = ({
                   )}
                 </div>
               )}
-              <p
-                className="font-inter text-sm blue_gradient cursor-pointer"
-                onClick={() => handleTagClick && handleTagClick(post.tag)}
-              >
+              <p className="font-inter text-sm blue_gradient cursor-pointer">
                 #{post.tag}
               </p>
             </div>

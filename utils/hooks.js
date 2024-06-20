@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { debounce } from "./helper";
 
 export function useIsMobile() {
   const [isMobile, setIsMobile] = useState(false);
@@ -38,3 +39,19 @@ export function useDarkMode() {
 
   return [isDarkMode, toggleDarkMode];
 }
+
+export const useDebounce = (value, delay) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+};

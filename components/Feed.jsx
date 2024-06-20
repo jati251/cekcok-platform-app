@@ -8,6 +8,7 @@ import Loading from "@app/profile/loading";
 import { useIsMobile } from "@utils/hooks";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
 import CustomTab from "./tabs/CustomTab";
+import { debounce } from "@utils/helper";
 
 const PromptCardList = ({ data, handleTagClick, status, isDarkMode }) => {
   return (
@@ -168,18 +169,6 @@ const Feed = () => {
     window.addEventListener("scroll", debounceScroll);
     return () => window.removeEventListener("scroll", debounceScroll);
   }, [handleScroll]);
-
-  const debounce = (func, wait) => {
-    let timeout;
-    return function executedFunction(...args) {
-      const later = () => {
-        clearTimeout(timeout);
-        func(...args);
-      };
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-    };
-  };
 
   useEffect(() => {
     setAllPosts([]);

@@ -3,21 +3,19 @@
 import { useSession } from "next-auth/react";
 import { useState, useEffect, useCallback } from "react";
 import Loading from "@app/profile/loading";
-import { useIsMobile } from "@utils/hooks";
+import { useDebounce, useIsMobile } from "@utils/hooks";
 import { PromptSkeleton } from "@components/Skeletons/PromptCardSkeleton";
 import PromptCard from "@components/PromptCard";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
 import CustomTab from "@components/tabs/CustomTab";
+import { debounce } from "@utils/helper";
+import { useRouter } from "next/navigation";
 
-const PromptCardList = ({ data, handleTagClick, status, isDarkMode }) => {
+const PromptCardList = ({ data, status, isDarkMode }) => {
   return (
     <div className={`mb-16 ${useIsMobile() ? "w-full" : "prompt_layout"}`}>
       {data.map((post, index) => (
-        <PromptCard
-          key={`${post._id}_${index}`}
-          post={post}
-          handleTagClick={handleTagClick}
-        />
+        <PromptCard key={`${post._id}_${index}`} post={post} />
       ))}
       {status && <Loading isDarkMode={isDarkMode} />}
     </div>
@@ -25,6 +23,7 @@ const PromptCardList = ({ data, handleTagClick, status, isDarkMode }) => {
 };
 
 export default function SearchPage() {
+  const router = useRouter();
   const [allPosts, setAllPosts] = useState([]);
   const [tab, setTab] = useState("user");
   const { data: session, status } = useSession();
@@ -33,22 +32,23 @@ export default function SearchPage() {
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [searchTimeout, setSearchTimeout] = useState(null);
-  const [searchedResults, setSearchedResults] = useState([]);
+  const debouncedQuery = useDebounce(searchText, 600);
   const { isDarkMode } = useDarkModeContext();
 
   const fetchPosts = async (val) => {
     setLoading(true);
     try {
-      const response = await fetch("/api/prompt", {
+      const response = await fetch("/api/search/posts", {
         method: "POST",
         body: JSON.stringify({
           page: val ? 1 : page,
           limit: 10,
+          query: searchText,
         }),
       });
 
       const data = await response.json();
+
       if (session?.user) {
         const userId = session.user.id;
         data.prompts.forEach((post) => {
@@ -65,8 +65,8 @@ export default function SearchPage() {
         });
       }
 
-      if (data?.prompts?.length > 0) {
-        if (allPosts.length === 0) setAllPosts(data.prompts);
+      if (data?.prompts.length > 0) {
+        if (allPosts.length === 0 || val) setAllPosts(data.prompts);
         else setAllPosts((prevPosts) => [...prevPosts, ...data.prompts]);
         setHasMore(data.prompts.length > 0);
       } else {
@@ -81,80 +81,35 @@ export default function SearchPage() {
     }
   };
 
-  const fetchPostsFollow = async (val) => {
-    setLoading(true);
-    try {
-      const response = await fetch("/api/prompt/follow", {
-        method: "POST",
-        body: JSON.stringify({
-          page: val ? 1 : page,
-          limit: 10,
-          userId: session?.user.id,
-        }),
-      });
+  const fetchUsers = async () => {};
 
-      const data = await response.json();
-      if (session?.user) {
-        const userId = session.user.id;
-        data.prompts.forEach((post) => {
-          const userInteraction = post.userInteractions.find(
-            (interaction) => interaction.userId.toString() === userId
-          );
-          post.liked = userInteraction?.action === "like";
-          post.hated = userInteraction?.action === "hate";
-        });
-      } else {
-        data.prompts.forEach((post) => {
-          post.liked = false;
-          post.hated = false;
-        });
+  //=======================================================
+
+  useEffect(() => {
+    if (debouncedQuery) {
+      setTotalPage(1);
+      setAllPosts([]);
+      switch (tab) {
+        case "postingan":
+          fetchPosts(true);
+          break;
+        case "user":
+          fetchUsers(true);
+          break;
+        default:
+          break;
       }
-
-      if (data?.prompts?.length > 0) {
-        if (allPosts.length === 0) setAllPosts(data.prompts);
-        else setAllPosts((prevPosts) => [...prevPosts, ...data.prompts]);
-        setHasMore(data.prompts.length > 0);
-      } else {
-        setHasMore(false);
-      }
-
-      setTotalPage(data.totalPages);
-    } catch (error) {
-      console.error("Error fetching posts:", error);
-    } finally {
-      setLoading(false);
+    } else {
+      setAllPosts([]);
     }
-  };
+  }, [debouncedQuery]);
 
-  const filterPrompts = (searchtext) => {
-    const regex = new RegExp(searchtext, "i");
-    return allPosts.filter(
-      (item) =>
-        regex.test(item?.creator?.username ?? item?.author?.username) ||
-        regex.test(item.tag) ||
-        regex.test(item.prompt)
-    );
-  };
-
-  const handleSearchChange = (e) => {
-    clearTimeout(searchTimeout);
+  const handleChange = (e) => {
     setSearchText(e.target.value);
-
-    // debounce method
-    setSearchTimeout(
-      setTimeout(() => {
-        const searchResult = filterPrompts(e.target.value);
-        setSearchedResults(searchResult);
-      }, 500)
-    );
   };
+  //=======================================================
 
-  const handleTagClick = (tagName) => {
-    setSearchText(tagName);
-
-    const searchResult = filterPrompts(tagName);
-    setSearchedResults(searchResult);
-  };
+  // perscrollan
 
   useEffect(() => {
     if (!loading && page <= totalPage && page > 1 && status !== "loading") {
@@ -182,31 +137,16 @@ export default function SearchPage() {
     window.addEventListener("scroll", debounceScroll);
     return () => window.removeEventListener("scroll", debounceScroll);
   }, [handleScroll]);
-
-  const debounce = (func, wait) => {
-    let timeout;
-    return function executedFunction(...args) {
-      const later = () => {
-        clearTimeout(timeout);
-        func(...args);
-      };
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-    };
-  };
-
-  const handleFetch = (val) => {
+  //=======================================================
+  const resetFetch = () => {
     setAllPosts([]);
     setPage(1);
     setTotalPage(1);
-    if (val === "beranda") {
-      fetchPosts(true);
-    } else if (val === "test") {
-      handleTagClick("test");
-    } else {
-      fetchPostsFollow(true);
-    }
   };
+
+  useEffect(() => {
+    if (status === "unauthenticated") router.push("/");
+  }, [status]);
 
   if (status === "loading")
     return (
@@ -223,7 +163,7 @@ export default function SearchPage() {
             type="text"
             placeholder="Cari berdasarkan tag atau username"
             value={searchText}
-            onChange={handleSearchChange}
+            onChange={handleChange}
             required
             className={`search_input peer ${isDarkMode ? "bg-[#0b0b0b]" : ""}`}
           />
@@ -240,7 +180,7 @@ export default function SearchPage() {
               tabFor="user"
               onClick={() => {
                 setTab("user");
-                // handleFetch("user");
+                resetFetch();
               }}
             />
             <CustomTab
@@ -248,7 +188,7 @@ export default function SearchPage() {
               tabFor="postingan"
               onClick={() => {
                 setTab("postingan");
-                // handleFetch("postingan");
+                resetFetch();
               }}
             />
             <CustomTab
@@ -256,35 +196,27 @@ export default function SearchPage() {
               tabFor="test"
               onClick={() => {
                 setTab("test");
-                // handleFetch("test");
+                resetFetch();
               }}
             />
           </div>
         )}
 
-        {/* {loading && allPosts.length === 0 && (
-            <div className="mb-16 prompt_layout w-full px-6">
-              <PromptSkeleton />
-              <PromptSkeleton />
-              <PromptSkeleton />
-              <PromptSkeleton />
-              <PromptSkeleton />
-            </div>
-          )} */}
-
-        {searchText ? (
-          <PromptCardList
-            data={searchedResults}
-            handleTagClick={handleTagClick}
-          />
-        ) : (
-          <PromptCardList
-            isDarkMode={isDarkMode}
-            data={allPosts}
-            status={loading}
-            handleTagClick={handleTagClick}
-          />
+        {loading && allPosts.length === 0 && (
+          <div className="mb-16 prompt_layout w-full px-6">
+            <PromptSkeleton />
+            <PromptSkeleton />
+            <PromptSkeleton />
+            <PromptSkeleton />
+            <PromptSkeleton />
+          </div>
         )}
+
+        <PromptCardList
+          isDarkMode={isDarkMode}
+          data={allPosts}
+          status={loading}
+        />
       </div>
     </section>
   );
