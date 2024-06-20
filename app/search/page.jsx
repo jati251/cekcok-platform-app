@@ -11,6 +11,9 @@ import CustomTab from "@components/tabs/CustomTab";
 import { debounce } from "@utils/helper";
 import { useRouter } from "next/navigation";
 import UserCard from "@components/UserCard";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { UserSkeleton } from "@components/Skeletons/UserCardSkeleton";
 
 const PromptCardList = ({ data, status, isDarkMode }) => {
   return (
@@ -23,13 +26,12 @@ const PromptCardList = ({ data, status, isDarkMode }) => {
   );
 };
 
-const UserCardList = ({ data, status, isDarkMode }) => {
+const UserCardList = ({ data }) => {
   return (
     <div className={`mb-16 ${useIsMobile() ? "w-full" : "prompt_layout"}`}>
       {data.map((user, index) => (
         <UserCard key={`${user._id}_${index}`} user={user} />
       ))}
-      {status && <Loading isDarkMode={isDarkMode} />}
     </div>
   );
 };
@@ -42,6 +44,7 @@ export default function SearchPage() {
   const { data: session, status } = useSession();
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = useState(false);
+
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -57,6 +60,7 @@ export default function SearchPage() {
           page: val ? 1 : page,
           limit: 10,
           query: searchText,
+          tag: tab === "tag" && true,
         }),
       });
 
@@ -95,6 +99,7 @@ export default function SearchPage() {
   };
 
   const searchUsers = async (val) => {
+    setLoading(true);
     try {
       const response = await fetch("/api/search", {
         method: "POST",
@@ -110,12 +115,19 @@ export default function SearchPage() {
       }
 
       const data = await response.json();
-      setAllUsers(data.users);
+      if (data?.users.length > 0) {
+        if (allUsers.length === 0 || val) setAllUsers(data.users);
+        else setAllUsers((prevUsers) => [...prevUsers, ...data.users]);
+        setHasMore(data.users.length > 0);
+      } else {
+        setHasMore(false);
+      }
       setTotalPage(data.totalPages);
-      console.log(data);
     } catch (error) {
       console.error("Error searching users:", error);
       return null;
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -125,12 +137,16 @@ export default function SearchPage() {
     if (debouncedQuery) {
       setTotalPage(1);
       setAllPosts([]);
+      setAllUsers([]);
       switch (tab) {
         case "postingan":
           searchPosts(true);
           break;
         case "user":
           searchUsers(true);
+          break;
+        case "tag":
+          searchPosts(true);
           break;
         default:
           break;
@@ -150,7 +166,7 @@ export default function SearchPage() {
 
   useEffect(() => {
     if (!loading && page <= totalPage && page > 1 && status !== "loading") {
-      if (tab === "beranda") {
+      if (tab === "postingan" || tab === "tag") {
         searchPosts();
       } else {
         searchUsers();
@@ -177,8 +193,13 @@ export default function SearchPage() {
   //=======================================================
   const resetFetch = () => {
     setAllPosts([]);
+    setAllUsers([]);
     setPage(1);
     setTotalPage(1);
+  };
+
+  const handleClear = () => {
+    setSearchText("");
   };
 
   useEffect(() => {
@@ -196,16 +217,32 @@ export default function SearchPage() {
     <section className="w-full flex-center flex-col mt-20 mb-20">
       <div className="feed ">
         <form className="relative w-full px-8 flex-center mb-6">
-          <input
-            type="text"
-            placeholder="Cari berdasarkan tag atau username"
-            value={searchText}
-            onChange={handleChange}
-            required
-            className={` peer ${
-              isDarkMode ? "bg-[#0b0b0b] search_input_dark" : "search_input"
-            }`}
-          />
+          <div className="relative w-full">
+            <FontAwesomeIcon
+              icon={faSearch}
+              className={`absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 ${
+                isDarkMode ? "text-gray-400" : "text-gray-600"
+              }`}
+            />
+            <input
+              type="text"
+              placeholder="Cari berdasarkan tag atau username"
+              value={searchText}
+              onChange={handleChange}
+              required
+              className={`peer ${
+                isDarkMode ? "bg-[#0b0b0b] search_input_dark" : "search_input"
+              }`}
+              style={{ paddingLeft: "2.5rem" }}
+            />
+            {searchText && (
+              <FontAwesomeIcon
+                icon={faTimes}
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
+                onClick={handleClear}
+              />
+            )}
+          </div>
         </form>
 
         {session?.user && (
@@ -232,30 +269,37 @@ export default function SearchPage() {
             />
             <CustomTab
               tab={tab}
-              tabFor="test"
+              tabFor="tag"
               onClick={() => {
-                setTab("test");
+                setTab("tag");
                 resetFetch();
               }}
             />
           </div>
         )}
 
-        {loading && allPosts.length === 0 && (
-          <div className="mb-16 prompt_layout w-full px-6">
-            <PromptSkeleton />
-            <PromptSkeleton />
-            <PromptSkeleton />
-            <PromptSkeleton />
-            <PromptSkeleton />
+        {loading &&
+          allPosts.length === 0 &&
+          (tab === "postingan" || tab === "tag") && (
+            <div className="mb-16 prompt_layout w-full px-6">
+              <PromptSkeleton />
+              <PromptSkeleton />
+              <PromptSkeleton />
+              <PromptSkeleton />
+              <PromptSkeleton />
+            </div>
+          )}
+        {loading && allUsers.length === 0 && tab === "user" && (
+          <div className="mb-16 user_layout w-full px-6">
+            <UserSkeleton />
+            <UserSkeleton />
+            <UserSkeleton />
+            <UserSkeleton />
+            <UserSkeleton />
           </div>
         )}
 
-        <UserCardList
-          isDarkMode={isDarkMode}
-          data={allUsers}
-          status={loading}
-        />
+        <UserCardList isDarkMode={isDarkMode} data={allUsers} />
 
         <PromptCardList
           isDarkMode={isDarkMode}

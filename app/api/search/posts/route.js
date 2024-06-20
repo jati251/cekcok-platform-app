@@ -4,19 +4,27 @@ import { connectToDB } from "@utils/database";
 export const dynamic = "force-dynamic";
 
 export const POST = async (request) => {
-  const { query, page = 1, limit = 10 } = await request.json();
+  const { query, page = 1, limit = 10, tag } = await request.json();
 
   try {
     await connectToDB();
 
     const regex = new RegExp(query, "i");
-    const prompts = await Prompt.find({ prompt: regex })
-      .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(parseInt(limit))
-      .populate("creator");
+    const prompts = tag
+      ? await Prompt.find({ tag: regex })
+          .sort({ createdAt: -1 })
+          .skip((page - 1) * limit)
+          .limit(parseInt(limit))
+          .populate("creator")
+      : await Prompt.find({ prompt: regex })
+          .sort({ createdAt: -1 })
+          .skip((page - 1) * limit)
+          .limit(parseInt(limit))
+          .populate("creator");
 
-    const totalPromptCount = await Prompt.countDocuments({ prompt: regex });
+    const totalPromptCount = tag
+      ? await Prompt.countDocuments({ tag: regex })
+      : await Prompt.countDocuments({ prompt: regex });
 
     return new Response(
       JSON.stringify({

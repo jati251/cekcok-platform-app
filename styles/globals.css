@@ -85,10 +85,10 @@ body {
 }
 
 .search_input {
-  @apply block w-full rounded-md border border-gray-200 py-2.5 font-satoshi pl-5 pr-12 text-sm shadow-lg font-medium focus:border-black focus:outline-none focus:ring-0;
+  @apply block w-full rounded-md border border-gray-200 py-2.5 font-satoshi pl-5 pr-7 text-sm shadow-lg font-medium focus:border-black focus:outline-none focus:ring-0;
 }
 .search_input_dark {
-  @apply block w-full rounded-md border border-gray-500 py-2.5 font-satoshi pl-5 pr-12 text-sm shadow-lg font-medium focus:border-white focus:outline-none focus:ring-0;
+  @apply block w-full rounded-md border border-gray-500 py-2.5 font-satoshi pl-5 pr-7 text-sm shadow-lg font-medium focus:border-white focus:outline-none focus:ring-0;
 }
 
 .copy_btn {
@@ -97,6 +97,9 @@ body {
 
 .prompt_layout {
   @apply space-y-6 py-2 sm:columns-2 sm:gap-6 xl:columns-3;
+}
+.user_layout {
+  @apply space-y-3 py-2 sm:columns-2 sm:gap-6 xl:columns-3;
 }
 
 /* Feed Component */
