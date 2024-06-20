@@ -10,6 +10,7 @@ import { useDarkModeContext } from "@app/context/DarkModeProvider";
 import CustomTab from "@components/tabs/CustomTab";
 import { debounce } from "@utils/helper";
 import { useRouter } from "next/navigation";
+import UserCard from "@components/UserCard";
 
 const PromptCardList = ({ data, status, isDarkMode }) => {
   return (
@@ -22,9 +23,21 @@ const PromptCardList = ({ data, status, isDarkMode }) => {
   );
 };
 
+const UserCardList = ({ data, status, isDarkMode }) => {
+  return (
+    <div className={`mb-16 ${useIsMobile() ? "w-full" : "prompt_layout"}`}>
+      {data.map((user, index) => (
+        <UserCard key={`${user._id}_${index}`} user={user} />
+      ))}
+      {status && <Loading isDarkMode={isDarkMode} />}
+    </div>
+  );
+};
+
 export default function SearchPage() {
   const router = useRouter();
   const [allPosts, setAllPosts] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
   const [tab, setTab] = useState("user");
   const { data: session, status } = useSession();
   const [searchText, setSearchText] = useState("");
@@ -35,7 +48,7 @@ export default function SearchPage() {
   const debouncedQuery = useDebounce(searchText, 600);
   const { isDarkMode } = useDarkModeContext();
 
-  const fetchPosts = async (val) => {
+  const searchPosts = async (val) => {
     setLoading(true);
     try {
       const response = await fetch("/api/search/posts", {
@@ -81,7 +94,30 @@ export default function SearchPage() {
     }
   };
 
-  const fetchUsers = async () => {};
+  const searchUsers = async (val) => {
+    try {
+      const response = await fetch("/api/search", {
+        method: "POST",
+        body: JSON.stringify({
+          query: searchText,
+          page: val ? 1 : page,
+          limit: 10,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch user search results");
+      }
+
+      const data = await response.json();
+      setAllUsers(data.users);
+      setTotalPage(data.totalPages);
+      console.log(data);
+    } catch (error) {
+      console.error("Error searching users:", error);
+      return null;
+    }
+  };
 
   //=======================================================
 
@@ -91,16 +127,17 @@ export default function SearchPage() {
       setAllPosts([]);
       switch (tab) {
         case "postingan":
-          fetchPosts(true);
+          searchPosts(true);
           break;
         case "user":
-          fetchUsers(true);
+          searchUsers(true);
           break;
         default:
           break;
       }
     } else {
       setAllPosts([]);
+      setAllUsers([]);
     }
   }, [debouncedQuery]);
 
@@ -114,9 +151,9 @@ export default function SearchPage() {
   useEffect(() => {
     if (!loading && page <= totalPage && page > 1 && status !== "loading") {
       if (tab === "beranda") {
-        fetchPosts();
+        searchPosts();
       } else {
-        fetchPostsFollow();
+        searchUsers();
       }
     }
   }, [page]);
@@ -165,7 +202,9 @@ export default function SearchPage() {
             value={searchText}
             onChange={handleChange}
             required
-            className={`search_input peer ${isDarkMode ? "bg-[#0b0b0b]" : ""}`}
+            className={` peer ${
+              isDarkMode ? "bg-[#0b0b0b] search_input_dark" : "search_input"
+            }`}
           />
         </form>
 
@@ -211,6 +250,12 @@ export default function SearchPage() {
             <PromptSkeleton />
           </div>
         )}
+
+        <UserCardList
+          isDarkMode={isDarkMode}
+          data={allUsers}
+          status={loading}
+        />
 
         <PromptCardList
           isDarkMode={isDarkMode}
