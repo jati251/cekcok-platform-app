@@ -4,6 +4,7 @@ const Loading = ({ isDarkMode }) => {
   return (
     <div className="w-full flex-center">
       <Image
+        priority
         src={
           isDarkMode
             ? "/assets/icons/loader-white.svg"

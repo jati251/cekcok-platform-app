@@ -6,16 +6,18 @@ import Loading from "./profile/loading";
 import { useDarkModeContext } from "./context/DarkModeProvider";
 
 export default function Home() {
-  const { status } = useSession();
+  const { data: session, status } = useSession();
   const { isDarkMode } = useDarkModeContext();
 
   if (status !== "loading")
     return (
       <section className="w-full flex-center flex-col mt-20 mb-20">
-        <p className="desc text-center text-md">
-          CekCok adalah platform sosial dimana kita bisa adu bacot satu sama
-          lain.
-        </p>
+        {!session?.user && (
+          <p className="desc text-center text-md">
+            CekCok adalah platform sosial dimana kita bisa adu bacot satu sama
+            lain.
+          </p>
+        )}
 
         <Feed />
       </section>

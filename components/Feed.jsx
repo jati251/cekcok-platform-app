@@ -7,6 +7,7 @@ import { PromptSkeleton } from "./Skeletons/PromptCardSkeleton";
 import Loading from "@app/profile/loading";
 import { useIsMobile } from "@utils/hooks";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
+import CustomTab from "./tabs/CustomTab";
 
 const PromptCardList = ({ data, handleTagClick, status, isDarkMode }) => {
   return (
@@ -32,7 +33,6 @@ const Feed = () => {
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [searchTimeout, setSearchTimeout] = useState(null);
   const [searchedResults, setSearchedResults] = useState([]);
   const { isDarkMode } = useDarkModeContext();
 
@@ -135,19 +135,6 @@ const Feed = () => {
     );
   };
 
-  const handleSearchChange = (e) => {
-    clearTimeout(searchTimeout);
-    setSearchText(e.target.value);
-
-    // debounce method
-    setSearchTimeout(
-      setTimeout(() => {
-        const searchResult = filterPrompts(e.target.value);
-        setSearchedResults(searchResult);
-      }, 500)
-    );
-  };
-
   const handleTagClick = (tagName) => {
     setSearchText(tagName);
 
@@ -207,47 +194,26 @@ const Feed = () => {
 
   return (
     <section className="feed ">
-      <form className="relative w-full px-8 flex-center mb-6">
-        <input
-          type="text"
-          placeholder="Cari berdasarkan tag atau username"
-          value={searchText}
-          onChange={handleSearchChange}
-          required
-          className={`search_input peer ${isDarkMode ? "bg-[#0b0b0b]" : ""}`}
-        />
-      </form>
-
       {session?.user && (
         <div
           className={`font-satoshi flex justify-around w-full text-center border-t  ${
             isDarkMode ? "border-[#2f3336]" : "border-[#e3e3e3]"
           }`}
         >
-          <div
+          <CustomTab
+            tab={tab}
+            tabFor="beranda"
             onClick={() => {
               setTab("beranda");
             }}
-            className={` cursor-pointer flex justify-center  ${
-              tab === "beranda"
-                ? "border-blue-500 border-b-4 "
-                : "text-gray-500"
-            } items-center py-4  w-full`}
-          >
-            <span className="  ">Beranda</span>
-          </div>
-          <div
+          />
+          <CustomTab
+            tab={tab}
+            tabFor="following"
             onClick={() => {
               setTab("following");
             }}
-            className={`cursor-pointer flex justify-center   ${
-              tab === "following"
-                ? "border-blue-500 border-b-4"
-                : "text-gray-500"
-            } items-center py-4  w-full`}
-          >
-            <span className="  ">Following</span>
-          </div>
+          />
         </div>
       )}
 
