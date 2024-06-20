@@ -23,7 +23,7 @@ const Footer = () => {
     pathname
   );
 
-  if (hideNavAndFooter) return;
+  if (hideNavAndFooter || pathname.includes("/chat")) return;
 
   const [isNavVisible, setIsNavVisible] = useState(true);
   const [unreadCount, setUnreadCount] = useState(0);

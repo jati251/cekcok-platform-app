@@ -52,7 +52,12 @@ const Nav = () => {
     }
   }, []);
 
-  if (hideNavAndFooter || pathname.includes("/profile")) return;
+  if (
+    hideNavAndFooter ||
+    pathname.includes("/profile") ||
+    pathname.includes("/chat")
+  )
+    return;
   if (status !== "loading")
     return (
       <nav
