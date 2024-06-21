@@ -1,6 +1,7 @@
 // pages/api/chat-list.js
 
 import Message from "@models/message";
+import Notification from "@models/notification";
 import { connectToDB } from "@utils/database";
 
 export const POST = async (request) => {
@@ -38,7 +39,13 @@ export const POST = async (request) => {
         .exec();
 
       if (latestMessage) {
+        const latestNotif = await Notification.findOne({
+          recipient: userId,
+          sender: latestMessage.senderId._id,
+        }).sort({ createdAt: -1 });
+
         notif.push({
+          read: latestNotif?.read,
           type: "message",
           recipient: recipientId,
           sender: {

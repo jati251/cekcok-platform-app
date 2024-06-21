@@ -41,7 +41,11 @@ const BaseNotif = ({ notif }) => {
         </span>
       </div>
 
-      <p className="my-4 font-satoshi text-gray-500 break-all text-sm ">
+      <p
+        className={`my-4 font-satoshi ${
+          notif?.read ? "text-gray-500" : ""
+        } break-all text-sm `}
+      >
         {notif?.data?.message}
       </p>
     </div>
