@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
-const socket = io("http://www.cekcok.my.id", {
+const socket = io("https://www.cekcok.my.id", {
   path: "/api/socket.io",
 });
 
