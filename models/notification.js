@@ -1,6 +1,6 @@
 // models/notification.js
 
-const { Schema, model, models } = require("mongoose");
+import { Schema, model, models } from "mongoose";
 
 const NotificationSchema = new Schema({
   recipient: {
@@ -41,4 +41,4 @@ NotificationSchema.pre("save", function (next) {
 const Notification =
   models.Notification || model("Notification", NotificationSchema);
 
-module.exports = Notification;
+export default Notification;

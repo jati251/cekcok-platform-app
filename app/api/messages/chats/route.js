@@ -1,5 +1,3 @@
-// pages/api/chat-list.js
-
 import Message from "@models/message";
 import Notification from "@models/notification";
 import { connectToDB } from "@utils/database";

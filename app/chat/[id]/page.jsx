@@ -5,11 +5,12 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect, useRef } from "react";
-import socket from "@utils/socket";
 import { useSession } from "next-auth/react";
 import { faPaperPlane, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import Loading from "@app/profile/loading";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
+import fetcher from "@utils/fetcher";
+import useSWR from "swr";
 
 const ChatPage = ({ params }) => {
   const recipientId = params.id;
@@ -17,7 +18,6 @@ const ChatPage = ({ params }) => {
   const [recipient, setRecipient] = useState();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState([]);
   // const [totalPage, setTotalPage] = useState(1);
   // const [hasMore, setHasMore] = useState(true);
   const { data: session, status } = useSession();
@@ -26,57 +26,42 @@ const ChatPage = ({ params }) => {
   const messagesEndRef = useRef(null);
 
   if (!recipientId) {
-    return null; // This can cause hooks to be skipped.
+    return null;
   }
 
-  const roomId =
-    session?.user?.id && recipientId
-      ? [session.user.id, recipientId].sort().join("-")
-      : null;
-
-  const fetchMessages = async (val) => {
-    setLoading(true);
-    try {
-      const response = await fetch("/api/messages", {
-        method: "POST",
-        body: JSON.stringify({
-          userId: session.user.id,
-          recipientId,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.length > 0) {
-        if (messages.length === 0) setMessages(data);
-        else setMessages((prevPosts) => [...prevPosts, ...data]);
-        // setHasMore(data.length > 0);
-      }
-      // else {
-      //    setHasMore(false);
-      // }
-
-      // setTotalPage(data.totalPages);
-    } catch (error) {
-      console.error("Error fetching messages:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  const { data: messages, mutate: mutateMessages } = useSWR(
+    `/api/messages/${session?.user?.id}/${recipientId}`,
+    fetcher
+  );
+  // Usage
+  // const { messages, error } = fetchMessages(session?.user?.id, recipientId);
   const handleBack = () => {
     router.back();
   };
 
-  const sendMessage = () => {
-    if (message.trim() && recipientId) {
-      socket.emit("privateMessage", {
-        recipientId,
-        message,
-        roomId,
-        senderId: session?.user.id,
-      });
-      setMessage("");
+  const sendMessage = async () => {
+    if (message.trim()) {
+      try {
+        const response = await fetch("/api/messages/send", {
+          method: "POST",
+          body: JSON.stringify({
+            senderId: session?.user?.id,
+            recipientId,
+            message,
+          }),
+        });
+
+        if (response.ok) {
+          setMessage("");
+
+          const newMessage = await response.json();
+          mutateMessages([...messages, newMessage], false);
+        } else {
+          console.error("Failed to send message");
+        }
+      } catch (error) {
+        console.error("Failed to send message:", error);
+      }
     }
   };
 
@@ -110,27 +95,6 @@ const ChatPage = ({ params }) => {
     fetchRecipient();
   }, [recipientId]);
 
-  useEffect(() => {
-    if (roomId) {
-      socket.emit("join", roomId);
-
-      socket.on("receivePrivateMessage", (msg) => {
-        setMessages((prevMessages) => [...prevMessages, msg]);
-      });
-
-      socket.on("messageSent", (msg) => {
-        setMessages((prevMessages) => [...prevMessages, msg]);
-      });
-
-      fetchMessages();
-
-      return () => {
-        socket.off("receivePrivateMessage");
-        socket.off("messageSent");
-      };
-    }
-  }, [roomId, recipientId]);
-
   return (
     <div className="flex flex-col h-screen w-full">
       {recipientId && (
@@ -155,7 +119,7 @@ const ChatPage = ({ params }) => {
             )}
           </header>
           <div className="flex-1 overflow-y-auto p-4 space-y-4 ">
-            {messages.map((msg, index) => (
+            {messages?.map((msg, index) => (
               <div
                 key={index}
                 className={`flex ${

@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import { io } from "socket.io-client";
-import { useSession } from "next-auth/react";
 
 export function useIsMobile() {
   const [isMobile, setIsMobile] = useState(false);
@@ -55,24 +53,4 @@ export const useDebounce = (value, delay) => {
   }, [value, delay]);
 
   return debouncedValue;
-};
-
-export const useSocket = () => {
-  const { data: session } = useSession();
-  const [socket, setSocket] = useState(null);
-
-  useEffect(() => {
-    if (session?.user?.id) {
-      const socketInstance = io("https://www.cekcok.my.id", {
-        path: "/api/socket.io",
-        query: { userId: session.user.id },
-      });
-
-      setSocket(socketInstance);
-
-      return () => socketInstance.disconnect();
-    }
-  }, [session]);
-
-  return socket;
 };
