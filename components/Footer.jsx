@@ -23,8 +23,6 @@ const Footer = () => {
     pathname
   );
 
-  if (hideNavAndFooter || pathname.includes("/chat/")) return;
-
   const [isNavVisible, setIsNavVisible] = useState(true);
   const [unreadCount, setUnreadCount] = useState(0);
 
@@ -61,6 +59,8 @@ const Footer = () => {
   useEffect(() => {
     if (pathname.includes("/notification")) setUnreadCount(0);
   }, [pathname]);
+
+  if (hideNavAndFooter || pathname.includes("/chat/")) return;
 
   return (
     <footer>
