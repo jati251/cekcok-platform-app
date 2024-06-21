@@ -1,5 +1,5 @@
 // server.js
-const { createServer } = require("http");
+const { createServer } = require("https");
 const next = require("next");
 const { Server } = require("socket.io");
 const mongoose = require("mongoose");
