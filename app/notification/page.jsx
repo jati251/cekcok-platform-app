@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import FeedNotif from "@components/FeedNotif";
+import FeedNotif from "@components/feed/FeedNotif";
 import Loading from "@app/profile/loading";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
 

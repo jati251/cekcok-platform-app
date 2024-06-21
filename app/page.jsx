@@ -1,6 +1,6 @@
 "use client";
 
-import Feed from "@components/Feed";
+import Feed from "@components/feed/Feed";
 import { useSession } from "next-auth/react";
 import Loading from "./profile/loading";
 import { useDarkModeContext } from "./context/DarkModeProvider";

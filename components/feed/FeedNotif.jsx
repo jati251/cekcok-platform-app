@@ -2,11 +2,11 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
-import { PromptSkeleton } from "./Skeletons/PromptCardSkeleton";
+import { PromptSkeleton } from "../Skeletons/PromptCardSkeleton";
 import Loading from "@app/profile/loading";
 import { useIsMobile } from "@utils/hooks";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
-import NotifCard from "./NotifCard";
+import NotifCard from "../NotifCard";
 import { useRouter } from "next/navigation";
 import { debounce } from "@utils/helper";
 

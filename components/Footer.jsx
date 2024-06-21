@@ -23,10 +23,9 @@ const Footer = () => {
     pathname
   );
 
-  if (hideNavAndFooter) return;
-
   const [isNavVisible, setIsNavVisible] = useState(true);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [unreadMsgCount, setUnreadMsgCount] = useState(0);
 
   const handleScroll = () => {
     const currentScrollPos = window.pageYOffset;
@@ -41,7 +40,8 @@ const Footer = () => {
         throw new Error("Failed to fetch unread notification count");
       }
       const data = await response.json();
-      setUnreadCount(data.unreadCount);
+      setUnreadCount(data.unreadOtherCount);
+      setUnreadMsgCount(data.unreadMessageCount);
     } catch (error) {
       console.error("Error fetching unread notification count:", error);
     }
@@ -55,12 +55,16 @@ const Footer = () => {
   useEffect(() => {
     if (session?.user?.id) {
       fetchUnreadCount();
+      const interval = setInterval(fetchUnreadCount, 30000); // Poll every 60 seconds
+      return () => clearInterval(interval); // Cleanup interval on unmount
     }
   }, [session?.user]);
 
   useEffect(() => {
     if (pathname.includes("/notification")) setUnreadCount(0);
   }, [pathname]);
+
+  if (hideNavAndFooter || pathname.includes("/chat/")) return;
 
   return (
     <footer>
@@ -120,8 +124,13 @@ const Footer = () => {
           </div>
         </Link>
         <Link href="/chat">
-          <div className="text-gray-300 hover:text-white transition-colors duration-300">
+          <div className="relative text-gray-300 hover:text-white transition-colors duration-300">
             <FontAwesomeIcon icon={faMailBulk} size="xl" />
+            {unreadMsgCount > 0 && (
+              <span className="absolute top-1 right-4 bg-red-500 text-white text-[12px] rounded-full h-4 w-4 flex items-center font-satoshi justify-center">
+                {unreadMsgCount}
+              </span>
+            )}
           </div>
         </Link>
         {session?.user && (
