@@ -63,7 +63,7 @@ export const useSocket = () => {
 
   useEffect(() => {
     if (session?.user?.id) {
-      const socketInstance = io("http://localhost:3000", {
+      const socketInstance = io("http://www.cekcok.my.id", {
         path: "/api/socket.io",
         query: { userId: session.user.id },
       });
