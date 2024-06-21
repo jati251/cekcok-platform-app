@@ -4,7 +4,7 @@ import Message from "@models/message";
 import { connectToDB } from "@utils/database";
 
 export const POST = async (request) => {
-  const { userId } = await request.json();
+  const { userId, page = 1, limit = 10 } = await request.json();
 
   try {
     await connectToDB();
@@ -15,10 +15,18 @@ export const POST = async (request) => {
     });
 
     // Prepare an array to store chat details
-    const chatList = [];
+    const totalRecipients = recipients.length;
+
+    // Paginate recipients array
+    const paginatedRecipientIds = recipients.slice(
+      (page - 1) * limit,
+      page * limit
+    );
+
+    const notif = [];
 
     // Fetch the latest message for each recipient
-    for (const recipientId of recipients) {
+    for (const recipientId of paginatedRecipientIds) {
       const latestMessage = await Message.findOne({
         $or: [
           { senderId: userId, recipientId },
@@ -26,16 +34,20 @@ export const POST = async (request) => {
         ],
       })
         .sort({ createdAt: -1 })
-        .populate("senderId", "username image") // Populate senderId with username and image
-        .populate("recipientId", "username image") // Populate recipientId with username and image
+        .populate("senderId", "username image fullName") // Populate senderId with username and image
         .exec();
 
       if (latestMessage) {
-        chatList.push({
-          recipientId,
-          recipientUsername: latestMessage.recipientId.username,
-          recipientImage: latestMessage.recipientId.image,
-          lastMessage: latestMessage.message,
+        notif.push({
+          type: "message",
+          recipient: recipientId,
+          sender: {
+            _id: latestMessage.senderId._id,
+            username: latestMessage.senderId.username,
+            image: latestMessage.senderId.image,
+            fullName: latestMessage.senderId.fullName,
+          },
+          data: { message: latestMessage.message },
           lastMessageSender:
             latestMessage.senderId === userId
               ? "You"
@@ -44,7 +56,10 @@ export const POST = async (request) => {
       }
     }
 
-    return new Response(JSON.stringify(chatList), { status: 200 });
+    return new Response(
+      JSON.stringify({ notif, totalPages: Math.ceil(totalRecipients / limit) }),
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Failed to fetch chat list", error);
     return new Response("Failed to fetch chat list", { status: 500 });

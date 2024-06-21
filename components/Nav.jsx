@@ -16,6 +16,7 @@ import { useDarkModeContext } from "@app/context/DarkModeProvider";
 
 const Nav = () => {
   const pathname = usePathname();
+
   const hideNavAndFooter = ["/login", "/register"].includes(pathname);
 
   const { data: session, status } = useSession();
@@ -55,7 +56,7 @@ const Nav = () => {
   if (
     hideNavAndFooter ||
     pathname.includes("/profile") ||
-    pathname.includes("/chat")
+    pathname.includes("/chat/")
   )
     return;
   if (status !== "loading")

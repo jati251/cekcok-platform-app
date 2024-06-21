@@ -8,21 +8,30 @@ import React, { useState, useEffect, useRef } from "react";
 import socket from "@utils/socket";
 import { useSession } from "next-auth/react";
 import { faPaperPlane, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import Loading from "@app/profile/loading";
 
 const ChatPage = ({ params }) => {
   const recipientId = params.id;
   const router = useRouter();
-  const handleBack = () => {
-    router.back();
-  };
   const [recipient, setRecipient] = useState();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
-  const [totalPage, setTotalPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
+  // const [totalPage, setTotalPage] = useState(1);
+  // const [hasMore, setHasMore] = useState(true);
   const { data: session } = useSession();
+  const { isDarkMode } = useDarkModeContext();
+
   const messagesEndRef = useRef(null);
+
+  if (!recipientId) {
+    return null; // This can cause hooks to be skipped.
+  }
+
+  const roomId =
+    session?.user?.id && recipientId
+      ? [session.user.id, recipientId].sort().join("-")
+      : null;
 
   const fetchMessages = async (val) => {
     setLoading(true);
@@ -35,22 +44,16 @@ const ChatPage = ({ params }) => {
         }),
       });
 
-      await fetch("/api/messages/chats", {
-        method: "POST",
-        body: JSON.stringify({
-          userId: session.user.id,
-        }),
-      });
-
       const data = await response.json();
 
       if (data.length > 0) {
         if (messages.length === 0) setMessages(data);
         else setMessages((prevPosts) => [...prevPosts, ...data]);
-        setHasMore(data.length > 0);
-      } else {
-        setHasMore(false);
+        // setHasMore(data.length > 0);
       }
+      // else {
+      //    setHasMore(false);
+      // }
 
       // setTotalPage(data.totalPages);
     } catch (error) {
@@ -60,17 +63,19 @@ const ChatPage = ({ params }) => {
     }
   };
 
+  const handleBack = () => {
+    router.back();
+  };
+
   useEffect(() => {
-    if (session?.user?.id) {
-      socket.emit("join", session.user.id);
+    if (roomId) {
+      socket.emit("join", roomId);
 
       socket.on("receivePrivateMessage", (msg) => {
-        console.log(msg);
         setMessages((prevMessages) => [...prevMessages, msg]);
       });
 
       socket.on("messageSent", (msg) => {
-        console.log(msg);
         setMessages((prevMessages) => [...prevMessages, msg]);
       });
 
@@ -81,13 +86,14 @@ const ChatPage = ({ params }) => {
         socket.off("messageSent");
       };
     }
-  }, [session?.user?.id, recipientId]);
+  }, [roomId, recipientId]);
 
   const sendMessage = () => {
     if (message.trim() && recipientId) {
       socket.emit("privateMessage", {
         recipientId,
         message,
+        roomId,
         senderId: session?.user.id,
       });
       setMessage("");
@@ -105,7 +111,6 @@ const ChatPage = ({ params }) => {
       });
       const data = await response.json();
       setRecipient(data);
-      console.log(data);
     } catch (error) {
       console.error("Error fetching recipient:", error);
     } finally {
@@ -171,6 +176,7 @@ const ChatPage = ({ params }) => {
                 </div>
               </div>
             ))}
+            {loading && <Loading isDarkMode={isDarkMode} />}
             <div ref={messagesEndRef}></div>
           </div>
           <div className="flex items-center p-4 bg-white dark:bg-gray-900 border-t dark:border-gray-700">

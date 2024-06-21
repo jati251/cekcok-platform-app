@@ -4,6 +4,7 @@ const next = require("next");
 const { Server } = require("socket.io");
 const mongoose = require("mongoose");
 const Message = require("./models/message"); // Import the Message model
+const Notification = require("./models/notification"); // Import the Message model
 
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
@@ -21,33 +22,44 @@ app.prepare().then(() => {
   io.on("connection", (socket) => {
     console.log("User connected:", socket.id);
 
-    socket.on("join", (userId) => {
-      socket.join(userId); // Join the room based on userId
-      console.log(`User ${socket.id} joined room ${userId}`);
+    socket.on("join", (roomId) => {
+      socket.join(roomId); // Join the room based on roomId
+      console.log(`User ${socket.id} joined room ${roomId}`);
     });
 
-    socket.on("privateMessage", async ({ recipientId, message, senderId }) => {
-      const newMessage = new Message({
-        message,
-        senderId,
-        recipientId,
-      });
-      await newMessage.save();
+    socket.on(
+      "privateMessage",
+      async ({ roomId, recipientId, message, senderId }) => {
+        const newMessage = new Message({
+          message,
+          senderId,
+          recipientId,
+        });
+        await newMessage.save();
 
-      io.to(recipientId).emit("receivePrivateMessage", {
-        message,
-        senderId,
-        recipientId,
-        createdAt: newMessage.createdAt,
-      });
+        const newNotification = new Notification({
+          data: { message },
+          sender: senderId,
+          recipient: recipientId,
+          type: "message",
+        });
+        await newNotification.save();
 
-      socket.emit("messageSent", {
-        message,
-        senderId,
-        recipientId,
-        createdAt: newMessage.createdAt,
-      });
-    });
+        io.to(roomId).emit("receivePrivateMessage", {
+          message,
+          senderId,
+          recipientId,
+          createdAt: newMessage.createdAt,
+        });
+
+        socket.emit("messageSent", {
+          message,
+          senderId,
+          recipientId,
+          createdAt: newMessage.createdAt,
+        });
+      }
+    );
 
     socket.on("disconnect", () => {
       console.log("User disconnected");
