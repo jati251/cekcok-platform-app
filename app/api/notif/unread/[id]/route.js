@@ -15,18 +15,16 @@ export const GET = async (request, { params }) => {
       return new Response("User ID is required", { status: 400 });
     }
 
-    // Count unread messages
     const unreadMessageCount = await Notification.countDocuments({
       recipient: userId,
       read: false,
-      type: "message", // Assuming 'message' is the type for messages
+      type: "message",
     });
 
-    // Count unread notifications excluding messages
     const unreadOtherCount = await Notification.countDocuments({
       recipient: userId,
       read: false,
-      type: { $ne: "message" }, // Exclude 'message' type
+      type: { $ne: "message" },
     });
 
     return new Response(

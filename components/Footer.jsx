@@ -55,6 +55,8 @@ const Footer = () => {
   useEffect(() => {
     if (session?.user?.id) {
       fetchUnreadCount();
+      const interval = setInterval(fetchUnreadCount, 30000); // Poll every 60 seconds
+      return () => clearInterval(interval); // Cleanup interval on unmount
     }
   }, [session?.user]);
 
