@@ -31,7 +31,12 @@ const ChatPage = ({ params }) => {
 
   const { data: messages, mutate: mutateMessages } = useSWR(
     `/api/messages/${session?.user?.id}/${recipientId}`,
-    fetcher
+    fetcher,
+    {
+      refreshInterval: 3000, // Refresh every 3 seconds (3000 milliseconds)
+      refreshWhenHidden: false, // Do not refresh when tab is hidden
+      shouldRetryOnError: true, // Retry on error
+    }
   );
   // Usage
   // const { messages, error } = fetchMessages(session?.user?.id, recipientId);
