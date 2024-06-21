@@ -36,6 +36,7 @@ export const POST = async (request) => {
       })
         .sort({ createdAt: -1 })
         .populate("senderId", "username image fullName") // Populate senderId with username and image
+        .populate("recipientId", "username image fullName") // Populate senderId with username and image'
         .exec();
 
       if (latestMessage) {
@@ -47,12 +48,18 @@ export const POST = async (request) => {
         notif.push({
           read: latestNotif?.read,
           type: "message",
-          recipient: recipientId,
+          recipient: userId,
           sender: {
             _id: latestMessage.senderId._id,
             username: latestMessage.senderId.username,
             image: latestMessage.senderId.image,
             fullName: latestMessage.senderId.fullName,
+          },
+          recipient: {
+            _id: latestMessage.recipientId._id,
+            username: latestMessage.recipientId.username,
+            image: latestMessage.recipientId.image,
+            fullName: latestMessage.recipientId.fullName,
           },
           data: { message: latestMessage.message },
           lastMessageSender:
