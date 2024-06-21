@@ -33,13 +33,11 @@ const ChatPage = ({ params }) => {
     `/api/messages/${session?.user?.id}/${recipientId}`,
     fetcher,
     {
-      refreshInterval: 3000, // Refresh every 3 seconds (3000 milliseconds)
-      refreshWhenHidden: false, // Do not refresh when tab is hidden
-      shouldRetryOnError: true, // Retry on error
+      refreshInterval: 3000,
+      refreshWhenHidden: false,
+      shouldRetryOnError: true,
     }
   );
-  // Usage
-  // const { messages, error } = fetchMessages(session?.user?.id, recipientId);
   const handleBack = () => {
     router.back();
   };
@@ -160,6 +158,12 @@ const ChatPage = ({ params }) => {
               type="text"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  sendMessage();
+                }
+              }}
               placeholder="Ketik sesuatu..."
               className={`flex-1 px-4 py-2 rounded-l-md border border-gray-300 ${
                 isDarkMode
