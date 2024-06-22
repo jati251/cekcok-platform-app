@@ -27,18 +27,28 @@ const UserCard = ({ user, setSelected, selected }) => {
     }
   };
 
+  const bg =
+    selected === user?._id && isDarkMode
+      ? " bg-gray-800"
+      : selected === user?._id && !isDarkMode
+      ? " bg-gray-200"
+      : "";
+
   return (
     <div
       onClick={handleProfileClick}
-      className={`${
-        selected === user?._id ? " bg-gray-700" : ""
-      } cursor-pointer ${
-        useIsMobile()
-          ? `px-2 border-t ${
-              isDarkMode ? "border-[#2f3336]" : "border-[#e3e3e3]"
-            } py-4`
-          : "prompt_card"
-      }`}
+      className={
+        bg +
+        ` cursor-pointer ${
+          isDarkMode ? "hover:bg-[#080808]" : "hover:bg-[#dbdbdb]"
+        } transition-colors duration-300 ${
+          useIsMobile()
+            ? `px-2 border-t ${
+                isDarkMode ? "border-[#2f3336]" : "border-[#e3e3e3]"
+              } py-4`
+            : "prompt_card"
+        }`
+      }
     >
       <div className="flex justify-between items-start gap-5">
         <div className="flex-1 flex justify-start gap-2 cursor-pointer">
