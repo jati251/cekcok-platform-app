@@ -61,43 +61,44 @@ const Footer = () => {
 
   return (
     <footer>
-      {!pathname.includes("/create-prompt") && (
-        <div
-          className={`p-2 sm:hidden fixed ${
-            !isNavVisible ? "opacity-50" : ""
-          } bottom-14  right-3  text-white py-4 flex justify-end transition-all w-fit ${
-            session?.user
-              ? ""
-              : "transform translate-y-full opacity-0 duration-500"
-          }`}
-        >
-          {pathname.includes("/chat") ? (
-            <Link href="/chat/search">
-              <div
-                className={`text-blue-400 hover:text-blue-200 transition-colors duration-300 ${
-                  session?.user
-                    ? ""
-                    : "transform translate-y-full opacity-0 duration-500"
-                }`}
-              >
-                <FontAwesomeIcon icon={faPersonCirclePlus} size="3x" />
-              </div>
-            </Link>
-          ) : (
-            <Link href="/create-prompt">
-              <div
-                className={`text-blue-400 hover:text-blue-200 transition-colors duration-300 ${
-                  session?.user
-                    ? ""
-                    : "transform translate-y-full opacity-0 duration-500"
-                }`}
-              >
-                <FontAwesomeIcon icon={faCommenting} size="3x" />
-              </div>
-            </Link>
-          )}
-        </div>
-      )}
+      {!pathname.includes("/create-prompt") &&
+        !pathname.includes("/update-prompt") && (
+          <div
+            className={`p-2 sm:hidden fixed ${
+              !isNavVisible ? "opacity-50" : ""
+            } bottom-14  right-3  text-white py-4 flex justify-end transition-all w-fit ${
+              session?.user
+                ? ""
+                : "transform translate-y-full opacity-0 duration-500"
+            }`}
+          >
+            {pathname.includes("/chat") ? (
+              <Link href="/chat/search">
+                <div
+                  className={`text-blue-400 hover:text-blue-200 transition-colors duration-300 ${
+                    session?.user
+                      ? ""
+                      : "transform translate-y-full opacity-0 duration-500"
+                  }`}
+                >
+                  <FontAwesomeIcon icon={faPersonCirclePlus} size="3x" />
+                </div>
+              </Link>
+            ) : (
+              <Link href="/create-prompt">
+                <div
+                  className={`text-blue-400 hover:text-blue-200 transition-colors duration-300 ${
+                    session?.user
+                      ? ""
+                      : "transform translate-y-full opacity-0 duration-500"
+                  }`}
+                >
+                  <FontAwesomeIcon icon={faCommenting} size="3x" />
+                </div>
+              </Link>
+            )}
+          </div>
+        )}
       <div
         className={`p-2 sm:hidden fixed ${
           !isNavVisible ? "opacity-50" : ""
