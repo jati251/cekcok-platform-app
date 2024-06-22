@@ -2,12 +2,13 @@
 
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useIsMobile } from "@utils/hooks";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
 
-const UserCard = ({ user }) => {
+const UserCard = ({ user, setSelected, selected }) => {
   const { data: session } = useSession();
+  const pathname = usePathname();
 
   const router = useRouter();
 
@@ -15,15 +16,27 @@ const UserCard = ({ user }) => {
 
   const handleProfileClick = (e) => {
     e.stopPropagation();
-    if (user?._id === session?.user.id && session?.user)
-      return router.push("/profile");
-    if (user?._id) router.push(`/profile/${user?._id}?name=${user?.username}`);
+    if (pathname.includes("/chat")) {
+      if (user?._id !== session?.user.id && session?.user)
+        setSelected(user._id);
+    } else {
+      if (user?._id === session?.user.id && session?.user)
+        return router.push("/profile");
+      if (user?._id)
+        router.push(`/profile/${user?._id}?name=${user?.username}`);
+    }
   };
 
   return (
     <div
       onClick={handleProfileClick}
-      className={`cursor-pointer ${
+      className={`${
+        selected === user?._id && isDarkMode
+          ? " bg-gray-800"
+          : selected === user?._id && !isDarkMode
+          ? " bg-gray-200"
+          : ""
+      } cursor-pointer ${
         isDarkMode ? "hover:bg-[#080808]" : "hover:bg-[#dbdbdb]"
       } transition-colors duration-300 ${
         useIsMobile()

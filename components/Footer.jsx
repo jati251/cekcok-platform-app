@@ -12,6 +12,7 @@ import {
   faBell,
   faCommenting,
   faSearch,
+  faPersonCirclePlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { signOut, useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
@@ -78,17 +79,31 @@ const Footer = () => {
             : "transform translate-y-full opacity-0 duration-500"
         }`}
       >
-        <Link href="/create-prompt">
-          <div
-            className={`text-blue-400 hover:text-blue-200 transition-colors duration-300 ${
-              session?.user
-                ? ""
-                : "transform translate-y-full opacity-0 duration-500"
-            }`}
-          >
-            <FontAwesomeIcon icon={faCommenting} size="3x" />
-          </div>
-        </Link>
+        {pathname.includes("/chat") ? (
+          <Link href="/chat/search">
+            <div
+              className={`text-blue-400 hover:text-blue-200 transition-colors duration-300 ${
+                session?.user
+                  ? ""
+                  : "transform translate-y-full opacity-0 duration-500"
+              }`}
+            >
+              <FontAwesomeIcon icon={faPersonCirclePlus} size="3x" />
+            </div>
+          </Link>
+        ) : (
+          <Link href="/create-prompt">
+            <div
+              className={`text-blue-400 hover:text-blue-200 transition-colors duration-300 ${
+                session?.user
+                  ? ""
+                  : "transform translate-y-full opacity-0 duration-500"
+              }`}
+            >
+              <FontAwesomeIcon icon={faCommenting} size="3x" />
+            </div>
+          </Link>
+        )}
       </div>
       <div
         className={`p-2 sm:hidden fixed ${
