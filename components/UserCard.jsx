@@ -38,7 +38,7 @@ const UserCard = ({ user, setSelected, selected }) => {
           : ""
       } cursor-pointer ${
         isDarkMode ? "hover:bg-[#080808]" : "hover:bg-[#dbdbdb]"
-      } transition-colors duration-300 ${
+      } ${
         useIsMobile()
           ? `px-2 border-t ${
               isDarkMode ? "border-[#2f3336]" : "border-[#e3e3e3]"

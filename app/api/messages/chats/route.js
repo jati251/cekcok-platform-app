@@ -19,12 +19,7 @@ export const POST = async (request) => {
       $or: [{ senderId: userId }, { recipientId: userId }],
     });
 
-    for (const senderId of senders) {
-      if (!recipients.includes(senderId)) {
-        recipients.push(senderId);
-      }
-    }
-
+    recipients.push(senders);
     const totalRecipients = recipients.length;
 
     const paginatedRecipientIds = recipients.slice(
