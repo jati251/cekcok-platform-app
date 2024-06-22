@@ -62,7 +62,8 @@ const Footer = () => {
   return (
     <footer>
       {!pathname.includes("/create-prompt") &&
-        !pathname.includes("/update-prompt") && (
+        !pathname.includes("/update-prompt") &&
+        !pathname.includes("/profile/edit") && (
           <div
             className={`p-2 sm:hidden fixed ${
               !isNavVisible ? "opacity-50" : ""
