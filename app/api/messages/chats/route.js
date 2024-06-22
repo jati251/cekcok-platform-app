@@ -15,6 +15,16 @@ export const POST = async (request) => {
       $or: [{ senderId: userId }, { recipientId: userId }],
     });
 
+    const senders = await Message.distinct("senderId", {
+      $or: [{ senderId: userId }, { recipientId: userId }],
+    });
+
+    for (const senderId of senders) {
+      if (!recipients.includes(senderId)) {
+        recipients.push(senderId);
+      }
+    }
+
     const totalRecipients = recipients.length;
 
     const paginatedRecipientIds = recipients.slice(
