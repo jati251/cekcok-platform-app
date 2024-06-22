@@ -114,12 +114,8 @@ const ChatPage = ({ params }) => {
     if (roomId) {
       socket.emit("join", roomId);
 
-      socket.on("receivePrivateMessage", (msg) => {
-        setMessages((prevMessages) => [...prevMessages, msg]);
-      });
-
-      socket.on("messageSent", (msg) => {
-        setMessages((prevMessages) => [...prevMessages, msg]);
+      socket.on("receivePrivateMessage", (newMessage) => {
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
       });
 
       fetchMessages();
