@@ -31,14 +31,8 @@ const UserCard = ({ user, setSelected, selected }) => {
     <div
       onClick={handleProfileClick}
       className={`${
-        selected === user?._id && isDarkMode
-          ? " bg-gray-800"
-          : selected === user?._id && !isDarkMode
-          ? " bg-gray-200"
-          : ""
+        selected === user?._id ? " bg-gray-700" : ""
       } cursor-pointer ${
-        isDarkMode ? "hover:bg-[#080808]" : "hover:bg-[#dbdbdb]"
-      } ${
         useIsMobile()
           ? `px-2 border-t ${
               isDarkMode ? "border-[#2f3336]" : "border-[#e3e3e3]"
