@@ -10,7 +10,10 @@ export const POST = async (request, { params }) => {
   try {
     await connectToDB();
 
-    const notif = await Notification.find({ recipient: params.id })
+    const notif = await Notification.find({
+      recipient: params.id,
+      type: { $ne: "message" },
+    })
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(parseInt(limit))

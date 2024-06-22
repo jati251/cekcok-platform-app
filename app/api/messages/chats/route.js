@@ -35,8 +35,8 @@ export const POST = async (request) => {
         ],
       })
         .sort({ createdAt: -1 })
-        .populate("senderId", "username image fullName") // Populate senderId with username and image
-        .populate("recipientId", "username image fullName") // Populate senderId with username and image'
+        .populate("senderId", "username image fullName")
+        .populate("recipientId", "username image fullName")
         .exec();
 
       if (latestMessage) {
