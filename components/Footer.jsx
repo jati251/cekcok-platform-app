@@ -16,6 +16,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { signOut, useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
+import fetcher from "@utils/fetcher";
+import useSWR from "swr";
 
 const Footer = () => {
   const { data: session } = useSession();
@@ -25,27 +27,21 @@ const Footer = () => {
   );
 
   const [isNavVisible, setIsNavVisible] = useState(true);
-  const [unreadCount, setUnreadCount] = useState(0);
-  const [unreadMsgCount, setUnreadMsgCount] = useState(0);
+
+  const { data, mutate: mutateUnread } = useSWR(
+    `/api/notif/unread/${session?.user?.id}`,
+    fetcher,
+    {
+      refreshInterval: 10000,
+      refreshWhenHidden: false,
+      shouldRetryOnError: true,
+    }
+  );
 
   const handleScroll = () => {
     const currentScrollPos = window.pageYOffset;
     const visible = currentScrollPos < 20;
     setIsNavVisible(visible);
-  };
-
-  const fetchUnreadCount = async () => {
-    try {
-      const response = await fetch(`/api/notif/unread/${session.user.id}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch unread notification count");
-      }
-      const data = await response.json();
-      setUnreadCount(data.unreadOtherCount);
-      setUnreadMsgCount(data.unreadMessageCount);
-    } catch (error) {
-      console.error("Error fetching unread notification count:", error);
-    }
   };
 
   useEffect(() => {
@@ -54,16 +50,11 @@ const Footer = () => {
   }, []);
 
   useEffect(() => {
-    if (session?.user?.id) {
-      fetchUnreadCount();
-      const interval = setInterval(fetchUnreadCount, 30000); // Poll every 60 seconds
-      return () => clearInterval(interval); // Cleanup interval on unmount
-    }
-  }, [session?.user]);
+    if (pathname.includes("/notification"))
+      mutateUnread({ ...data, unreadOtherCount: 0 });
 
-  useEffect(() => {
-    if (pathname.includes("/notification")) setUnreadCount(0);
-    if (pathname.includes("/chat/")) setUnreadMsgCount(0);
+    if (pathname.includes("/chat/"))
+      mutateUnread({ ...data, unreadMessageCount: 0 });
   }, [pathname]);
 
   if (hideNavAndFooter || pathname.includes("/chat/")) return;
@@ -127,11 +118,12 @@ const Footer = () => {
         <Link href="/notification">
           <div className="relative text-gray-300 hover:text-white transition-colors duration-300">
             <FontAwesomeIcon icon={faBell} size="xl" />
-            {unreadCount > 0 && (
-              <span className="absolute top-1 right-4 bg-red-500 text-white text-[12px] rounded-full h-4 w-4 flex items-center font-satoshi justify-center">
-                {unreadCount}
-              </span>
-            )}
+            {data?.unreadOtherCount > 0 &&
+              !pathname.includes("/notification") && (
+                <span className="absolute top-1 right-4 bg-red-500 text-white text-[12px] rounded-full h-4 w-4 flex items-center font-satoshi justify-center">
+                  {data.unreadOtherCount}
+                </span>
+              )}
           </div>
         </Link>
         <Link href="/home">
@@ -142,11 +134,12 @@ const Footer = () => {
         <Link href="/chat">
           <div className="relative text-gray-300 hover:text-white transition-colors duration-300">
             <FontAwesomeIcon icon={faMailBulk} size="xl" />
-            {unreadMsgCount > 0 && (
-              <span className="absolute top-1 right-4 bg-red-500 text-white text-[12px] rounded-full h-4 w-4 flex items-center font-satoshi justify-center">
-                {unreadMsgCount}
-              </span>
-            )}
+            {data?.unreadMessageCount > 0 &&
+              !pathname.includes("/notification") && (
+                <span className="absolute top-1 right-4 bg-red-500 text-white text-[12px] rounded-full h-4 w-4 flex items-center font-satoshi justify-center">
+                  {data?.unreadMessageCount}
+                </span>
+              )}
           </div>
         </Link>
         {session?.user && (

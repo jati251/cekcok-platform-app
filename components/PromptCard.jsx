@@ -89,35 +89,20 @@ const PromptCard = ({
 
   const handleInteract = (e, action) => {
     e.stopPropagation();
-    if (action === "hate") {
-      const newHated = !hated;
-      const newHates = newHated ? hates + 1 : hates - 1;
-      if (newHated) {
-        setHated(true);
-        setLiked(false);
-        handleAction(action, true);
-        setHates(newHates);
-      } else {
-        setHated(false);
-        handleAction(action);
-        setHates(newHates);
-        if (likes > 0) setLikes((val) => val - 1);
-      }
+    const newHated = action === "hate" ? !hated : false;
+    const newLiked = action === "like" ? !liked : false;
+    const updatedLikes = newLiked ? likes + 1 : liked ? likes - 1 : likes;
+    const updatedHates = newHated ? hates + 1 : hated ? hates - 1 : hates;
+    setHated(newHated);
+    setLiked(newLiked);
+
+    if (newHated || newLiked) {
+      handleAction(action, true);
     } else {
-      const newLiked = !liked;
-      const newLikes = newLiked ? likes + 1 : likes - 1;
-      if (newLiked) {
-        setLiked(true);
-        setHated(false);
-        setLikes(newLikes);
-        handleAction(action, true);
-      } else {
-        setLiked(false);
-        setLikes(newLikes);
-        handleAction(action);
-        if (hates > 0) setHates((val) => val - 1);
-      }
+      handleAction(action);
     }
+    setHates(updatedHates);
+    setLikes(updatedLikes);
   };
 
   const handleNotif = async (recipientId, senderId, type, data) => {
