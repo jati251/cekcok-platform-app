@@ -81,7 +81,6 @@ const BlurredImage = ({ src, alt, style }) => {
 
   return (
     <div style={{ ...style, position: "relative", overflow: "hidden" }}>
-      {/* Blurred Image */}
       <img
         loading="lazy"
         src={src}

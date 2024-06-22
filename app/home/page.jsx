@@ -13,10 +13,10 @@ export default function HomePage() {
       </p>
       <div className="relative mt-4">
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-[70vw] h-[90vh] rounded-full opacity-70 bg-gradient-to-r from-white to-gray-300 blur-3xl shadow-xl"></div>
+          <div className="w-[70vw] p-10 h-[96vh] rounded-full opacity-70 bg-gradient-to-r from-white to-gray-300 blur-3xl shadow-xl"></div>
         </div>
 
-        <div className="relative z-1">
+        <div className="relative z-1 mt-16">
           <HighlightedLogos />
         </div>
       </div>
