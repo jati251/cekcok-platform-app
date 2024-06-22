@@ -1,9 +1,10 @@
 const logoData = [
   {
-    src: "https://seeklogo.com/images/T/tailwind-css-logo-89E99D7181-seeklogo.com.png",
-    alt: "Tailwind CSS Logo",
-    width: 123,
+    src: "https://cdn.icon-icons.com/icons2/2699/PNG/512/socketio_logo_icon_168806.png",
+    alt: "Socket Io",
+    width: 140,
   },
+
   {
     src: "https://i.imgur.com/P6DEl7l.png",
     alt: "Mongoose Logo",
@@ -12,6 +13,11 @@ const logoData = [
   {
     src: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/MongoDB_Logo.svg/2560px-MongoDB_Logo.svg.png",
     alt: "MongoDB Logo",
+    width: 140,
+  },
+  {
+    src: "https://i.imgur.com/fjpVYsE.png",
+    alt: "swr",
     width: 140,
   },
   {
@@ -50,13 +56,16 @@ const logoData = [
     width: 140,
   },
   {
+    src: "https://seeklogo.com/images/T/tailwind-css-logo-89E99D7181-seeklogo.com.png",
+    alt: "Tailwind CSS Logo",
+    width: 123,
+  },
+  {
     src: "https://www.svgrepo.com/show/352757/font-awesome-logo-full.svg",
     alt: "Font Awesome Logo",
     width: 140,
   },
 ];
-
-const highlightedIndexes = [4, 5, 6]; // Highlight 5th to 7th elements
 
 const HighlightedLogos = () => (
   <div className="flex items-center gap-8 justify-center mt-8 space-x-4 max-w-full flex-wrap">

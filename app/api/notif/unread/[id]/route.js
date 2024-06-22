@@ -11,7 +11,7 @@ export const GET = async (request, { params }) => {
     await connectToDB();
 
     const userId = params.id;
-    if (!userId) {
+    if (!userId || userId === "undefined") {
       return new Response("User ID is required", { status: 400 });
     }
 

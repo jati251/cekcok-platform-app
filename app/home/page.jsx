@@ -12,11 +12,10 @@ export default function HomePage() {
         CekCok adalah platform sosial dimana kita bisa adu bacot satu sama lain.
       </p>
       <div className="relative mt-4">
-        {/* Gradient Overlay */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-[70vw] h-[90vh] rounded-full opacity-70 bg-gradient-to-r from-gray-100 to-gray-400 blur-3xl shadow-xl"></div>
+          <div className="w-[70vw] h-[90vh] rounded-full opacity-70 bg-gradient-to-r from-white to-gray-300 blur-3xl shadow-xl"></div>
         </div>
-        {/* Page Content */}
+
         <div className="relative z-10">
           <HighlightedLogos />
         </div>
