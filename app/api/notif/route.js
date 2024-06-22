@@ -16,12 +16,10 @@ export const POST = async (request) => {
     });
 
     if (existingNotification) {
-      // If notification exists, update the type
       existingNotification.type = type;
       existingNotification.read = false;
       await existingNotification.save();
     } else {
-      // Create a new notification if none exists
       const newNotification = new Notification({
         sender: senderId,
         recipient: recipientId,

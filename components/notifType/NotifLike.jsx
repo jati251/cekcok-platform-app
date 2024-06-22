@@ -53,6 +53,7 @@ const BaseNotif = ({ notif }) => {
 };
 
 const MessageNotif = ({ notif, userId }) => {
+  const { data: session } = useSession();
   return (
     <div className="flex w-full gap-4">
       <div className="flex justify-start items-center flex-col my-2 w-[40px]">
@@ -80,9 +81,12 @@ const MessageNotif = ({ notif, userId }) => {
         </p>
         <p
           className={`font-satoshi ${
-            notif.read ? "text-gray-500" : ""
+            !notif?.read && notif?.recipient?._id === session?.user?.id
+              ? ""
+              : "text-gray-500"
           } break-all text-sm `}
         >
+          {!notif?.read && notif?.sender?._id === session?.user?.id && "you: "}
           {notif?.data?.message}
         </p>
       </div>

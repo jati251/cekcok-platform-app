@@ -15,10 +15,8 @@ export const POST = async (request) => {
       $or: [{ senderId: userId }, { recipientId: userId }],
     });
 
-    // Prepare an array to store chat details
     const totalRecipients = recipients.length;
 
-    // Paginate recipients array
     const paginatedRecipientIds = recipients.slice(
       (page - 1) * limit,
       page * limit
@@ -26,7 +24,6 @@ export const POST = async (request) => {
 
     const notif = [];
 
-    // Fetch the latest message for each recipient
     for (const recipientId of paginatedRecipientIds) {
       const latestMessage = await Message.findOne({
         $or: [
@@ -41,8 +38,16 @@ export const POST = async (request) => {
 
       if (latestMessage) {
         const latestNotif = await Notification.findOne({
-          recipient: userId,
-          sender: latestMessage.senderId._id,
+          $or: [
+            {
+              recipient: latestMessage.recipientId._id,
+              sender: latestMessage.senderId._id,
+            },
+            {
+              recipient: latestMessage.recipientId._id,
+              sender: latestMessage.senderId._id,
+            },
+          ],
         }).sort({ createdAt: -1 });
 
         notif.push({
