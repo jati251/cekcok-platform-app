@@ -193,6 +193,12 @@ const ChatPage = ({ params }) => {
                   ? "dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
                   : ""
               } focus:outline-none`}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  sendMessage();
+                }
+              }}
             />
             <button
               onClick={sendMessage}
