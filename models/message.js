@@ -1,4 +1,4 @@
-import { Schema, model, models } from "mongoose";
+const { Schema, model, models } = require("mongoose");
 
 const MessageSchema = new Schema({
   message: { type: String, required: true },
@@ -17,4 +17,4 @@ const MessageSchema = new Schema({
 
 const Message = models.Message || model("Message", MessageSchema);
 
-export default Message;
+module.exports = Message;
