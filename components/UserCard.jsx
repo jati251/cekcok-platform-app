@@ -37,18 +37,13 @@ const UserCard = ({ user, setSelected, selected }) => {
   return (
     <div
       onClick={handleProfileClick}
-      className={
-        bg +
-        ` cursor-pointer ${
-          isDarkMode ? "hover:bg-[#080808]" : "hover:bg-[#dbdbdb]"
-        } transition-colors duration-300 ${
-          useIsMobile()
-            ? `px-2 border-t ${
-                isDarkMode ? "border-[#2f3336]" : "border-[#e3e3e3]"
-              } py-4`
-            : "prompt_card"
-        }`
-      }
+      className={`${bg} cursor-pointer transition-colors duration-300 ${
+        useIsMobile()
+          ? `px-2 border-t ${
+              isDarkMode ? "border-[#2f3336]" : "border-[#e3e3e3]"
+            } py-4`
+          : "prompt_card"
+      }`}
     >
       <div className="flex justify-between items-start gap-5">
         <div className="flex-1 flex justify-start gap-2 cursor-pointer">
