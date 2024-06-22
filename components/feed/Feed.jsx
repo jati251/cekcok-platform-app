@@ -198,9 +198,9 @@ const Feed = () => {
           />
           <CustomTab
             tab={tab}
-            tabFor="following"
+            tabFor="mengikuti"
             onClick={() => {
-              setTab("following");
+              setTab("mengikuti");
             }}
           />
         </div>

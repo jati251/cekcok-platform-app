@@ -19,10 +19,14 @@ export const POST = async (request) => {
       $or: [{ senderId: userId }, { recipientId: userId }],
     });
 
-    recipients.push(senders);
-    const totalRecipients = recipients.length;
+    function removeDuplicates(arr) {
+      return arr.filter((item, index) => arr.indexOf(item) === index);
+    }
 
-    const paginatedRecipientIds = recipients.slice(
+    const filteredReps = removeDuplicates(recipients);
+    const totalRecipients = filteredReps.length;
+
+    const paginatedRecipientIds = filteredReps.slice(
       (page - 1) * limit,
       page * limit
     );
@@ -80,8 +84,13 @@ export const POST = async (request) => {
       }
     }
 
+    const result = notif.filter((item, index) => notif.indexOf(item) === index);
+
     return new Response(
-      JSON.stringify({ notif, totalPages: Math.ceil(totalRecipients / limit) }),
+      JSON.stringify({
+        notif: result,
+        totalPages: Math.ceil(totalRecipients / limit),
+      }),
       { status: 200 }
     );
   } catch (error) {

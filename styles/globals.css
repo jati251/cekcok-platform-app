@@ -62,10 +62,10 @@ body {
 }
 
 .black_btn {
-  @apply rounded-full border text-white border-black bg-black py-1.5 px-5  transition-all hover:bg-white hover:text-black   text-center text-sm font-inter flex items-center justify-center;
+  @apply rounded-full border text-white border-black bg-black py-1.5 px-5  transition-all hover:bg-white hover:text-black   text-center  font-inter flex items-center justify-center;
 }
 .white_btn {
-  @apply rounded-full border text-black border-white bg-white py-1.5 px-5  transition-all hover:bg-black hover:text-white  text-center text-sm font-inter flex items-center justify-center;
+  @apply rounded-full border text-black border-white bg-white py-1.5 px-5  transition-all hover:bg-black hover:text-white  text-center  font-inter flex items-center justify-center;
 }
 
 .outline_btn {

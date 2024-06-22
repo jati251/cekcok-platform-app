@@ -132,19 +132,22 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
           </div>
         )}
 
-        <div className="flex-end mx-3 mb-5 gap-4">
-          <div onClick={() => router.back()} className="cursor-pointer text-gray-400 text-sm">
-            Batalkan
+        <div className="flex-end mx-3 mb-5 gap-8">
+          <div
+            onClick={() => router.back()}
+            className="cursor-pointer text-gray-400 text-lg"
+          >
+            Batal
           </div>
 
           <button
             type="submit"
             disabled={submitting}
-            className={`px-5 py-1.5 text-sm rounded-full ${
+            className={`px-5 py-1.5 text-lg rounded-full ${
               !isDarkMode ? "black_btn" : "white_btn"
             }`}
           >
-            {submitting ? `${type}in...` : type}
+            <p>{submitting ? `${type}in...` : type}</p>
           </button>
         </div>
       </form>

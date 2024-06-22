@@ -16,7 +16,7 @@ export default function HomePage() {
           <div className="w-[70vw] h-[90vh] rounded-full opacity-70 bg-gradient-to-r from-white to-gray-300 blur-3xl shadow-xl"></div>
         </div>
 
-        <div className="relative z-10">
+        <div className="relative z-1">
           <HighlightedLogos />
         </div>
       </div>

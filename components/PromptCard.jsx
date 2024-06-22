@@ -14,6 +14,7 @@ import CommentModal from "./modals/CommentModal";
 import TimeAgo from "./TimeAgo";
 import { useIsMobile } from "@utils/hooks";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
+import ZoomModal from "./modals/ZoomModal";
 
 const PromptCard = ({
   post,
@@ -29,6 +30,7 @@ const PromptCard = ({
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
   const [likes, setLikes] = useState(post?.likes || 0);
   const [hates, setHates] = useState(post?.hates || 0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [totalComments, setTotalComments] = useState(
     Number(post?.comments?.length) || 0
   );
@@ -118,6 +120,12 @@ const PromptCard = ({
   };
   return (
     <>
+      {isModalOpen && (
+        <ZoomModal
+          src={post?.media?.src}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
       <div
         className={`cursor-pointer ${
           isDarkMode ? "hover:bg-[#080808]" : "hover:bg-[#dbdbdb]"
@@ -147,28 +155,32 @@ const PromptCard = ({
             </div>
 
             <div onClick={handleDetail} className="flex flex-col w-full">
-              <div
-                onClick={(e) => {
-                  post?.creator?.status !== "private" && handleProfileClick(e);
-                }}
-                className="flex gap-1 items-center justify-between "
-              >
-                <p
-                  className={`font-satoshi font-semibold whitespace-nowrap overflow-hidden text-ellipsis ${
-                    useIsMobile() ? "max-w-[150px]" : ""
-                  }`}
+              <div className="flex justify-between">
+                <div
+                  onClick={(e) => {
+                    post?.creator?.status !== "private" &&
+                      handleProfileClick(e);
+                  }}
+                  className="flex gap-2 items-center justify-start "
                 >
-                  {post?.creator?.fullName ?? "Anonim"}
-                </p>
-                <span
-                  className={`font-satoshi text-gray-400 text-sm whitespace-nowrap overflow-hidden text-ellipsis `}
-                >
-                  @{""}
-                  {post?.creator?.username ??
-                    post?.author?.username ??
-                    "Anonim"}
-                </span>
-
+                  <p
+                    className={`font-satoshi font-semibold whitespace-nowrap overflow-hidden text-ellipsis ${
+                      useIsMobile() ? "max-w-[150px]" : ""
+                    }`}
+                  >
+                    {post?.creator?.fullName ?? "Anonim"}
+                  </p>
+                  <span
+                    className={`font-satoshi text-gray-400 text-sm whitespace-nowrap overflow-hidden text-ellipsis ${
+                      useIsMobile() ? "max-w-[150px]" : ""
+                    } `}
+                  >
+                    @{""}
+                    {post?.creator?.username ??
+                      post?.author?.username ??
+                      "Anonim"}
+                  </span>
+                </div>
                 <div className="copy_btn " onClick={handleCopy}>
                   <Image
                     loading="lazy"
@@ -193,6 +205,10 @@ const PromptCard = ({
                 <div className="mt-4 flex flex-col items-start mb-4">
                   {post.media.type === "image" ? (
                     <img
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsModalOpen(true);
+                      }}
                       src={post.media.src}
                       alt="Selected"
                       className="max-w-full h-auto"
@@ -206,7 +222,7 @@ const PromptCard = ({
                   )}
                 </div>
               )}
-              <p className="font-inter text-sm blue_gradient cursor-pointer">
+              <p className="font-inter text-sm text-blue-400 cursor-pointer">
                 #{post.tag}
               </p>
             </div>
@@ -230,7 +246,7 @@ const PromptCard = ({
             onClick={(e) => handleInteract(e, "hate")}
           >
             <FontAwesomeIcon
-              color={hated ? "#f4977f" : "gray"}
+              color={hated ? "#ea590c" : "gray"}
               icon={hated ? solidThumbsDown : solidThumbsDown}
             />
             <span>{hates}</span>

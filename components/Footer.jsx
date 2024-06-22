@@ -25,6 +25,7 @@ const Footer = () => {
   const hideNavAndFooter = ["/login", "/register", "/profile-setup"].includes(
     pathname
   );
+  const [unreadCount, setUnreadCount] = useState();
 
   const [isNavVisible, setIsNavVisible] = useState(true);
 
@@ -51,11 +52,15 @@ const Footer = () => {
 
   useEffect(() => {
     if (pathname.includes("/notification"))
-      mutateUnread({ ...data, unreadOtherCount: 0 });
+      setUnreadCount({ ...data, unreadOtherCount: 0 });
 
     if (pathname.includes("/chat/"))
-      mutateUnread({ ...data, unreadMessageCount: 0 });
+      setUnreadCount({ ...data, unreadMessageCount: 0 });
   }, [pathname]);
+
+  useEffect(() => {
+    setUnreadCount(data);
+  }, [data]);
 
   if (hideNavAndFooter || pathname.includes("/chat/")) return;
 
@@ -122,10 +127,10 @@ const Footer = () => {
         <Link href="/notification">
           <div className="relative text-gray-300 hover:text-white transition-colors duration-300">
             <FontAwesomeIcon icon={faBell} size="xl" />
-            {data?.unreadOtherCount > 0 &&
+            {unreadCount?.unreadOtherCount > 0 &&
               !pathname.includes("/notification") && (
                 <span className="absolute top-1 right-4 bg-red-500 text-white text-[12px] rounded-full h-4 w-4 flex items-center font-satoshi justify-center">
-                  {data.unreadOtherCount}
+                  {unreadCount.unreadOtherCount}
                 </span>
               )}
           </div>
@@ -138,10 +143,10 @@ const Footer = () => {
         <Link href="/chat">
           <div className="relative text-gray-300 hover:text-white transition-colors duration-300">
             <FontAwesomeIcon icon={faMailBulk} size="xl" />
-            {data?.unreadMessageCount > 0 &&
+            {unreadCount?.unreadMessageCount > 0 &&
               !pathname.includes("/notification") && (
                 <span className="absolute top-1 right-4 bg-red-500 text-white text-[12px] rounded-full h-4 w-4 flex items-center font-satoshi justify-center">
-                  {data?.unreadMessageCount}
+                  {unreadCount?.unreadMessageCount}
                 </span>
               )}
           </div>
