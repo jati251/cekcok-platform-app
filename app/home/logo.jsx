@@ -1,3 +1,6 @@
+"use client";
+import { useEffect, useState } from "react";
+
 const logoData = [
   {
     src: "https://cdn.icon-icons.com/icons2/2699/PNG/512/socketio_logo_icon_168806.png",
@@ -67,10 +70,39 @@ const logoData = [
   },
 ];
 
+const BlurredImage = ({ src, alt, style }) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = src;
+    img.onload = () => setIsLoaded(true);
+  }, [src]);
+
+  return (
+    <div style={{ ...style, position: "relative", overflow: "hidden" }}>
+      {/* Blurred Image */}
+      <img
+        loading="lazy"
+        src={src}
+        alt={alt}
+        style={{
+          ...style,
+          filter: isLoaded ? "none" : "blur(20px)",
+          transition: "filter 0.5s ease-in-out",
+          position: "relative",
+          width: "100%",
+          height: "auto",
+        }}
+      />
+    </div>
+  );
+};
+
 const HighlightedLogos = () => (
   <div className="flex items-center gap-8 justify-center mt-8 space-x-4 max-w-full flex-wrap">
     {logoData.map((logo, index) => (
-      <img
+      <BlurredImage
         key={index}
         src={logo.src}
         alt={logo.alt}
