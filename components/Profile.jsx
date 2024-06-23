@@ -17,6 +17,7 @@ const Profile = ({
   handleDelete,
   profile,
   loading,
+  loadingPost,
   isDarkMode,
   fetchProfile,
 }) => {
@@ -202,12 +203,12 @@ const Profile = ({
               handleDelete={() => handleDelete && handleDelete(post)}
             />
           ))}
-        {data.length === 0 && !loading && (
+        {data.length === 0 && !loadingPost && (
           <p className="text-center text-sm my-10 py-10">
             Postingan masih kosong
           </p>
         )}
-        {loading && <Loading isDarkMode={isDarkMode} />}
+        {loadingPost && <Loading isDarkMode={isDarkMode} />}
       </div>
     </section>
   );

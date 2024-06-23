@@ -102,7 +102,7 @@ const CommentModal = ({
             commentContent.length <= 280 && setCommentContent(e.target.value)
           }
           value={commentContent}
-          label={"Tanggapan Anda"}
+          label={"Tanggapan anda"}
         />
 
         <div className="flex items-center gap-4">
@@ -170,7 +170,7 @@ const CommentModal = ({
               isDarkMode ? "white_btn" : "black_btn"
             }  px-4 py-2 rounded-md hover:bg-gray-500 transition-colors`}
           >
-            Komentar
+            Kirim
           </button>
         </div>
       </div>

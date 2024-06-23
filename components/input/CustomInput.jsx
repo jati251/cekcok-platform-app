@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styles from "./CustomInput.module.css"; // Import your CSS module for styling
 
-const CustomInput = ({ label, value, onChange, isDarkMode }) => {
+const CustomInput = ({ label, value, onChange, isDarkMode, loading }) => {
   const [focused, setFocused] = useState(false);
 
   const handleFocus = () => {
@@ -26,6 +26,7 @@ const CustomInput = ({ label, value, onChange, isDarkMode }) => {
       {focused && <div className={styles.counter}>{`${value.length}/50`}</div>}
       <div className={styles.inputContainer}>
         <input
+          disabled={loading}
           className={styles.input + ` theme-${isDarkMode ? "dark" : "white"}`}
           type="text"
           value={value}

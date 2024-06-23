@@ -11,6 +11,7 @@ import {
   faMoon,
   faSun,
   faUser,
+  faUserEdit,
 } from "@fortawesome/free-solid-svg-icons";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
 
@@ -147,7 +148,7 @@ const Nav = () => {
                     onClick={(e) => e.stopPropagation()}
                     className={`top-full mt-[7vh] w-full p-5 rounded-xl ${
                       isDarkMode ? "bg-black" : "bg-white"
-                    } min-w-[210px] max-w-[240px] max-h-[280px] flex flex-col gap-3 justify-end items-end shadow-xl`}
+                    } min-w-[210px] max-w-[240px] max-h-[300px] flex flex-col gap-3 justify-end items-end shadow-xl`}
                   >
                     <div className="flex flex-col items-end">
                       <span className="dropdown_link mb-1">
@@ -183,6 +184,19 @@ const Nav = () => {
                         Buat Bacotan Baru
                       </Link>
                       <FontAwesomeIcon icon={faFaceSmile} />
+                    </div>
+                    <div className="gap-2 flex items-center">
+                      <Link
+                        href="/profile/edit"
+                        className="dropdown_link"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setToggleDropdown(false);
+                        }}
+                      >
+                        Ubah Profile
+                      </Link>
+                      <FontAwesomeIcon icon={faUserEdit} />
                     </div>
                     <button
                       className="dropdown_link cursor-pointer "

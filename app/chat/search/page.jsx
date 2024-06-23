@@ -4,9 +4,7 @@ import { useSession } from "next-auth/react";
 import { useState, useEffect, useCallback } from "react";
 import Loading from "@app/profile/loading";
 import { useDebounce, useIsMobile } from "@utils/hooks";
-
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
-
 import { debounce } from "@utils/helper";
 import { useRouter } from "next/navigation";
 import UserCard from "@components/UserCard";
@@ -183,7 +181,7 @@ export default function ChatSearchPage() {
             />
             <input
               type="text"
-              placeholder="Cari user"
+              placeholder="Cari pengguna"
               value={searchText}
               onChange={handleChange}
               required

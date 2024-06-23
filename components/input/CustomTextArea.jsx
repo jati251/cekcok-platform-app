@@ -1,7 +1,14 @@
 import { useState } from "react";
 import styles from "./CustomTextArea.module.css";
 
-const CustomTextArea = ({ label, value, onChange, maxLength, isDarkMode }) => {
+const CustomTextArea = ({
+  loading,
+  label,
+  value,
+  onChange,
+  maxLength,
+  isDarkMode,
+}) => {
   const [focused, setFocused] = useState(false);
 
   const handleFocus = () => {
@@ -30,6 +37,7 @@ const CustomTextArea = ({ label, value, onChange, maxLength, isDarkMode }) => {
       </label>
       <div className={styles.counter}>{`${value.length}/${maxLength}`}</div>
       <textarea
+        disabled={loading}
         value={value}
         className={styles.textarea + ` theme-${isDarkMode ? "dark" : "white"}`}
         onChange={handleChange}

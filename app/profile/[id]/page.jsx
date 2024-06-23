@@ -9,11 +9,13 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { debounce } from "@utils/helper";
+import Loading from "../loading";
 
 const UserProfile = ({ params }) => {
   const [userPosts, setUserPosts] = useState([]);
   const [profile, setProfile] = useState({});
   const [loading, setLoading] = useState(false);
+  const [loadingPost, setLoadingPost] = useState(false);
   const { isDarkMode } = useDarkModeContext();
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
@@ -22,7 +24,7 @@ const UserProfile = ({ params }) => {
   const { data: session, status } = useSession();
 
   const fetchPosts = async () => {
-    setLoading(true);
+    setLoadingPost(true);
     try {
       const responsePosts = await fetch(`/api/users/${params?.id}/posts`, {
         method: "POST",
@@ -60,7 +62,7 @@ const UserProfile = ({ params }) => {
     } catch (error) {
       console.error("Error fetching posts:", error);
     } finally {
-      if (profile._id) setLoading(false);
+      if (profile._id) setLoadingPost(false);
     }
   };
 
@@ -103,9 +105,12 @@ const UserProfile = ({ params }) => {
   }, [page]);
 
   useEffect(() => {
-    setLoading(true);
     if (status !== "loading") fetchProfile();
   }, [status]);
+
+  useEffect(() => {
+    if (profile?.userId?.createdAt && !loading) fetchPosts();
+  }, [profile]);
 
   useEffect(() => {
     const debounceScroll = debounce(handleScroll, 200);
@@ -113,6 +118,13 @@ const UserProfile = ({ params }) => {
     window.addEventListener("scroll", debounceScroll);
     return () => window.removeEventListener("scroll", debounceScroll);
   }, [handleScroll]);
+
+  if (status === "loading")
+    return (
+      <div className="min-w-screen min-h-screen flex items-center justify-center">
+        <Loading isDarkMode={isDarkMode} />
+      </div>
+    );
 
   return (
     <div className="px-4 w-full">
@@ -149,6 +161,7 @@ const UserProfile = ({ params }) => {
         profile={profile}
         data={userPosts}
         loading={loading}
+        loadingPost={loadingPost}
       />
     </div>
   );

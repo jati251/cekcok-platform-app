@@ -9,6 +9,7 @@ import CustomInput from "./input/CustomInput";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
 import CustomTextArea from "./input/CustomTextArea";
 import { useRouter } from "next/navigation";
+import Loading from "@app/profile/loading";
 
 const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
   const [selectedMedia, setSelectedMedia] = useState(null);
@@ -33,6 +34,13 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }) => {
   useEffect(() => {
     if (status === "unauthenticated") router.push("/");
   }, [status]);
+
+  if (status === "loading")
+    return (
+      <div className="min-w-screen min-h-screen flex items-center justify-center">
+        <Loading isDarkMode={isDarkMode} />
+      </div>
+    );
 
   return (
     <section className="w-full px-4 max-w-full flex-start flex-col mt-20 mb-20">

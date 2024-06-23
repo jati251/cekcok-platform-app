@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useIsMobile } from "@utils/hooks";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
+import BlurredProfile from "./input/BlurredProfile";
 
 const UserCard = ({ user, setSelected, selected }) => {
   const { data: session } = useSession();
@@ -48,12 +49,10 @@ const UserCard = ({ user, setSelected, selected }) => {
       <div className="flex justify-between items-start gap-5">
         <div className="flex-1 flex justify-start gap-2 cursor-pointer">
           <div className="flex justify-start flex-col mt-1 w-[40px]">
-            <Image
+            <BlurredProfile
               src={user?.image ?? "/assets/images/default-user.png"}
               alt="user_image"
-              width={40}
-              height={40}
-              className="rounded-full object-contain"
+              style={{ width: "40px", height: "40px" }}
             />
           </div>
 

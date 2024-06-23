@@ -2,13 +2,13 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
-import { PromptSkeleton } from "../Skeletons/PromptCardSkeleton";
 import Loading from "@app/profile/loading";
 import { useIsMobile } from "@utils/hooks";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
 import NotifCard from "../NotifCard";
 import { useRouter } from "next/navigation";
 import { debounce } from "@utils/helper";
+import { BulkPrompt } from "@components/Skeletons/BulkUser";
 
 const NotifCardList = ({ data, status, isDarkMode, setNotif }) => {
   return (
@@ -102,7 +102,12 @@ const FeedNotif = () => {
   };
 
   useEffect(() => {
-    if (!loading && page <= totalPage && page > 1 && status !== "loading") {
+    if (
+      !loading &&
+      page <= totalPage &&
+      page > 1 &&
+      status === "authenticated"
+    ) {
       if (tab === "semua") {
         fetchNotifications();
       } else {
@@ -129,13 +134,16 @@ const FeedNotif = () => {
   }, [handleScroll]);
 
   useEffect(() => {
-    setAllNotif([]);
-    setPage(1);
-    setTotalPage(1);
-    if (tab === "semua") {
-      fetchNotifications(true);
-    } else {
-      fetchNotificationsMentions(true);
+    if (status === "authenticated") {
+      setAllNotif([]);
+      setPage(1);
+      setTotalPage(1);
+
+      if (tab === "semua") {
+        fetchNotifications(true);
+      } else {
+        fetchNotificationsMentions(true);
+      }
     }
   }, [tab]);
 
@@ -176,15 +184,7 @@ const FeedNotif = () => {
         </div>
       )}
 
-      {loading && allNotif.length === 0 && (
-        <div className="mb-16 prompt_layout w-full px-6">
-          <PromptSkeleton />
-          <PromptSkeleton />
-          <PromptSkeleton />
-          <PromptSkeleton />
-          <PromptSkeleton />
-        </div>
-      )}
+      {loading && allNotif.length === 0 && <BulkPrompt />}
 
       <NotifCardList isDarkMode={isDarkMode} data={allNotif} status={loading} />
     </section>

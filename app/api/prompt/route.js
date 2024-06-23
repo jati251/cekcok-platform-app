@@ -8,7 +8,7 @@ export const POST = async (request) => {
     const { page = 1, limit = 10 } = await request.json();
 
     const count = await Prompt.countDocuments();
-    let prompts = await Prompt.find({})
+    let prompts = await Prompt.find()
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(parseInt(limit))

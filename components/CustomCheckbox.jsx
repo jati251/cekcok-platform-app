@@ -1,6 +1,6 @@
 import React from "react";
 
-const CustomCheckbox = ({ isChecked, setIsChecked }) => {
+const CustomCheckbox = ({ loading, isChecked, setIsChecked }) => {
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
   };
@@ -8,6 +8,7 @@ const CustomCheckbox = ({ isChecked, setIsChecked }) => {
   return (
     <div className="flex items-center">
       <input
+        disabled={loading}
         type="checkbox"
         id="customCheckbox"
         className="hidden"

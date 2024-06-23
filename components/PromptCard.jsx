@@ -15,6 +15,7 @@ import TimeAgo from "./TimeAgo";
 import { useIsMobile } from "@utils/hooks";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
 import ZoomModal from "./modals/ZoomModal";
+import BlurredProfile from "./input/BlurredProfile";
 
 const PromptCard = ({
   post,
@@ -143,14 +144,12 @@ const PromptCard = ({
               onClick={(e) => {
                 post?.creator?.status !== "private" && handleProfileClick(e);
               }}
-              className="flex justify-start flex-col mt-1 w-[40px]"
+              className="cursor-pointer flex justify-start flex-col mt-1 w-[40px]"
             >
-              <Image
+              <BlurredProfile
                 src={post?.creator?.image ?? "/assets/images/default-user.png"}
                 alt="user_image"
-                width={40}
-                height={40}
-                className="rounded-full object-contain"
+                style={{ width: "40px", height: "40px" }}
               />
             </div>
 
@@ -205,6 +204,7 @@ const PromptCard = ({
                 <div className="mt-4 flex flex-col items-start mb-4">
                   {post.media.type === "image" ? (
                     <img
+                      loading="lazy"
                       onClick={(e) => {
                         e.stopPropagation();
                         setIsModalOpen(true);

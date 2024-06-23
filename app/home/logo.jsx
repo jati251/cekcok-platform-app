@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import BlurredImage from "@components/input/BlurredImage";
 
 const logoData = [
   {
@@ -16,6 +16,11 @@ const logoData = [
   {
     src: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/MongoDB_Logo.svg/2560px-MongoDB_Logo.svg.png",
     alt: "MongoDB Logo",
+    width: 140,
+  },
+  {
+    src: "https://dka575ofm4ao0.cloudfront.net/pages-transactional_logos/retina/89884/render-status-4b015255-e0cc-422c-943d-4f60b5f03094.png",
+    alt: "render Logo",
     width: 140,
   },
   {
@@ -69,34 +74,6 @@ const logoData = [
     width: 140,
   },
 ];
-
-const BlurredImage = ({ src, alt, style }) => {
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  useEffect(() => {
-    const img = new Image();
-    img.src = src;
-    img.onload = () => setIsLoaded(true);
-  }, [src]);
-
-  return (
-    <div style={{ ...style, position: "relative", overflow: "hidden" }}>
-      <img
-        loading="lazy"
-        src={src}
-        alt={alt}
-        style={{
-          ...style,
-          filter: isLoaded ? "none" : "blur(20px)",
-          transition: "filter 0.5s ease-in-out",
-          position: "relative",
-          width: "100%",
-          height: "auto",
-        }}
-      />
-    </div>
-  );
-};
 
 const HighlightedLogos = () => (
   <div className="flex items-center gap-8 justify-center mt-8 space-x-4 max-w-full flex-wrap">

@@ -3,12 +3,12 @@
 import { useState, useEffect, useCallback } from "react";
 import PromptCard from "../PromptCard";
 import { useSession } from "next-auth/react";
-import { PromptSkeleton } from "../Skeletons/PromptCardSkeleton";
 import Loading from "@app/profile/loading";
 import { useIsMobile } from "@utils/hooks";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
 import CustomTab from "../tabs/CustomTab";
 import { debounce } from "@utils/helper";
+import { BulkPrompt } from "@components/Skeletons/BulkUser";
 
 const PromptCardList = ({ data, handleTagClick, status, isDarkMode }) => {
   return (
@@ -206,15 +206,7 @@ const Feed = () => {
         </div>
       )}
 
-      {loading && allPosts.length === 0 && (
-        <div className="mb-16 prompt_layout w-full px-6">
-          <PromptSkeleton />
-          <PromptSkeleton />
-          <PromptSkeleton />
-          <PromptSkeleton />
-          <PromptSkeleton />
-        </div>
-      )}
+      {loading && allPosts.length === 0 && <BulkPrompt />}
 
       {searchText ? (
         <PromptCardList

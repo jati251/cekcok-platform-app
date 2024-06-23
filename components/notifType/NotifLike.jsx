@@ -1,3 +1,4 @@
+import BlurredProfile from "@components/input/BlurredProfile";
 import {
   faComment,
   faFistRaised,
@@ -7,19 +8,16 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useIsMobile } from "@utils/hooks";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 const BaseNotif = ({ notif }) => {
   return (
     <div className="flex flex-col w-full">
       <div className="flex justify-start flex-col my-2 w-[40px]">
-        <Image
+        <BlurredProfile
           src={notif?.sender?.image ?? "/assets/images/default-user.png"}
           alt="user_image"
-          width={40}
-          height={40}
-          className="rounded-full object-contain"
+          style={{ width: "40px", height: "40px" }}
         />
       </div>
       <div className="flex gap-1 items-center  ">
@@ -57,16 +55,14 @@ const MessageNotif = ({ notif, userId }) => {
   return (
     <div className="flex w-full gap-4">
       <div className="flex justify-start items-center flex-col my-2 w-[40px]">
-        <Image
+        <BlurredProfile
           src={
             userId === notif.sender._id
               ? notif?.recipient?.image
               : notif?.sender?.image ?? "/assets/images/default-user.png"
           }
           alt="user_image"
-          width={40}
-          height={40}
-          className="rounded-full object-contain"
+          style={{ width: "40px", height: "40px" }}
         />
       </div>
       <div className="flex flex-col gap-1 justify-start ">

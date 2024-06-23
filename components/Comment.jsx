@@ -10,6 +10,7 @@ import {
 import TimeAgo from "./TimeAgo";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import BlurredProfile from "./input/BlurredProfile";
 
 const Comment = ({ comment, isDarkMode }) => {
   const { data: session } = useSession();
@@ -91,16 +92,16 @@ const Comment = ({ comment, isDarkMode }) => {
           isDarkMode ? "border-[#2f3336]" : "border-[#e3e3e3]"
         } `}
       >
-        <div className=" flex items-start mt-2">
-          <Image
-            onClick={(e) => {
-              comment.author.status !== "private" && handleProfileClick(e);
-            }}
+        <div
+          onClick={(e) => {
+            comment.author.status !== "private" && handleProfileClick(e);
+          }}
+          className="cursor-pointer flex items-start mt-2"
+        >
+          <BlurredProfile
             src={comment.author.image ?? "/assets/images/default-user.png"}
             alt="comment_author"
-            width={35}
-            height={35}
-            className="rounded-full cursor-pointer"
+            style={{ width: "40px", height: "40px" }}
           />
         </div>
         <div className="w-60">

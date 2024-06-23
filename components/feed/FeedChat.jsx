@@ -8,7 +8,7 @@ import { useDarkModeContext } from "@app/context/DarkModeProvider";
 import NotifCard from "../NotifCard";
 import { useRouter } from "next/navigation";
 import { debounce } from "@utils/helper";
-import { UserSkeleton } from "@components/Skeletons/UserCardSkeleton";
+import { BulkUserSkeleton } from "@components/Skeletons/BulkUser";
 
 const ChatCardList = ({ data, status, isDarkMode, setNotif }) => {
   return (
@@ -69,7 +69,7 @@ const FeedChat = () => {
   };
 
   useEffect(() => {
-    if (!loading && page <= totalPage && status !== "loading") {
+    if (!loading && page <= totalPage && status === "authenticated") {
       fetchNotifications();
     }
   }, [page]);
@@ -97,15 +97,7 @@ const FeedChat = () => {
 
   return (
     <section className="feed ">
-      {loading && allNotif.length === 0 && (
-        <div className="mb-16 prompt_layout w-full px-6">
-          <UserSkeleton />
-          <UserSkeleton />
-          <UserSkeleton />
-          <UserSkeleton />
-          <UserSkeleton />
-        </div>
-      )}
+      {loading && allNotif.length === 0 && <BulkUserSkeleton />}
 
       <ChatCardList isDarkMode={isDarkMode} data={allNotif} status={loading} />
     </section>

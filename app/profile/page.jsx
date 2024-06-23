@@ -10,6 +10,7 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
 import { debounce } from "@utils/helper";
+import Loading from "./loading";
 
 const MyProfile = () => {
   const router = useRouter();
@@ -18,13 +19,15 @@ const MyProfile = () => {
   const [myPosts, setMyPosts] = useState([]);
   const [profile, setProfile] = useState({});
   const [loading, setLoading] = useState(false);
+  const [loadingPost, setLoadingPost] = useState(false);
+
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const { status } = useSession();
 
   const fetchPosts = async () => {
-    setLoading(true);
+    setLoadingPost(true);
     try {
       const responsePosts = await fetch(
         `/api/users/${session?.user.id}/posts`,
@@ -66,7 +69,7 @@ const MyProfile = () => {
     } catch (error) {
       console.error("Error fetching posts:", error);
     } finally {
-      if (profile._id) setLoading(false);
+      if (profile._id) setLoadingPost(false);
     }
   };
 
@@ -134,7 +137,7 @@ const MyProfile = () => {
   }, [session?.user.id, page]);
 
   useEffect(() => {
-    if (status !== "loading") fetchProfile();
+    if (status === "authenticated") fetchProfile();
     if (status === "unauthenticated") handleBack();
   }, [status]);
 
@@ -144,6 +147,13 @@ const MyProfile = () => {
     window.addEventListener("scroll", debounceScroll);
     return () => window.removeEventListener("scroll", debounceScroll);
   }, [handleScroll]);
+
+  if (status === "loading")
+    return (
+      <div className="min-w-screen min-h-screen flex items-center justify-center">
+        <Loading isDarkMode={isDarkMode} />
+      </div>
+    );
 
   return (
     <div className="px-4 w-full">
@@ -173,6 +183,7 @@ const MyProfile = () => {
         )}
       </div>
       <Profile
+        loadingPost={loadingPost}
         isDarkMode={isDarkMode}
         data={myPosts}
         profile={profile}
