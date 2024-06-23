@@ -211,13 +211,13 @@ const PromptCard = ({
                       }}
                       src={post.media.src}
                       alt="Selected"
-                      className="max-w-full h-auto"
+                      className="max-w-full h-auto rounded-2xl"
                     />
                   ) : (
                     <img
                       src={post.media.src}
                       alt="GIF"
-                      className="max-w-full h-auto"
+                      className="rounded-2xl max-w-full h-auto"
                     />
                   )}
                 </div>

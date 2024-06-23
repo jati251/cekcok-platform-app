@@ -5,6 +5,7 @@ import {
   differenceInDays,
   differenceInMonths,
   differenceInWeeks,
+  differenceInMinutes,
 } from "date-fns";
 
 // Utility function to format the timestamp
@@ -12,12 +13,16 @@ export const formatTimestamp = (timestamp) => {
   const date = parseISO(timestamp);
   const now = new Date();
 
+  const minutesDifference = differenceInMinutes(now, date);
   const hoursDifference = differenceInHours(now, date);
   const daysDifference = differenceInDays(now, date);
   const weeksDifference = differenceInWeeks(now, date);
   const monthsDifference = differenceInMonths(now, date);
 
-  if (hoursDifference < 24) {
+  if (minutesDifference < 60) {
+    // Format as `7h` if within 24 hours
+    return `${minutesDifference}m`;
+  } else if (hoursDifference < 24) {
     // Format as `7h` if within 24 hours
     return `${hoursDifference}h`;
   } else if (daysDifference < 7) {
