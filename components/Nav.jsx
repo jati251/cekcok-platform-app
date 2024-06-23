@@ -126,7 +126,7 @@ const Nav = () => {
 
         {/* Mobile Navigation */}
         <div className="sm:hidden flex relative">
-          {session?.user ? (
+          {session?.user && status !== "loading" ? (
             <div className="flex">
               <Image
                 src={session?.user.image}
@@ -227,7 +227,7 @@ const Nav = () => {
             </div>
           ) : (
             <>
-              {providers && status !== "loading" ? (
+              {providers && status === "unauthenticated" ? (
                 Object.values(providers).map((provider) => (
                   <button
                     type="button"

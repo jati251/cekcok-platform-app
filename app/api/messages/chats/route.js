@@ -10,7 +10,6 @@ export const POST = async (request) => {
   try {
     await connectToDB();
 
-    // Fetch distinct recipients where the current user (userId) is the sender or recipient
     const recipients = await Message.distinct("recipientId", {
       $or: [{ senderId: userId }, { recipientId: userId }],
     });
@@ -19,11 +18,9 @@ export const POST = async (request) => {
       $or: [{ senderId: userId }, { recipientId: userId }],
     });
 
-    function removeDuplicates(arr) {
-      return arr.filter((item, index) => arr.indexOf(item) === index);
-    }
+    recipients.push(senders);
 
-    const filteredReps = removeDuplicates(recipients);
+    const filteredReps = recipients.reverse();
     const totalRecipients = filteredReps.length;
 
     const paginatedRecipientIds = filteredReps.slice(
@@ -32,6 +29,7 @@ export const POST = async (request) => {
     );
 
     const notif = [];
+    const seen = {};
 
     for (const recipientId of paginatedRecipientIds) {
       const latestMessage = await Message.findOne({
@@ -46,49 +44,51 @@ export const POST = async (request) => {
         .exec();
 
       if (latestMessage) {
-        const latestNotif = await Notification.findOne({
-          $or: [
-            {
-              recipient: latestMessage.recipientId._id,
-              sender: latestMessage.senderId._id,
-            },
-            {
-              recipient: latestMessage.recipientId._id,
-              sender: latestMessage.senderId._id,
-            },
-          ],
-        }).sort({ createdAt: -1 });
+        const key = `${latestMessage.recipientId._id}_${latestMessage.senderId._id}`;
+        if (!seen[key]) {
+          seen[key] = true;
+          const latestNotif = await Notification.findOne({
+            $or: [
+              {
+                recipient: latestMessage.recipientId._id,
+                sender: latestMessage.senderId._id,
+              },
+              {
+                recipient: latestMessage.recipientId._id,
+                sender: latestMessage.senderId._id,
+              },
+            ],
+          }).sort({ createdAt: -1 });
 
-        notif.push({
-          read: latestNotif?.read,
-          type: "message",
-          recipient: userId,
-          sender: {
-            _id: latestMessage.senderId._id,
-            username: latestMessage.senderId.username,
-            image: latestMessage.senderId.image,
-            fullName: latestMessage.senderId.fullName,
-          },
-          recipient: {
-            _id: latestMessage.recipientId._id,
-            username: latestMessage.recipientId.username,
-            image: latestMessage.recipientId.image,
-            fullName: latestMessage.recipientId.fullName,
-          },
-          data: { message: latestMessage.message },
-          lastMessageSender:
-            latestMessage.senderId === userId
-              ? "You"
-              : latestMessage.senderId.username,
-        });
+          notif.push({
+            read: latestNotif?.read,
+            type: "message",
+            recipient: userId,
+            sender: {
+              _id: latestMessage.senderId._id,
+              username: latestMessage.senderId.username,
+              image: latestMessage.senderId.image,
+              fullName: latestMessage.senderId.fullName,
+            },
+            recipient: {
+              _id: latestMessage.recipientId._id,
+              username: latestMessage.recipientId.username,
+              image: latestMessage.recipientId.image,
+              fullName: latestMessage.recipientId.fullName,
+            },
+            data: { message: latestMessage.message },
+            lastMessageSender:
+              latestMessage.senderId === userId
+                ? "You"
+                : latestMessage.senderId.username,
+          });
+        }
       }
     }
 
-    const result = notif.filter((item, index) => notif.indexOf(item) === index);
-
     return new Response(
       JSON.stringify({
-        notif: result,
+        notif,
         totalPages: Math.ceil(totalRecipients / limit),
       }),
       { status: 200 }

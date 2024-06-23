@@ -34,7 +34,7 @@ const FeedChat = () => {
   const [totalPage, setTotalPage] = useState(1);
   const { isDarkMode } = useDarkModeContext();
   const [hasMore, setHasMore] = useState(true);
-
+  console.log(allNotif);
   const fetchNotifications = async (val) => {
     setLoading(true);
     try {

@@ -25,10 +25,6 @@ const ChatPage = ({ params }) => {
 
   const messagesEndRef = useRef(null);
 
-  if (!recipientId) {
-    return null; // This can cause hooks to be skipped.
-  }
-
   const roomId =
     session?.user?.id && recipientId
       ? [session.user.id, recipientId].sort().join("-")
