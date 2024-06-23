@@ -3,6 +3,8 @@ import {
   format,
   differenceInHours,
   differenceInDays,
+  differenceInMonths,
+  differenceInWeeks,
 } from "date-fns";
 
 // Utility function to format the timestamp
@@ -12,11 +14,19 @@ export const formatTimestamp = (timestamp) => {
 
   const hoursDifference = differenceInHours(now, date);
   const daysDifference = differenceInDays(now, date);
+  const weeksDifference = differenceInWeeks(now, date);
+  const monthsDifference = differenceInMonths(now, date);
 
   if (hoursDifference < 24) {
     // Format as `7h` if within 24 hours
     return `${hoursDifference}h`;
-  } else if (daysDifference < 365) {
+  } else if (daysDifference < 7) {
+    // Format as `2d` if within a week
+    return `${daysDifference}d`;
+  } else if (weeksDifference < 4) {
+    // Format as `2w` if within a month
+    return `${weeksDifference}w`;
+  } else if (monthsDifference < 12) {
     // Format as `Jun 15` if within the current year
     return format(date, "MMM d");
   } else {
