@@ -24,6 +24,7 @@ const Profile = ({
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { data: session, status } = useSession();
+  const [loader, setLoader] = useState(false);
 
   const handleFollow = async (val) => {
     try {
@@ -68,11 +69,14 @@ const Profile = ({
       }
     } catch (error) {
       console.error("Error updating profile:", error);
+    } finally {
+      setLoader(false);
     }
   };
 
   const handleAction = () => {
-    if (profile.isFollowing) {
+    setLoader(true);
+    if (profile?.isFollowing) {
       handleFollow("unfollow");
     } else {
       handleFollow("follow");
@@ -91,7 +95,7 @@ const Profile = ({
       <div className="flex justify-between items-end relative z-10 mt-[18vh]">
         {loading ? (
           <div className=" flex space-x-4">
-            <div className=" rounded-full bg-gray-500 h-[9vh] w-[9vh]"></div>
+            <div className="my-4 rounded-full bg-gray-500 h-[9vh] w-[9vh]"></div>
           </div>
         ) : (
           <Image
@@ -115,23 +119,21 @@ const Profile = ({
           </button>
         ) : (
           <>
-            {!loading &&
-              status !== "loading" &&
-              session?.user &&
-              profile._id && (
-                <button
-                  onClick={handleAction}
-                  className={`px-5 py-1.5 text-sm ${
-                    !isDarkMode ? "black_btn" : "white_btn"
-                  } rounded-full  h-fit mb-4 `}
-                >
-                  {profile?.isFollowing
-                    ? "Unfollow"
-                    : profile?.followBack
-                    ? "Follow Back"
-                    : "Follow"}
-                </button>
-              )}
+            {status === "authenticated" && profile._id && (
+              <button
+                disabled={loader || loading}
+                onClick={handleAction}
+                className={`px-5 py-1.5 text-sm ${
+                  !isDarkMode ? "black_btn" : "white_btn"
+                } rounded-full  h-fit mb-4 `}
+              >
+                {profile?.isFollowing
+                  ? "Unfollow"
+                  : profile?.followBack
+                  ? "Follow Back"
+                  : "Follow"}
+              </button>
+            )}
           </>
         )}
       </div>
@@ -195,20 +197,22 @@ const Profile = ({
 
       <div className=" mt-2 prompt_layout">
         <p className="desc text-left font-semibold">Postingan</p>
-        {data.length > 0 &&
-          data.map((post) => (
-            <PromptCard
-              key={post._id}
-              post={post}
-              handleEdit={() => handleEdit && handleEdit(post)}
-              handleDelete={() => handleDelete && handleDelete(post)}
-            />
-          ))}
-        {data.length === 0 && !loadingPost && (
-          <p className="text-center text-sm my-10 py-10">
-            Postingan masih kosong
-          </p>
-        )}
+        {data?.length > 0
+          ? data.map((post) => (
+              <PromptCard
+                key={post._id}
+                post={post}
+                handleEdit={() => handleEdit && handleEdit(post)}
+                handleDelete={() => handleDelete && handleDelete(post)}
+              />
+            ))
+          : data?.length === 0 &&
+            !loadingPost && (
+              <p className="text-center text-sm my-10 py-10">
+                Postingan masih kosong
+              </p>
+            )}
+
         {loadingPost && <Loading isDarkMode={isDarkMode} />}
       </div>
     </section>

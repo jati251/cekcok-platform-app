@@ -130,9 +130,8 @@ const MyProfile = () => {
   }, [loading, hasMore]);
 
   useEffect(() => {
-    if (session?.user.id) {
-      if ((!loading && page <= totalPage) || (myPosts.length === 0 && !loading))
-        fetchPosts();
+    if (status === "authenticated") {
+      if (page <= totalPage) fetchPosts();
     }
   }, [session?.user.id, page]);
 

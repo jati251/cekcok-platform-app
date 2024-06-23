@@ -1,6 +1,6 @@
 import React from "react";
 
-const CustomCheckbox = ({ loading, isChecked, setIsChecked }) => {
+const CustomCheckbox = ({ isDarkMode, loading, isChecked, setIsChecked }) => {
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
   };
@@ -19,9 +19,13 @@ const CustomCheckbox = ({ loading, isChecked, setIsChecked }) => {
         htmlFor="customCheckbox"
         className="flex items-center cursor-pointer"
       >
-        <div className="w-6 h-6 flex items-center justify-center border border-gray-400 rounded-md bg-black transition-all">
+        <div
+          className={`w-6 h-6 flex items-center justify-center border border-gray-400 ${
+            isDarkMode ? "text-white" : "text-black"
+          } rounded-md transition-all`}
+        >
           <svg
-            className={`w-4 h-4 text-white ${isChecked ? "block" : "hidden"} `}
+            className={`w-4 h-4 ${isChecked ? "block" : "hidden"} `}
             viewBox="0 0 24 24"
             fill="none"
           >

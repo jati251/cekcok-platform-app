@@ -48,6 +48,8 @@ const Feed = () => {
         }),
       });
 
+      // await fetch("/api/database/userupdate");
+
       const data = await response.json();
       if (session?.user) {
         const userId = session.user.id;

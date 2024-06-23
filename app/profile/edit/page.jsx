@@ -13,6 +13,7 @@ import ProfileBackground from "@components/profile/ProfileBackground";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
 import CustomCheckbox from "@components/CustomCheckbox";
 import Loading from "../loading";
+import { isMoreThan7DaysAgo } from "@utils/helper";
 
 const EditProfile = () => {
   const { data: session, status } = useSession();
@@ -23,6 +24,7 @@ const EditProfile = () => {
       image: "",
       fullName: "",
       status: "",
+      usernameUpdateAt: "",
     },
     background: "",
     bio: "",
@@ -47,6 +49,7 @@ const EditProfile = () => {
   const router = useRouter();
 
   const handleSubmit = async (e) => {
+    setLoading(true);
     e.preventDefault();
     const { bio, location, background, userId } = profile;
     const res = await fetch("/api/users/profile/edit", {
@@ -59,10 +62,15 @@ const EditProfile = () => {
         background,
         status: isChecked ? "private" : "public",
         image: profile.userId.image,
+        username:
+          profile?.userId.username !== session?.user?.username
+            ? profile?.userId.username
+            : null,
       }),
     });
 
     if (res.ok) {
+      setLoading(false);
       router.push("/profile");
     }
   };
@@ -138,6 +146,22 @@ const EditProfile = () => {
 
         <div className="my-6 space-y-8">
           <CustomInput
+            disabled={!isMoreThan7DaysAgo(profile.userId.usernameUpdateAt)}
+            loading={loading}
+            isDarkMode={isDarkMode}
+            label="Username"
+            value={profile?.userId.username}
+            onChange={(e) =>
+              setProfile({
+                ...profile,
+                userId: { ...profile.userId, username: e.target.value },
+              })
+            }
+          />
+          <span className="ml-2 font-satoshi text-gray-500 italic">
+            username tidak bisa diganti lagi selama 7 hari
+          </span>
+          <CustomInput
             loading={loading}
             isDarkMode={isDarkMode}
             label="Nama"
@@ -167,6 +191,7 @@ const EditProfile = () => {
             }
           />
           <CustomCheckbox
+            isDarkMode={isDarkMode}
             loading={loading}
             isChecked={isChecked}
             setIsChecked={setIsChecked}

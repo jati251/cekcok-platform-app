@@ -27,6 +27,7 @@ const UserSchema = new Schema({
   image: {
     type: String,
   },
+  usernameUpdateAt: { type: Date, default: Date.now },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });

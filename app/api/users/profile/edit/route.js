@@ -7,16 +7,34 @@ import { connectToDB } from "@utils/database";
 export const POST = async (req) => {
   try {
     await connectToDB();
-    const { fullName, bio, location, userId, image, background, status } =
-      await req.json();
+    const {
+      fullName,
+      bio,
+      username,
+      location,
+      userId,
+      image,
+      background,
+      status,
+    } = await req.json();
 
-    if (image) {
-      await User.findOneAndUpdate(
-        { _id: userId },
-        { image, fullName, status },
-        { new: true }
-      );
+    if (username) {
+      const existingUser = await User.findOne({ username });
+      if (existingUser && existingUser._id.toString() !== userId) {
+        throw new Error("Username already exists!");
+      }
     }
+
+    // Prepare update fields
+    const updateFields = { image, fullName, status };
+    if (username) {
+      updateFields.username = username;
+      updateFields.usernameUpdateAt = new Date();
+    }
+
+    // Update the user if there are any fields to update
+    if (Object.keys(updateFields).length > 0)
+      await User.findOneAndUpdate({ _id: userId }, updateFields, { new: true });
 
     let profile = await Profile.findOne({ userId });
     if (profile) {

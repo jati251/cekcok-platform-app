@@ -100,8 +100,7 @@ const UserProfile = ({ params }) => {
   }, [loading, hasMore]);
 
   useEffect(() => {
-    if ((!loading && page <= totalPage) || (userPosts.length === 0 && !loading))
-      fetchPosts();
+    if (page <= totalPage) fetchPosts();
   }, [page]);
 
   useEffect(() => {

@@ -35,6 +35,17 @@ export const formatTimestamp = (timestamp) => {
   }
 };
 
+export const isMoreThan7DaysAgo = (timestamp) => {
+  const date = parseISO(timestamp); // Parse the ISO string to Date object
+  const now = new Date(); // Get current date/time
+
+  // Calculate the difference in days
+  const daysDifference = differenceInDays(now, date);
+
+  // Return true if the difference is greater than 7 days
+  return daysDifference > 7;
+};
+
 export const debounce = (func, wait) => {
   let timeout;
   return function executedFunction(...args) {
