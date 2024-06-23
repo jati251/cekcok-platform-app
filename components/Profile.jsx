@@ -95,6 +95,7 @@ const Profile = ({
           </div>
         ) : (
           <Image
+            priority
             src={profile?.userId?.image || "/assets/images/default-user.png"}
             width={80}
             height={80}

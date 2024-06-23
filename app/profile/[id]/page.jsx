@@ -62,7 +62,7 @@ const UserProfile = ({ params }) => {
     } catch (error) {
       console.error("Error fetching posts:", error);
     } finally {
-      if (profile._id) setLoadingPost(false);
+      setLoadingPost(false);
     }
   };
 
@@ -107,10 +107,6 @@ const UserProfile = ({ params }) => {
   useEffect(() => {
     if (status !== "loading") fetchProfile();
   }, [status]);
-
-  useEffect(() => {
-    if (profile?.userId?.createdAt && !loading) fetchPosts();
-  }, [profile]);
 
   useEffect(() => {
     const debounceScroll = debounce(handleScroll, 200);
