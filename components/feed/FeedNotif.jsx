@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import Loading from "@app/profile/loading";
 import { useIsMobile } from "@utils/hooks";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
-import NotifCard from "../NotifCard";
+import NotifCard from "@components/cards/NotifCard";
 import { useRouter } from "next/navigation";
 import { debounce } from "@utils/helper";
 import { BulkPrompt } from "@components/Skeletons/BulkUser";

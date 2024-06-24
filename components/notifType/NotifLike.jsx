@@ -1,4 +1,4 @@
-import BlurredProfile from "@components/input/BlurredProfile";
+import BlurredImage from "@components/input/BlurredImage";
 import {
   faComment,
   faFistRaised,
@@ -14,7 +14,8 @@ const BaseNotif = ({ notif }) => {
   return (
     <div className="flex flex-col w-full">
       <div className="flex justify-start flex-col my-2 w-[40px]">
-        <BlurredProfile
+        <BlurredImage
+          isProfile
           src={notif?.sender?.image ?? "/assets/images/default-user.png"}
           alt="user_image"
           style={{ width: "40px", height: "40px" }}
@@ -55,7 +56,8 @@ const MessageNotif = ({ notif, userId }) => {
   return (
     <div className="flex w-full gap-4">
       <div className="flex justify-start items-center flex-col my-2 w-[40px]">
-        <BlurredProfile
+        <BlurredImage
+          isProfile
           src={
             userId === notif.sender._id
               ? notif?.recipient?.image
@@ -99,6 +101,9 @@ export const NotifLike = ({ isDarkMode, notif }) => {
         handleLike();
         break;
       case "hate":
+        handleLike();
+        break;
+      case "comment":
         handleLike();
         break;
       case "message":

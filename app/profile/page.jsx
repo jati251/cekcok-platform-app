@@ -3,14 +3,13 @@
 import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-
-import Profile from "@components/Profile";
 import Image from "next/image";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
 import { debounce } from "@utils/helper";
 import Loading from "./loading";
+import Profile from "@components/organisms/Profile";
 
 const MyProfile = () => {
   const router = useRouter();

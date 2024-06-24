@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { useRef } from "react";
 import imageCompression from "browser-image-compression";
+import { handleImageChange } from "@utils/helper";
 
 const ProfileBackground = ({ src, loading, onImageChange }) => {
   const fileInputRef = useRef(null);
@@ -11,47 +12,14 @@ const ProfileBackground = ({ src, loading, onImageChange }) => {
     fileInputRef.current.click();
   };
 
-  const handleImageChange = async (event) => {
-    const file = event.target.files[0];
-
-    if (file && !file.type.startsWith("image/")) {
-      alert("Please select a valid image file.");
-      fileInputRef.current.value = null; // Clear the input value
-      return;
-    }
-
-    if (file) {
-      try {
-        const options = {
-          maxSizeMB: 0.2, // Maximum size of the compressed image (1MB in this example)
-          maxWidthOrHeight: 800, // Maximum width or height of the compressed image
-          useWebWorker: true, // Use web workers to offload compression process (optional)
-        };
-
-        const compressedFile = await imageCompression(file, options);
-        const croppedImage = await cropImageToRatio(compressedFile, 1500, 500);
-        // Convert compressedFile to Base64 string
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          onImageChange(reader.result);
-        };
-        reader.readAsDataURL(croppedImage);
-      } catch (error) {
-        console.error("Error compressing image:", error);
-      }
-    }
-  };
-
   const cropImageToRatio = async (file, targetWidth, targetHeight) => {
     return new Promise((resolve) => {
       const img = document.createElement("img");
       img.onload = () => {
         const canvas = document.createElement("canvas");
 
-        // Determine the aspect ratio of the target dimensions
         const aspectRatio = targetWidth / targetHeight;
 
-        // Calculate the dimensions for the cropped image
         let width = img.width;
         let height = img.height;
 
@@ -61,7 +29,6 @@ const ProfileBackground = ({ src, loading, onImageChange }) => {
           height = width / aspectRatio;
         }
 
-        // Center the crop within the image
         const x = (img.width - width) / 2;
         const y = (img.height - height) / 2;
 
@@ -125,7 +92,9 @@ const ProfileBackground = ({ src, loading, onImageChange }) => {
         ref={fileInputRef}
         style={{ display: "none" }}
         accept="image/*"
-        onChange={handleImageChange}
+        onChange={(e) =>
+          handleImageChange(e, cropImageToRatio, fileInputRef, onImageChange)
+        }
       />
     </div>
   );

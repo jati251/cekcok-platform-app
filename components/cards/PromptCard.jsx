@@ -10,12 +10,12 @@ import {
   faThumbsDown as solidThumbsDown,
   faComment,
 } from "@fortawesome/free-solid-svg-icons";
-import CommentModal from "./modals/CommentModal";
-import TimeAgo from "./TimeAgo";
 import { useIsMobile } from "@utils/hooks";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
-import ZoomModal from "./modals/ZoomModal";
-import BlurredProfile from "./input/BlurredProfile";
+import BlurredImage from "@components/input/BlurredImage";
+import CommentModal from "@components/modals/CommentModal";
+import TimeAgo from "@components/profile/TimeAgo";
+import ZoomModal from "@components/modals/ZoomModal";
 
 const PromptCard = ({
   post,
@@ -146,7 +146,8 @@ const PromptCard = ({
               }}
               className="cursor-pointer flex justify-start flex-col mt-1 w-[40px]"
             >
-              <BlurredProfile
+              <BlurredImage
+                isProfile
                 src={post?.creator?.image ?? "/assets/images/default-user.png"}
                 alt="user_image"
                 style={{ width: "40px", height: "40px" }}

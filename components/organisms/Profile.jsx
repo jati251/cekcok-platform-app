@@ -1,15 +1,14 @@
-import PromptCard from "./PromptCard";
-
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { convertToIndonesianMonthYear } from "@utils/helper";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendar, faLocation } from "@fortawesome/free-solid-svg-icons";
-import { CustomFieldName } from "./CustomFieldName";
-import ZoomModal from "./modals/ZoomModal";
+import { CustomFieldName } from "../profile/CustomFieldName";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import Loading from "@app/profile/loading";
+import ZoomModal from "@components/modals/ZoomModal";
+import PromptCard from "@components/cards/PromptCard";
 
 const Profile = ({
   data,

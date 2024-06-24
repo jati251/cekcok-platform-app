@@ -1,4 +1,4 @@
-const { FieldNameSkeleton } = require("./Skeletons/FieldNameSkeleton");
+const { FieldNameSkeleton } = require("../Skeletons/FieldNameSkeleton");
 
 export const CustomFieldName = ({ value, loading, width }) => {
   return (

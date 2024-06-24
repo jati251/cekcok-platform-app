@@ -1,7 +1,7 @@
 "use client";
 
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
-import { NotifLike } from "./notifType/NotifLike";
+import { NotifLike } from "@components/notifType/NotifLike";
 
 const NotifCard = ({ notif }) => {
   const { isDarkMode } = useDarkModeContext();

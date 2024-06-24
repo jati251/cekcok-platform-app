@@ -1,4 +1,4 @@
-import HighlightedLogos from "./logo";
+import HighlightedLogos from "@components/organisms/logo";
 
 export default function HomePage() {
   return (

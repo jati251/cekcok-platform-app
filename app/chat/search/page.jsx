@@ -7,7 +7,6 @@ import { useDebounce, useIsMobile } from "@utils/hooks";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
 import { debounce } from "@utils/helper";
 import { useRouter } from "next/navigation";
-import UserCard from "@components/UserCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowLeft,
@@ -15,6 +14,7 @@ import {
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { UserSkeleton } from "@components/Skeletons/UserCardSkeleton";
+import UserCard from "@components/cards/UserCard";
 
 const UserCardList = ({ data, selected, setSelected }) => {
   return (

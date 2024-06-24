@@ -5,10 +5,10 @@ import { useSession } from "next-auth/react";
 import Loading from "@app/profile/loading";
 import { useIsMobile } from "@utils/hooks";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
-import NotifCard from "../NotifCard";
 import { useRouter } from "next/navigation";
 import { debounce } from "@utils/helper";
 import { BulkUserSkeleton } from "@components/Skeletons/BulkUser";
+import NotifCard from "@components/cards/NotifCard";
 
 const ChatCardList = ({ data, status, isDarkMode, setNotif }) => {
   return (
@@ -34,7 +34,7 @@ const FeedChat = () => {
   const [totalPage, setTotalPage] = useState(1);
   const { isDarkMode } = useDarkModeContext();
   const [hasMore, setHasMore] = useState(true);
-  console.log(allNotif);
+
   const fetchNotifications = async (val) => {
     setLoading(true);
     try {

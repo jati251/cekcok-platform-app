@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
-import ImageUploader from "../ImageUploader";
+import ImageUploader from "../input/ImageUploader";
 import GifPicker from "gif-picker-react";
 import CustomTextArea from "@components/input/CustomTextArea";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";

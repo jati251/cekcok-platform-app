@@ -5,15 +5,15 @@ import { useState, useEffect, useCallback } from "react";
 import Loading from "@app/profile/loading";
 import { useDebounce, useIsMobile } from "@utils/hooks";
 import { PromptSkeleton } from "@components/Skeletons/PromptCardSkeleton";
-import PromptCard from "@components/PromptCard";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
 import CustomTab from "@components/tabs/CustomTab";
 import { debounce } from "@utils/helper";
 import { useRouter } from "next/navigation";
-import UserCard from "@components/UserCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { UserSkeleton } from "@components/Skeletons/UserCardSkeleton";
+import PromptCard from "@components/cards/PromptCard";
+import UserCard from "@components/cards/UserCard";
 
 const PromptCardList = ({ data, status, isDarkMode }) => {
   return (

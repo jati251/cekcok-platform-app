@@ -1,8 +1,8 @@
 import "@styles/globals.css";
 import Provider from "@components/Provider";
-import Nav from "@components/Nav";
 import { Suspense } from "react";
-import Footer from "@components/Footer";
+import Nav from "@components/organisms/Nav";
+import Footer from "@components/organisms/Footer";
 
 export const metadata = {
   title: "CekCok",

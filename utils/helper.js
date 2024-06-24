@@ -88,3 +88,39 @@ export const convertToIndonesianMonthYear = (dateString) => {
   const formattedDate = date.toLocaleDateString("id-ID", options);
   return formattedDate;
 };
+
+export const handleImageChange = async (
+  event,
+  func,
+  fileInputRef,
+  onImageChange
+) => {
+  const file = event.target.files[0];
+
+  if (file && !file.type.startsWith("image/")) {
+    alert("Please select a valid image file.");
+    fileInputRef.current.value = null;
+    return;
+  }
+
+  if (file) {
+    try {
+      const options = {
+        maxSizeMB: 0.2,
+        maxWidthOrHeight: 800,
+        useWebWorker: true,
+      };
+
+      const compressedFile = await imageCompression(file, options);
+      const croppedImage = await func(compressedFile, 1500, 500);
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        onImageChange(reader.result);
+      };
+      reader.readAsDataURL(croppedImage);
+    } catch (error) {
+      console.error("Error compressing image:", error);
+    }
+  }
+};

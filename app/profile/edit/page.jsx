@@ -11,9 +11,9 @@ import CustomInput from "@components/input/CustomInput";
 import CustomTextArea from "@components/input/CustomTextArea";
 import ProfileBackground from "@components/profile/ProfileBackground";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
-import CustomCheckbox from "@components/CustomCheckbox";
 import Loading from "../loading";
 import { isMoreThan7DaysAgo } from "@utils/helper";
+import CustomCheckbox from "@components/input/CustomCheckbox";
 
 const EditProfile = () => {
   const { data: session, status } = useSession();

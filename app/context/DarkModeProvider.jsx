@@ -18,7 +18,7 @@ export function DarkModeProvider({ children }) {
   const toggleDarkMode = () => {
     const newMode = !isDarkMode;
     setIsDarkMode(newMode);
-    localStorage.setItem("darkMode", JSON.stringify(newMode)); // Save to localStorage
+    localStorage.setItem("darkMode", JSON.stringify(newMode));
   };
 
   return (

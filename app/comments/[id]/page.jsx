@@ -2,9 +2,9 @@
 
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
 import Loading from "@app/profile/loading";
-import Comment from "@components/Comment";
-import PromptCard from "@components/PromptCard";
 import { PromptSkeleton } from "@components/Skeletons/PromptCardSkeleton";
+import Comment from "@components/cards/Comment";
+import PromptCard from "@components/cards/PromptCard";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSession } from "next-auth/react";

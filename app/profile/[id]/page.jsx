@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import Profile from "@components/Profile";
 import { useSession } from "next-auth/react";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,6 +9,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { debounce } from "@utils/helper";
 import Loading from "../loading";
+import Profile from "@components/organisms/Profile";
 
 const UserProfile = ({ params }) => {
   const [userPosts, setUserPosts] = useState([]);

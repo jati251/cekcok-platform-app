@@ -3,11 +3,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import GifPicker from "gif-picker-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import ImageUploader from "./ImageUploader";
+import ImageUploader from "../input/ImageUploader";
 import { useSession } from "next-auth/react";
-import CustomInput from "./input/CustomInput";
+import CustomInput from "../input/CustomInput";
 import { useDarkModeContext } from "@app/context/DarkModeProvider";
-import CustomTextArea from "./input/CustomTextArea";
+import CustomTextArea from "../input/CustomTextArea";
 import { useRouter } from "next/navigation";
 import Loading from "@app/profile/loading";
 

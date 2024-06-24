@@ -3,43 +3,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { useRef } from "react";
 import imageCompression from "browser-image-compression";
+import { handleImageChange } from "@utils/helper";
 
 const ProfileImage = ({ src, loading, onImageChange }) => {
   const fileInputRef = useRef(null);
 
   const handleClick = () => {
     fileInputRef.current.click();
-  };
-
-  const handleImageChange = async (event) => {
-    const file = event.target.files[0];
-
-    if (file && !file.type.startsWith("image/")) {
-      alert("Please select a valid image file.");
-      fileInputRef.current.value = null; // Clear the input value
-      return;
-    }
-
-    if (file) {
-      try {
-        const options = {
-          maxSizeMB: 0.2, // Maximum size of the compressed image (1MB in this example)
-          maxWidthOrHeight: 800, // Maximum width or height of the compressed image
-          useWebWorker: true, // Use web workers to offload compression process (optional)
-        };
-
-        const compressedFile = await imageCompression(file, options);
-        const croppedImage = await cropImageToSquare(compressedFile);
-        // Convert compressedFile to Base64 string
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          onImageChange(reader.result);
-        };
-        reader.readAsDataURL(croppedImage);
-      } catch (error) {
-        console.error("Error compressing image:", error);
-      }
-    }
   };
 
   const cropImageToSquare = async (file) => {
@@ -104,7 +74,9 @@ const ProfileImage = ({ src, loading, onImageChange }) => {
         ref={fileInputRef}
         style={{ display: "none" }}
         accept="image/*"
-        onChange={handleImageChange}
+        onChange={(e) =>
+          handleImageChange(e, cropImageToSquare, fileInputRef, onImageChange)
+        }
       />
     </div>
   );

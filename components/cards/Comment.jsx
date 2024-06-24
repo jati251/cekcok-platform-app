@@ -7,10 +7,9 @@ import {
   faThumbsUp as solidThumbsUp,
   faThumbsDown as solidThumbsDown,
 } from "@fortawesome/free-solid-svg-icons";
-import TimeAgo from "./TimeAgo";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
-import BlurredProfile from "./input/BlurredProfile";
+import TimeAgo from "@components/profile/TimeAgo";
+import BlurredImage from "@components/input/BlurredImage";
 
 const Comment = ({ comment, isDarkMode }) => {
   const { data: session } = useSession();
@@ -98,7 +97,8 @@ const Comment = ({ comment, isDarkMode }) => {
           }}
           className="cursor-pointer flex items-start mt-2"
         >
-          <BlurredProfile
+          <BlurredImage
+            isProfile
             src={comment.author.image ?? "/assets/images/default-user.png"}
             alt="comment_author"
             style={{ width: "40px", height: "40px" }}

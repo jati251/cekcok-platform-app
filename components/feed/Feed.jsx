@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import PromptCard from "../PromptCard";
 import { useSession } from "next-auth/react";
 import Loading from "@app/profile/loading";
 import { useIsMobile } from "@utils/hooks";
@@ -9,6 +8,7 @@ import { useDarkModeContext } from "@app/context/DarkModeProvider";
 import CustomTab from "../tabs/CustomTab";
 import { debounce } from "@utils/helper";
 import { BulkPrompt } from "@components/Skeletons/BulkUser";
+import PromptCard from "@components/cards/PromptCard";
 
 const PromptCardList = ({ data, handleTagClick, status, isDarkMode }) => {
   return (
