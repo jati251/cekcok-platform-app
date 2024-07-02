@@ -7,6 +7,7 @@ import {
   differenceInWeeks,
   differenceInMinutes,
 } from "date-fns";
+import imageCompression from "browser-image-compression";
 
 // Utility function to format the timestamp
 export const formatTimestamp = (timestamp) => {
