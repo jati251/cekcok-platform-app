@@ -14,12 +14,6 @@ export const POST = async (request) => {
       $or: [{ senderId: userId }, { recipientId: userId }],
     });
 
-    const senders = await Message.distinct("senderId", {
-      $or: [{ senderId: userId }, { recipientId: userId }],
-    });
-
-    recipients.push(senders);
-
     const filteredReps = recipients.reverse();
     const totalRecipients = filteredReps.length;
 
